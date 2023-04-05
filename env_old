@@ -1,0 +1,137 @@
+#--------------------------------------------------------------------
+# Example Environment Configuration file
+#
+# This file can be used as a starting point for your own
+# custom .env files, and contains most of the possible settings
+# available in a default install.
+#
+# By default, all of the settings are commented out. If you want
+# to override the setting, you must un-comment it by removing the '#'
+# at the beginning of the line.
+#--------------------------------------------------------------------
+
+#--------------------------------------------------------------------
+# ENVIRONMENT
+#--------------------------------------------------------------------
+
+# CI_ENVIRONMENT = production
+CI_ENVIRONMENT = development
+
+#--------------------------------------------------------------------
+# APP
+#--------------------------------------------------------------------
+
+# app.baseURL = 'https://devel74.nginovasi.id/cores/'
+app.baseURL = 'http://localhost/cores/'
+app.indexPage = ''
+app.forceGlobalSecureRequests = false
+
+app.CSRFProtection = true
+app.CSRFTokenName = 'esdlc_token'
+app.CSRFHeaderName = 'X-ESDLC-TOKEN'
+app.CSRFCokieName = 'esdlc_cookies'
+app.CSRFExpires = 7200
+app.CSRFRegenerate = false
+app.CSRFRedirect = true
+app.CSRFSamesite = 'Lax'
+
+# app.sessionDriver = 'CodeIgniter\Session\Handlers\FileHandler'
+# app.sessionCookieName = 'esdlc_session'
+# app.sessionExpiration = 7200
+# app.sessionSavePath = NULL
+# app.sessionMatchIP = true
+# app.sessionTimeToUpdate = 300
+# app.sessionRegenerateDestroy = false
+
+# app.CSPEnabled = false
+
+#--------------------------------------------------------------------
+# DATABASE
+#--------------------------------------------------------------------
+
+database.default.hostname = localhost
+database.default.database = trans_hubdat
+database.default.username = root
+database.default.password = 
+database.default.DBDriver = MySQLi
+# database.default.DBPrefix =
+
+database.tests.hostname = localhost
+database.tests.database = 
+database.tests.username = 
+database.tests.password = 
+database.tests.DBDriver = MySQLi
+# database.tests.DBPrefix =
+
+#--------------------------------------------------------------------
+# CONTENT SECURITY POLICY
+#--------------------------------------------------------------------
+
+# contentsecuritypolicy.reportOnly = false
+# contentsecuritypolicy.defaultSrc = 'none'
+# contentsecuritypolicy.scriptSrc = 'self'
+# contentsecuritypolicy.styleSrc = 'self'
+# contentsecuritypolicy.imageSrc = 'self'
+# contentsecuritypolicy.base_uri = null
+# contentsecuritypolicy.childSrc = null
+# contentsecuritypolicy.connectSrc = 'self'
+# contentsecuritypolicy.fontSrc = null
+# contentsecuritypolicy.formAction = null
+# contentsecuritypolicy.frameAncestors = null
+# contentsecuritypolicy.frameSrc = null
+# contentsecuritypolicy.mediaSrc = null
+# contentsecuritypolicy.objectSrc = null
+# contentsecuritypolicy.pluginTypes = null
+# contentsecuritypolicy.reportURI = null
+# contentsecuritypolicy.sandbox = false
+# contentsecuritypolicy.upgradeInsecureRequests = false
+
+#--------------------------------------------------------------------
+# COOKIE
+#--------------------------------------------------------------------
+
+# cookie.prefix = ''
+# cookie.expires = 0
+# cookie.path = '/'
+# cookie.domain = ''
+# cookie.secure = false
+# cookie.httponly = false
+# cookie.samesite = 'Lax'
+# cookie.raw = false
+
+#--------------------------------------------------------------------
+# ENCRYPTION
+#--------------------------------------------------------------------
+
+# encryption.key =
+# encryption.driver = OpenSSL
+# encryption.blockSize = 16
+# encryption.digest = SHA512
+
+#--------------------------------------------------------------------
+# HONEYPOT
+#--------------------------------------------------------------------
+
+# honeypot.hidden = 'true'
+# honeypot.label = 'Fill This Field'
+# honeypot.name = 'honeypot'
+# honeypot.template = '<label>{label}</label><input type="text" name="{name}" value=""/>'
+# honeypot.container = '<div style="display:none">{template}</div>'
+
+#--------------------------------------------------------------------
+# SECURITY
+#--------------------------------------------------------------------
+
+# security.tokenName = 'esdlc_token'
+# security.headerName = 'X-ESDLC-TOKEN'
+# security.cookieName = 'esdlc_cookies'
+# security.expires = 7200
+# security.regenerate = false
+# security.redirect = true
+# security.samesite = 'Lax'
+
+#--------------------------------------------------------------------
+# LOGGER
+#--------------------------------------------------------------------
+
+# logger.threshold = 4

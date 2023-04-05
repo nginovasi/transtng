@@ -1,0 +1,70 @@
+<div class="card" data-sr-id="2" style="visibility: visible; transform: none; opacity: 1; transition: none 0s ease 0s;">
+    <div class="p-3">
+        <div class="d-flex">
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#tab_1" data-toggle="tab" data-target="#tab_1"
+                        data-map-id="map_atms">ITMS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#tab_2" data-toggle="tab" data-target="#tab_2"
+                        data-map-id="map_kspn">KSPN</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#tab_3" data-toggle="tab" data-target="#tab_3"
+                        data-map-id="map_terminal">Terminal</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#tab_4" data-toggle="tab" data-target="#tab_4"
+                        data-map-id="map_jto">JTO</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#tab_5" data-toggle="tab" data-target="#tab_5"
+                        data-map-id="map_tl">Traffic Light & Simpang</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12 col-lg-12">
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab_1">
+                <?php echo view('App\Modules\Main\Views\dashboard_atms'); ?>
+            </div>
+            <div class="tab-pane fade" id="tab_2">
+                <?php echo view('App\Modules\Main\Views\dashboard_kspn'); ?>
+            </div>
+            <div class="tab-pane fade" id="tab_3">
+                <?php echo view('App\Modules\Main\Views\dashboard_terminal'); ?>
+            </div>
+            <div class="tab-pane fade" id="tab_4">
+                <?php echo view('App\Modules\Main\Views\dashboard_jto'); ?>
+            </div>
+            <div class="tab-pane fade" id="tab_5">
+                <?php echo view('App\Modules\Main\Views\dashboard_tl'); ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('.nav-pills a').on('shown.bs.tab', function(event) {
+        var map_id = $(event.target).attr('data-map-id');
+        var map = window[map_id];
+        
+        if (map_id == 'map_atms') {
+            map_atms.invalidateSize(); 
+        } else if (map_id == 'map_kspn') {
+            map_kspn.invalidateSize();
+        } else if (map_id == 'map_terminal') {
+            map_terminal.invalidateSize();
+        } else if (map_id == 'map_jto') {
+            map_jto.invalidateSize();
+        } else if (map_id == 'map_tl') {
+            map_tl.invalidateSize();
+        } 
+    });
+});
+</script>

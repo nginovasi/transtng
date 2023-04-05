@@ -1,0 +1,13 @@
+/*
+Custom css
+*/
+
+.selection.has-error {
+    border: 1px solid #f54394;
+    border-radius: 4px;
+}
+
+.select2-selection__rendered.has-error {
+    border: 1px solid #f54394;
+    border-radius: 4px;
+}
