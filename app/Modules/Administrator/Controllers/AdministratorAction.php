@@ -387,8 +387,11 @@ class AdministratorAction extends BaseController
     public function mantarif_load()
     {
         parent::_authLoad(function () {
-            $query = "SELECT a.* FROM tarif a WHERE a.is_aktif = 0";
-            $where = ["a.jenis", "a.tarif", "a.tarif_normal"];
+            $query = "SELECT a.*, b.nama AS tenant_name
+                        FROM tarif a
+                        LEFT JOIN ref_tenant b ON b.id = a.kategori
+                        WHERE a.is_aktif = 0";
+            $where = ["a.jenis", "a.tarif", "a.tarif_normal", "b.nama"];
 
             parent::_loadDatatable($query, $where, $this->request->getPost());
         });
@@ -415,4 +418,97 @@ class AdministratorAction extends BaseController
         });
     }
 
+    public function narasitiket_load()
+    {
+        parent::_authLoad(function () {
+            $query = "SELECT a.* FROM ref_narasi_tiket a";
+            $where = ["a.header", "a.footer"];
+
+            parent::_loadDatatable($query, $where, $this->request->getPost());
+        });
+    }
+
+    public function narasitiket_save()
+    {
+        parent::_authInsert(function () {
+            parent::_insert('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function narasitiket_edit()
+    {
+        parent::_authEdit(function () {
+            parent::_edit('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function narasitiket_delete()
+    {
+        parent::_authDelete(function () {
+            parent::_delete('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function manpegawai_load()
+    {
+        parent::_authLoad(function () {
+            $query = "SELECT a.* FROM ref_narasi_tiket a";
+            $where = ["a.header", "a.footer"];
+
+            parent::_loadDatatable($query, $where, $this->request->getPost());
+        });
+    }
+
+    public function manpegawai_upload()
+    {
+        $input = $this->validate([
+            'file' => [
+                'uploaded[file]',
+                'mime_in[file,image/jpg,image/jpeg,image/png]',
+                'max_size[file,1024]',
+            ],
+        ]);
+
+        if (!$input) {
+            $msg = array("status" => 0, "msg" => "Pilih File.");
+        } else {
+
+            $x_file = $this->request->getFile('file');
+            $nama_file = $x_file->getRandomName();
+            $image = \Config\Services::image()
+                ->withFile($x_file)
+                ->resize(720, 360, true, 'width')
+                ->save(FCPATH . 'public/uploads/banner/' . $nama_file);
+            // $x_file->move(FCPATH . 'public/uploads/banner');
+
+            if ($image) {
+                $msg = array("status" => 1, "msg" => "File Has Been Uploaded", "path" => 'public/uploads/banner/' . $nama_file);
+            } else {
+                $msg = array("status" => 0, "msg" => $this->upload->display_errors());
+            }
+
+            echo json_encode($msg);
+        }
+    }
+
+    public function manpegawai_save()
+    {
+        parent::_authInsert(function () {
+            parent::_insert('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function manpegawai_edit()
+    {
+        parent::_authEdit(function () {
+            parent::_edit('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function manpegawai_delete()
+    {
+        parent::_authDelete(function () {
+            parent::_delete('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
 }

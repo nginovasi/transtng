@@ -34,6 +34,7 @@
                                         <tr>
                                             <th><span>#</span></th>
                                             <th><span>Jenis</span></th>
+                                            <th><span>Tenant</span></th>
                                             <th><span>Tarif</span></th>
                                             <th><span>Actions</span></th>
                                         </tr>
@@ -82,21 +83,19 @@
                                 <div class="form-group row">
                                     <div class="col-md-4">
                                         <label for="nama_tenant" class="col-form-label">Tenant</label>
-                                        <select class="form-control select2" name="nama_tenant" id="nama_tenant" required></select>
+                                        <select class="form-control select2" name="kategori" id="nama_tenant" required></select>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="iscashless" class="col-form-label">Tipe</label>
                                         <select class="custom-select form-control" name="is_cashless" id="is_cashless" required>
                                             <option value="" disabled selected>Pilih Tipe Pembayaran</option>
-                                            <option value="0">Cash</option>
-                                            <option value="1">Cashless</option>
                                         </select>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="isaktif" class="col-form-label">Status</label>
                                         <select class="custom-select form-control" name="is_aktif" id="is_aktif" required>
-                                            <option value="0">Non-Aktif</option>
-                                            <option value="1" selected>Aktif</option>
+                                            <option value="0" selected>Aktif</option>
+                                            <option value="1">Non-Aktif</option>
                                         </select>
                                     </div>
                                 </div>
@@ -172,7 +171,11 @@
 
         $('#nama_tenant').on('change', function() {
             var id = $(this).val();
-            console.log(id);
+            if (id == '8') {
+                $('#is_cashless').html('<option value="0" selected>Cash</option>');
+            } else {
+                $('#is_cashless').html('<option value="1" selected>Cashless</option>');
+            }
         });
 
         coreEvents.load();
@@ -180,9 +183,7 @@
 
     function select2Init(id, url, placeholder, parameter) {
         $(id).select2({
-            id: function(e) {
-                return e.id
-            },
+            id: function(e) {return e.id},
             placeholder: placeholder,
             multiple: false,
             ajax: {
@@ -237,6 +238,10 @@
             },
             {
                 data: "jenis",
+                orderable: true
+            },
+            {
+                data: "tenant_name",
                 orderable: true
             },
             {

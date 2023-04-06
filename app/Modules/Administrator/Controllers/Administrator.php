@@ -64,4 +64,14 @@ class Administrator extends BaseController
     {
         return parent::_authView();
     }
+
+    public function narasitiket()
+    {
+        return parent::_authView();
+    }
+
+    public function manpegawai()
+    {
+        return parent::_authView();
+    }
 }
