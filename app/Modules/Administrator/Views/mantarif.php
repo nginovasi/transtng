@@ -48,37 +48,53 @@
                                 <input type="hidden" class="form-control" id="id" name="id" value="" required>
                                 <?= csrf_field(); ?>
                                 <div class="form-group row">
-                                    <label for="jenis" class="col-2 col-form-label">Jenis</label>
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" placeholder="Jenis Tarif (Unique)" id="jenis" name="jenis" required="" />
+                                    <div class="col-md-12">
+                                        <label for="jenis" class="col-form-label">Jenis</label>
+                                        <input class="form-control" type="text" placeholder="Jenis Tarif (Unique)" id="jenis" name="jenis" required />
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="tarif" class="col-2 col-form-label">Tarif</label>
-                                    <div class="col-10">
-                                        <input class="form-control" type="number" placeholder="Nilai Tarif" id="tarif" name="tarif" />
+                                    <div class="col-md-6">
+                                        <label for="tarif" class="col-form-label">Tarif</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input type="number" class="form-control" id="tarif" name="tarif" aria-label="Nilai Tarif" placeholder="Nilai Tarif" />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">.00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="deposit" class="col-form-label">Deposit</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input type="number" class="form-control" id="deposit" name="deposit" aria-label="Nilai Deposit" placeholder="Nilai Deposit" required />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">.00</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="deposit" class="col-2 col-form-label">Deposit</label>
-                                    <div class="col-10">
-                                        <input class="form-control" type="number" placeholder="Nilai Deposit" id="deposit" name="deposit" required="" />
+                                    <div class="col-md-4">
+                                        <label for="nama_tenant" class="col-form-label">Tenant</label>
+                                        <select class="form-control select2" name="nama_tenant" id="nama_tenant" required></select>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="iscashless" class="col-2 col-form-label">Tipe</label>
-                                    <div class="col-10>">
-                                        <select class="custom-select form-control" name="is_cashless" id="is_cashless" style="margin-left: 10px" required="">
+                                    <div class="col-md-4">
+                                        <label for="iscashless" class="col-form-label">Tipe</label>
+                                        <select class="custom-select form-control" name="is_cashless" id="is_cashless" required>
                                             <option value="" disabled selected>Pilih Tipe Pembayaran</option>
                                             <option value="0">Cash</option>
                                             <option value="1">Cashless</option>
                                         </select>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="isaktif" class="col-2 col-form-label">Status</label>
-                                    <div class="col-10>">
-                                        <select class="custom-select form-control" name="is_aktif" id="is_aktif" style="margin-left: 10px" required="">
+                                    <div class="col-md-4">
+                                        <label for="isaktif" class="col-form-label">Status</label>
+                                        <select class="custom-select form-control" name="is_aktif" id="is_aktif" required>
                                             <option value="0">Non-Aktif</option>
                                             <option value="1" selected>Aktif</option>
                                         </select>
@@ -107,7 +123,12 @@
     var dataStart = 0;
     var coreEvents;
 
-    const select2Array = [];
+    const select2Array = [{
+        id: 'nama_tenant',
+        url: '/getTenant',
+        placeholder: 'Pilih Tenant',
+        params: null
+    }];
 
     $(document).ready(function() {
         coreEvents = new CoreEvents();
@@ -145,8 +166,65 @@
             }
         }
 
+        select2Array.forEach(function(x) {
+            select2Init('#' + x.id, x.url, x.placeholder, x.params);
+        });
+
+        $('#nama_tenant').on('change', function() {
+            var id = $(this).val();
+            console.log(id);
+        });
+
         coreEvents.load();
     });
+
+    function select2Init(id, url, placeholder, parameter) {
+        $(id).select2({
+            id: function(e) {
+                return e.id
+            },
+            placeholder: placeholder,
+            multiple: false,
+            ajax: {
+                url: url_ajax + url,
+                dataType: 'json',
+                quietMillis: 500,
+                delay: 500,
+                data: function(param) {
+                    var def_param = {
+                        keyword: param.term, //search term
+                        perpage: 5, // page size
+                        page: param.page || 0, // page number
+                    };
+
+                    return Object.assign({}, def_param, parameter);
+                },
+                processResults: function(data, params) {
+                    params.page = params.page || 0
+
+                    return {
+                        results: data.rows,
+                        pagination: {
+                            more: false
+                        }
+                    }
+                }
+            },
+            templateResult: function(data) {
+                return data.text;
+            },
+            templateSelection: function(data) {
+                if (data.id === '') {
+                    return placeholder;
+                }
+
+                return data.text;
+            },
+            escapeMarkup: function(m) {
+                return m;
+            }
+        });
+    }
 
     function datatableColumn() {
         let columns = [{
@@ -174,17 +252,13 @@
 
                     if (auth_edit == "1") {
                         button += '<button class="btn btn-sm btn-outline-primary edit" data-id="' + data.id + '" title="Edit">\
-                                    <i class="fa fa-edit"></i>\
-                                </button>\
-                                ';
+                                    <i class="fa fa-edit"></i></button>';
                     }
 
                     if (auth_delete == "1") {
                         button += '<button class="btn btn-sm btn-outline-danger delete" data-id="' + data.id + '" title="Delete">\
-                                        <i class="fa fa-trash-o"></i>\
-                                    </button></div>';
+                                        <i class="fa fa-trash-o"></i></button></div>';
                     }
-
 
                     button += (button == '') ? "<b>Tidak ada aksi</b>" : ""
 

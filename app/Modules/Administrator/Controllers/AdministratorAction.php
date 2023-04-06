@@ -149,15 +149,10 @@ class AdministratorAction extends BaseController
                             on a.instansi_detail_id = c.id
                             where a.is_deleted = 0";
             } else {
-                $query = "select a.*, b.user_web_role_name, c.instansi_detail_name, d.user_mobile_email, d.user_mobile_role
-                        from m_user_web a
-                        left join s_user_web_role b 
-                        on a.user_web_role_id = b.id
-                        left join m_instansi_detail c 
-                        on a.instansi_detail_id = c.id
-                        left join m_user_mobile d
-                        on a.user_web_email = d.user_mobile_email
-                        where a.is_deleted = 0 AND d.is_deleted = 0";
+                $query = "SELECT a.*, b.user_web_role_name
+                            FROM m_user_web a
+                            LEFT JOIN s_user_web_role b ON b.id = a.user_web_role_id
+                            WHERE a.is_deleted = 0";
             }
 
             $where = ["a.user_web_name", "a.user_web_username", "a.user_web_email", "b.user_web_role_name", "c.instansi_detail_name"];
@@ -392,7 +387,7 @@ class AdministratorAction extends BaseController
     public function mantarif_load()
     {
         parent::_authLoad(function () {
-            $query = "SELECT a.* FROM tarif a WHERE a.is_aktif = 1";
+            $query = "SELECT a.* FROM tarif a WHERE a.is_aktif = 0";
             $where = ["a.jenis", "a.tarif", "a.tarif_normal"];
 
             parent::_loadDatatable($query, $where, $this->request->getPost());

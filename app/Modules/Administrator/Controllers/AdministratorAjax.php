@@ -66,6 +66,14 @@ class AdministratorAjax extends BaseController
             implode("", $option) . "<select>";
     }
 
+    public function getTenant() {
+        $data = $this->request->getGet();
+        $query = "SELECT a.id, a.nama FROM ref_tenant a";
+        $where = ["a.nama"];
+
+        parent::_loadSelect2($data, $query, $where);
+    }
+
     public function idprov_select_get()
     {
         $data = $this->request->getGet();
@@ -355,16 +363,6 @@ class AdministratorAjax extends BaseController
 
         echo json_encode($result);
     }
-
-
-// public function petugas_id_select_get()
-// {
-//     $data = $this->request->getGet();
-//     $query = "SELECT a.id , a.user_mobile_name as 'text'  FROM m_user_mobile a where a.is_deleted='0' and a.user_mobile_role='2'";
-//     $where = ["a.user_mobile_name"];
-
-//     parent::_loadSelect2($data, $query, $where);
-// }
 
     public function klas_posko_id_select_get()
     {
