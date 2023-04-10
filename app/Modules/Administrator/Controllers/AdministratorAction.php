@@ -468,27 +468,30 @@ class AdministratorAction extends BaseController
                 'max_size[file,1024]',
             ],
         ]);
-
+        var_dump($input);
         if (!$input) {
-            $msg = array("status" => 0, "msg" => "Pilih File.");
+            $msg = array("status" => 0, "msg" => "Pilih File.", "error" => $this->validator->getErrors());
+            // echo json_encode(array("status" => 0, "msg" => "Pilih File.", "error" => $this->validator->getErrors()));
         } else {
-
+            // var_dump($input);
             $x_file = $this->request->getFile('file');
+            
             $nama_file = $x_file->getRandomName();
             $image = \Config\Services::image()
-                ->withFile($x_file)
-                ->resize(720, 360, true, 'width')
-                ->save(FCPATH . 'public/uploads/banner/' . $nama_file);
-            // $x_file->move(FCPATH . 'public/uploads/banner');
+                        ->withFile($x_file)
+                        // ->resize(720, 360, true, 'width')
+                        ->save(FCPATH . 'public/uploads/foto_pegawai/' . $nama_file);
+            // $x_file->move(FCPATH . 'public/uploads/foto_pegawai');
 
             if ($image) {
                 $msg = array("status" => 1, "msg" => "File Has Been Uploaded", "path" => 'public/uploads/banner/' . $nama_file);
+                // echo json_encode(array("status" => 1, "msg" => "File Has Been Uploaded", "path" => 'public/uploads/foto_pegawai/' . $nama_file));
             } else {
                 $msg = array("status" => 0, "msg" => $this->upload->display_errors());
+                // echo json_encode(array("status" => 0, "msg" => $this->upload->display_errors()));
             }
-
-            echo json_encode($msg);
         }
+        echo json_encode($msg);
     }
 
     public function manpegawai_save()

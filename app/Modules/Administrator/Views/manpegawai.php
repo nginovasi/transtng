@@ -51,13 +51,13 @@
                                     <div class="form-group row">
                                         <label for="fullname" class="col-2 col-form-label">Nama Lengkap</label>
                                         <div class="col-10">
-                                            <input class="form-control" type="text" placeholder="Nama Lengkap" name="fullname" id="fullname" required="">
+                                            <input class="form-control" type="text" placeholder="Nama Lengkap" name="fullname" id="fullname" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="username" class="col-2 col-form-label">Username</label>
                                         <div class="col-10">
-                                            <input class="form-control" type="text" placeholder="Username" name="username" id="username" required="">
+                                            <input class="form-control" type="text" placeholder="Username" name="username" id="username" required>
                                             <span class="form-text text-muted">Digunakan untuk login sistem.</span>
                                         </div>
 
@@ -65,7 +65,7 @@
                                     <div class="form-group row">
                                         <label for="password" class="col-2 col-form-label">Password</label>
                                         <div class="col-10">
-                                            <input class="form-control ro" type="password" placeholder="Password" name="password" id="password" required="">
+                                            <input class="form-control ro" type="password" placeholder="Password" name="password" id="password" required>
                                             <span class="form-text text-muted">Untuk reset password hubungi administrator.</span>
                                         </div>
 
@@ -73,17 +73,17 @@
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Jenis Jabatan</label>
                                         <div class="col-4">
-                                            <select class="custom-select form-control" name="idjab" id="idjab" required="">
-                                                <option value="" selected="">-Pilih Jabatan-</option>
+                                            <select class="custom-select form-control" name="idjab" id="idjab" required>
+                                                <option value="" selected>-Pilih Jabatan-</option>
                                                 <option value="5">PTA</option>
                                                 <option value="4">PTS</option>
                                                 <option value="3">PTA &amp; PTS</option>
                                             </select>
                                         </div>
-                                        <label class="col-2 col-form-label">Posisi Jabatan</label>
+                                        <label class="col-2 col-form-label d-flex justify-content-end">Posisi Jabatan</label>
                                         <div class="col-4">
-                                            <select class="custom-select form-control" name="jabtext" id="jabtext" required="">
-                                                <option value="" selected="">-Pilih Posisi-</option>
+                                            <select class="custom-select form-control" name="jabtext" id="jabtext" required>
+                                                <option value="" selected>-Pilih Posisi-</option>
                                                 <option value="PRAMUGARA">Pramugara</option>
                                                 <option value="PRAMUGARI">Pramugari</option>
                                                 <option value="TGA">TGA (Halte)</option>
@@ -93,27 +93,27 @@
                                     <div class="form-group row">
                                         <label for="email" class="col-2 col-form-label">Email</label>
                                         <div class="col-10">
-                                            <input class="form-control" type="email" placeholder="Email Aktif" name="email" id="email" required="">
+                                            <input class="form-control" type="email" placeholder="Email Aktif" name="email" id="email" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="noktp" class="col-2 col-form-label">No. KTP</label>
                                         <div class="col-4">
-                                            <input class="form-control" type="text" placeholder="Nomor KTP" name="noktp" id="noktp" required="">
+                                            <input class="form-control" type="text" placeholder="Nomor KTP" name="noktp" id="noktp" required>
                                         </div>
-                                        <label for="phone" class="col-2 col-form-label">No. Handphone</label>
+                                        <label for="phone" class="col-2 col-form-label d-flex justify-content-end">No. Handphone</label>
                                         <div class="col-4">
-                                            <input class="form-control" type="tel" placeholder="Nomor Handphone Aktif" name="phone" id="phone" required="">
+                                            <input class="form-control" type="tel" placeholder="Nomor Handphone Aktif" name="phone" id="phone" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="cob" class="col-2 col-form-label">Tempat Lahir</label>
                                         <div class="col-4">
-                                            <input type="text" class="form-control" placeholder="Kota Tempat Lahir" name="cob" id="cob" required="">
+                                            <input type="text" class="form-control" placeholder="Kota Tempat Lahir" name="cob" id="cob" required>
                                         </div>
-                                        <label for="dob" class="col-2 col-form-label">Tanggal Lahir</label>
+                                        <label for="dob" class="col-2 col-form-label d-flex justify-content-end">Tanggal Lahir</label>
                                         <div class="col-4">
-                                            <input type="text" class="form-control" placeholder="Tanggal Lahir" name="dob" id="dob" required="">
+                                            <input type="text" class="form-control" placeholder="Tanggal Lahir" name="dob" id="dob" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -133,12 +133,13 @@
                                     </div> -->
                                     <div class="form-group row">
                                         <label class="col-2 col-form-label">Upload Foto Profil<br><small>(Allowed file types: png, jpg, jpeg.)</small></label>
-                                        <div class="col-10">
+                                        <div class="col-10 d-flex align-items-center">
                                             <div class="input-group mb-3">
                                                 <input type="file" class="foto_upload" id="foto_upload">
                                                 <div id="foto_progres" style="display: inline;"></div>
                                                 <div id="foto_error" style="display: inline;"></div><br>
                                                 <div class="files" id="files" style="display: inline-block; width: 200px;"></div>
+                                                <div id="banner_link"></div>
                                             </div>
                                         </div>
                                     </div>
