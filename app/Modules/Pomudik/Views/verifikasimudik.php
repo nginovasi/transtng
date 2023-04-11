@@ -127,16 +127,6 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <!-- <div class="col-md-2">
-                                                    <div class="form-group">
-                                                        <label>Status Mudik </label>
-                                                        <select class="form-control sel2" id="status_mudik" name="status_mudik" required>
-                                                            <option value="">Mudik</option>
-                                                            <option value="3">Arus Mudik</option>
-                                                            <option value="4">Arus Balik</option>
-                                                        </select>
-                                                    </div>
-                                                </div> -->
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label>Cetak Data Verifikasi Dari</label>
