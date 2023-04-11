@@ -96,7 +96,7 @@
                                                 <br />
                                                 <div class="form-group">
                                                     <label>Nama Armada</label>
-                                                    <select class="form-control select2_motis_armada_id" id="motis_armada_id" name="motis_armada_id" required aria-required="true"></select>
+                                                    <select class="form-control select2_motis_armada_id select2" id="motis_armada_id" name="motis_armada_id" required aria-required="true"></select>
                                                 </div>
                                                 <!-- </br>
                                                 <td><img src="" id="foto_kendaraan" name="foto_kendaraan" /></td>
