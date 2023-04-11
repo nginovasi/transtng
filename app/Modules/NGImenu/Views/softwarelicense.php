@@ -7,7 +7,7 @@
     <div class="page-hero page-container " id="page-hero">
         <div class="padding d-flex">
             <div class="page-title">
-                <h2 class="text-md text-highlight"><?= $page_title ?></h2>
+                <h2 class="text-md text-highlight"><?=$page_title?></h2>
             </div>
             <div class="flex"></div>
         </div>
@@ -66,13 +66,13 @@
     </div>
 </div>
 <script type="text/javascript">
-    const auth_insert = '<?= $rules->i ?>';
-    const auth_edit = '<?= $rules->e ?>';
-    const auth_delete = '<?= $rules->d ?>';
-    const auth_otorisasi = '<?= $rules->o ?>';
+    const auth_insert = '<?=$rules->i?>';
+    const auth_edit = '<?=$rules->e?>';
+    const auth_delete = '<?=$rules->d?>';
+    const auth_otorisasi = '<?=$rules->o?>';
 
-    const url = '<?= base_url() . "/" . uri_segment(0) . "/action/" . uri_segment(1) ?>';
-    const url_ajax = '<?= base_url() . "/" . uri_segment(0) . "/ajax" ?>';
+    const url = '<?=base_url() . "/" . uri_segment(0) . "/action/" . uri_segment(1)?>';
+    const url_ajax = '<?=base_url() . "/" . uri_segment(0) . "/ajax"?>';
 
     var dataStart = 0;
     var coreEvents;
@@ -89,7 +89,7 @@
         coreEvents.url = url;
         coreEvents.ajax = url_ajax;
         coreEvents.csrf = {
-            "<?= csrf_token() ?>": "<?= csrf_hash() ?>"
+            "<?=csrf_token()?>": "<?=csrf_hash()?>"
         };
         coreEvents.tableColumn = datatableColumn();
 
