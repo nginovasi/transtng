@@ -452,7 +452,7 @@ class AdministratorAction extends BaseController
     public function manpegawai_load()
     {
         parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
+            $query = "SELECT a.* FROM pegawai a";
             $where = ["a.header", "a.footer"];
 
             parent::_loadDatatable($query, $where, $this->request->getPost());
@@ -468,50 +468,155 @@ class AdministratorAction extends BaseController
                 'max_size[file,1024]',
             ],
         ]);
-        var_dump($input);
+
         if (!$input) {
-            $msg = array("status" => 0, "msg" => "Pilih File.", "error" => $this->validator->getErrors());
-            // echo json_encode(array("status" => 0, "msg" => "Pilih File.", "error" => $this->validator->getErrors()));
+            $msg = array("status" => 0, "msg" => $this->validator->getErrors());
         } else {
-            // var_dump($input);
             $x_file = $this->request->getFile('file');
             
             $nama_file = $x_file->getRandomName();
             $image = \Config\Services::image()
                         ->withFile($x_file)
-                        // ->resize(720, 360, true, 'width')
+                        ->resize(480, 480, true, 'width')
                         ->save(FCPATH . 'public/uploads/foto_pegawai/' . $nama_file);
-            // $x_file->move(FCPATH . 'public/uploads/foto_pegawai');
-
             if ($image) {
-                $msg = array("status" => 1, "msg" => "File Has Been Uploaded", "path" => 'public/uploads/banner/' . $nama_file);
-                // echo json_encode(array("status" => 1, "msg" => "File Has Been Uploaded", "path" => 'public/uploads/foto_pegawai/' . $nama_file));
+                $msg = array("status" => 1, "msg" => "File Has Been Uploaded", "path" => '/public/uploads/foto_pegawai/' . $nama_file);
             } else {
                 $msg = array("status" => 0, "msg" => $this->upload->display_errors());
-                // echo json_encode(array("status" => 0, "msg" => $this->upload->display_errors()));
             }
+            echo json_encode($msg);
         }
-        echo json_encode($msg);
     }
 
     public function manpegawai_save()
     {
-        parent::_authInsert(function () {
-            parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
+        $data = $this->request->getPost();
+        unset($data['id']);
+        if ($data['jabtext'] == 'PRAMUGARA') {
+            if ($this->db->table('user_pramugara')->insert($data)) {
+                echo json_encode(array("status" => 1, "msg" => "Data Berhasil Disimpan"));
+            } else {
+                echo json_encode(array("status" => 0, "msg" => "Data Gagal Disimpan"));
+            }
+        } else if ($data['jabtext'] == 'PRAMUGARI') {
+            if ($this->db->table('user_pramugari')->insert($data)) {
+                echo json_encode(array("status" => 1, "msg" => "Data Berhasil Disimpan"));
+            } else {
+                echo json_encode(array("status" => 0, "msg" => "Data Gagal Disimpan"));
+            }
+        } else {
+            if ($this->db->table('user_halte')->insert($data)) {
+                echo json_encode(array("status" => 1, "msg" => "Data Berhasil Disimpan"));
+            } else {
+                echo json_encode(array("status" => 0, "msg" => "Data Gagal Disimpan"));
+            }
+        }
     }
 
     public function manpegawai_edit()
     {
         parent::_authEdit(function () {
-            parent::_edit('ref_narasi_tiket', $this->request->getPost());
+            parent::_edit('pegawai', $this->request->getPost());
         });
     }
 
     public function manpegawai_delete()
     {
         parent::_authDelete(function () {
-            parent::_delete('ref_narasi_tiket', $this->request->getPost());
+            parent::_delete('pegawai', $this->request->getPost());
+        });
+    }
+
+    public function manpos_load()
+    {
+        parent::_authLoad(function () {
+            $query = "SELECT a.* FROM ref_narasi_tiket a";
+            $where = ["a.header", "a.footer"];
+
+            parent::_loadDatatable($query, $where, $this->request->getPost());
+        });
+    }
+
+    public function manpos_save()
+    {
+        parent::_authInsert(function () {
+            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function manpos_edit()
+    {
+        parent::_authEdit(function () {
+            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function manpos_delete()
+    {
+        parent::_authDelete(function () {
+            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function manjalur_load()
+    {
+        parent::_authLoad(function () {
+            $query = "SELECT a.* FROM ref_narasi_tiket a";
+            $where = ["a.header", "a.footer"];
+
+            parent::_loadDatatable($query, $where, $this->request->getPost());
+        });
+    }
+
+    public function manjalur_save()
+    {
+        parent::_authInsert(function () {
+            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function manjalur_edit()
+    {
+        parent::_authEdit(function () {
+            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function manjalur_delete()
+    {
+        parent::_authDelete(function () {
+            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function manbus_load()
+    {
+        parent::_authLoad(function () {
+            $query = "SELECT a.* FROM ref_narasi_tiket a";
+            $where = ["a.header", "a.footer"];
+
+            parent::_loadDatatable($query, $where, $this->request->getPost());
+        });
+    }
+
+    public function manbus_save()
+    {
+        parent::_authInsert(function () {
+            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function manbus_edit()
+    {
+        parent::_authEdit(function () {
+            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function manbus_delete()
+    {
+        parent::_authDelete(function () {
+            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
         });
     }
 }

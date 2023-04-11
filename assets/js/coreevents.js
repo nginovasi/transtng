@@ -1,8 +1,5 @@
 class CoreEvents {
-
-	constructor() {
-
-	}
+	constructor() { }
 
 	load(filter, orderCustom = [0, 'asc'], placeholder = "") {
 		var thisClass = this;
