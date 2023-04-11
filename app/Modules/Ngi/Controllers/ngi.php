@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Modules\NGImenu\Controllers;
+namespace App\Modules\Ngi\Controllers;
 
-use App\Modules\NGImenu\Models\NGImenuModel;
+use App\Modules\Ngi\Models\ngiModel;
 use App\Core\BaseController;
 
-class NGImenu extends BaseController
+class Ngi extends BaseController
 {
-    private $NGImenuModel;
+    private $ngiModel;
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->NGImenuModel = new NGImenuModel();
+        $this->ngiModel = new ngiModel();
     }
 
     public function index()
@@ -24,7 +24,7 @@ class NGImenu extends BaseController
 
     public function test()
     {
-        $data['load_view'] = "App\Modules\NGImenu\Views\\test";
+        $data['load_view'] = "App\Modules\Ngi\Views\\test";
         return view('App\Modules\Main\Views\layout', $data);
     }
 
