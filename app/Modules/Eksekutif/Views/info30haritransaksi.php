@@ -28,45 +28,31 @@
                             <form data-plugin="parsley" data-option="{}" id="form" method="post">
                                 <input type="hidden" class="form-control" id="id" name="id" value="" required>
                                 <?= csrf_field(); ?>
-                                <!-- <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="pilihtanggal" name="pilihtanggal" placeholder="Pilih tanggal" required>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fa fa-user-o" aria-hidden="true"></i></span>
-                                    </div>
-                                </div> -->
                                 <div class="form-group row">
-                                    <!-- <div class="input-group mb-3 col-md-4">
+                                    <div class="input-group mb-3 col-md-5">
                                         <select class="custom-select select2" name="cekpta" id="cekpta" required></select>
-                                        <div class="input-group-append">
-                                            <label class="input-group-text" for="cekpta">
-                                                <i class="fa fa-user-o" aria-hidden="true"></i>
-                                            </label>
-                                        </div>
-                                    </div> -->
-                                    <div class="input-group mb-3">
-                                        <select class="custom-select select2" name="cekpta" id="inputGroupSelect02" required></select>
-                                        <div class="input-group-append">
-                                            <label class="input-group-text" for="inputGroupSelect02"><i class="fa fa-user-o" aria-hidden="true"></i></label>
-                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3 col-md-5">
+                                        <select class="custom-select select2" name="cekpos" id="cekpos" required></select>
+                                    </div>
+                                </div>
+                                <div class="btn-group pull-right mt-3" id="cekpta_group" hidden>
+                                    <div class="btn-group dropdown">
+                                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                            <i class="fa fa-download" aria-hidden="true"></i> Export
+                                        </button>
+                                        <ul class="dropdown-menu cekpta-menu" x-placement="bottom-start">
+                                            <li class="dropdown-item">
+                                                <a id="dncekptaExcel" href="#"><i class="fa fa-file-excel-o" style="color: #1e7e34;"></i> Unduh Excel</a>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <a id="dncekptaPdf" href="#"><i class="fa fa-file-pdf-o" style="color: #dc3545;"></i> Unduh PDF</a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </form>
                             <hr>
-                            <!-- <div class="table-responsive">
-                                <table id="datatable" class="table table-theme table-row v-middle">
-                                    <thead>
-                                        <tr>
-                                            <th><span>#</span></th>
-                                            <th><span>Jenis</span></th>
-                                            <th><span>Tenant</span></th>
-                                            <th><span>Tarif</span></th>
-                                            <th><span>Actions</span></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -87,11 +73,18 @@
     var coreEvents;
 
     const select2Array = [{
-        id: 'cekpta',
-        url: '/findpetugas',
-        placeholder: 'Pilih Petugas',
-        params: null
-    }];
+            id: 'cekpta',
+            url: '/findpetugas',
+            placeholder: 'Pilih Petugas',
+            params: null
+        },
+        {
+            id: 'cekpos',
+            url: '/findpos',
+            placeholder: 'Pilih Pos',
+            params: null
+        }
+    ];
 
     $(document).ready(function() {
         coreEvents = new CoreEvents();

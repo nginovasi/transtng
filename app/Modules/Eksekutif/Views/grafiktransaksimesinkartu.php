@@ -84,7 +84,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="tab-data-tahun" role="tabpanel" aria-labelledby="tab-data-bulan">
+                        <div class="tab-pane fade" id="tab-data-tahun" role="tabpanel" aria-labelledby="tab-data-tahun">
                             <form data-plugin="parsley" data-option="{}" id="form" method="post">
                                 <input type="hidden" class="form-control" id="id" name="id" value="" required>
                                 <?= csrf_field(); ?>

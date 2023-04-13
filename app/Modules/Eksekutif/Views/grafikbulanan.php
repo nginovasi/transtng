@@ -3,14 +3,6 @@
         width: 100% !important;
     }
 
-    .cekpta-menu {
-        position: absolute;
-        transform: translate3d(-60px, 34px, 0px) !important;
-        top: -107px !important;
-        left: 0px;
-        will-change: transform;
-    }
-
     .ui-datepicker-calendar {
         display: none;
     }

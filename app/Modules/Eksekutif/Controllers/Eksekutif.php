@@ -24,6 +24,10 @@ class Eksekutif extends BaseController {
         return parent::_authView();
     }
 
+    public function dataalat() {
+        return parent::_authView();
+    }
+
     public function grafikbulanan() {
         return parent::_authView();
     }
@@ -64,11 +68,23 @@ class Eksekutif extends BaseController {
         return parent::_authView();
     }
 
+    public function logalataktif() {
+        return parent::_authView();
+    }
+
     public function pembaruankartu() {
         return parent::_authView();
     }
 
     public function rekapposharian() {
+        return parent::_authView();
+    }
+
+    public function sirkulasipenumpang() {
+        return parent::_authView();
+    }
+
+    public function sirkulasipenumpangportabel() {
         return parent::_authView();
     }
 
