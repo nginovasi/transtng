@@ -189,8 +189,8 @@ class AdministratorAction extends BaseController
             curl_close($curl);
             $userPhoto = json_decode($response);
             $userPhotoUrl = null;
-            
-            if(count($userPhoto->data) > 0){
+
+            if (count($userPhoto->data) > 0) {
                 if ($userPhoto->data[0]->foto != null || $userPhoto->data[0]->foto != '') {
                     $userPhotoUrl = $userPhoto->data[0]->foto;
                 } else {
@@ -222,7 +222,7 @@ class AdministratorAction extends BaseController
                 if ($this->administratorModel->checkUsername($data['user_web_username'])) {
                     if ($this->administratorModel->checkEmailuser($data['user_web_email'])) {
                         $user = $this->db->query('select * from m_user_web where id = ' . $this->session->get('id'))->getRow();
-                        
+
                         $data["user_web_password"] = md5($data["user_web_password"]);
 
                         if ($user->instansi_detail_id != null) {
@@ -270,7 +270,7 @@ class AdministratorAction extends BaseController
 
                             // after update by diyar 31 Mar
                             $update = $this->db->query('UPDATE m_user_web 
-                                                        SET user_mobile_id = '.$userMobileId.' 
+                                                        SET user_mobile_id = ' . $userMobileId . ' 
                                                         WHERE user_web_email = "' . $data['user_web_email'] . '"');
                         }
                     } else {
@@ -384,6 +384,58 @@ class AdministratorAction extends BaseController
         $mpdf->Output($url . '-' . date('d-m-Y H:i:s') . '.pdf', 'I');
     }
 
+    function resize_image($image_name, $new_width, $new_height, $uploadDir, $moveToDir)
+    {
+        $path = $uploadDir . '/' . $image_name;
+
+        $mime = getimagesize($path);
+
+        if ($mime['mime'] == 'image/png') {
+            $src_img = imagecreatefrompng($path);
+        }
+        if ($mime['mime'] == 'image/jpg' || $mime['mime'] == 'image/jpeg' || $mime['mime'] == 'image/pjpeg') {
+            $src_img = imagecreatefromjpeg($path);
+        }
+
+        $old_x          =   imageSX($src_img);
+        $old_y          =   imageSY($src_img);
+
+        if ($old_x > $old_y) {
+            $thumb_w    =   $new_width;
+            $thumb_h    =   $old_y * ($new_height / $old_x);
+        }
+
+        if ($old_x < $old_y) {
+            $thumb_w    =   $old_x * ($new_width / $old_y);
+            $thumb_h    =   $new_height;
+        }
+
+        if ($old_x == $old_y) {
+            $thumb_w    =   $new_width;
+            $thumb_h    =   $new_height;
+        }
+
+        $dst_img        =   ImageCreateTrueColor($thumb_w, $thumb_h);
+
+        imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $thumb_w, $thumb_h, $old_x, $old_y);
+
+
+        // New save location
+        $new_thumb_loc = $moveToDir . $image_name;
+
+        if ($mime['mime'] == 'image/png') {
+            $result = imagepng($dst_img, $new_thumb_loc, 9);
+        }
+        if ($mime['mime'] == 'image/jpg' || $mime['mime'] == 'image/jpeg' || $mime['mime'] == 'image/pjpeg') {
+            $result = imagejpeg($dst_img, $new_thumb_loc, 80);
+        }
+
+        imagedestroy($dst_img);
+        imagedestroy($src_img);
+
+        return $result;
+    }
+
     public function mantarif_load()
     {
         parent::_authLoad(function () {
@@ -473,12 +525,12 @@ class AdministratorAction extends BaseController
             $msg = array("status" => 0, "msg" => $this->validator->getErrors());
         } else {
             $x_file = $this->request->getFile('file');
-            
+
             $nama_file = $x_file->getRandomName();
             $image = \Config\Services::image()
-                        ->withFile($x_file)
-                        ->resize(480, 480, true, 'width')
-                        ->save(FCPATH . 'public/uploads/foto_pegawai/' . $nama_file);
+                ->withFile($x_file)
+                ->resize(480, 480, true, 'width')
+                ->save(FCPATH . 'public/uploads/foto_pegawai/' . $nama_file);
             if ($image) {
                 $msg = array("status" => 1, "msg" => "File Has Been Uploaded", "path" => '/public/uploads/foto_pegawai/' . $nama_file);
             } else {

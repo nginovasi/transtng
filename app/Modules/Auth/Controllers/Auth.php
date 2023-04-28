@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Modules\Auth\Controllers;
 
 use App\Modules\Auth\Models\AuthModel;
@@ -24,7 +25,6 @@ class Auth extends BaseController
     public function login()
     {
         $session = \Config\Services::session();
-
         if (!$session->get('logged_in')) {
             return view('App\Modules\Auth\Views\login');
         } else {
@@ -42,5 +42,4 @@ class Auth extends BaseController
         helper('form');
         return view('App\Modules\Auth\Views\change_password');
     }
-
 }
