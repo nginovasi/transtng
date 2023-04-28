@@ -46,10 +46,11 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                <div class="form-group">
-                                                    <!-- <label>Nama Armada</label> -->
-                                                    <select class="form-control select2_top-up" id="top-up" name="top-up" required aria-required="true"></select>
-                                                </div>
+                                <div class="col-md-12">
+                                       
+                                        <select class=" custom-select select2" id="loadriwayattopup" name="loadriwayattopup" required></select>
+                                        <!-- <select class="form-control select2" id="findimeialat" name="findimeialat" required></select> -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -69,16 +70,56 @@
     const url_ajax = '<?= base_url() . "/" . uri_segment(0) . "/ajax" ?>';
 
     var dataStart = 0;
+    var coreEvents;
 
     const select2Array = [{
-                id: 'top-up',
-                url: '/top-up_select_get',
-                placeholder: 'TOP UPs',
-                params: null
-            }];
+        id: 'loadriwayattopup',
+        url: '/loadriwayattopup',
+        placeholder: 'Ketik/Cari IMEI Alat',
+        params: null
+    }];
 
 
     $(document).ready(function() {
+
+        coreEvents = new CoreEvents();
+        coreEvents.url = url;
+        coreEvents.ajax = url_ajax;
+        coreEvents.csrf = {
+            "<?= csrf_token() ?>": "<?= csrf_hash() ?>"
+        };
+        // coreEvents.tableColumn = datatableColumn();
+
+        coreEvents.insertHandler = {
+            placeholder: 'Berhasil menyimpan jenis user',
+            afterAction: function(result) {
+                $('#tab-data').addClass('active show');
+                $('#tab-form').removeClass('active show');
+                coreEvents.table.ajax.reload();
+            }
+        }
+
+        coreEvents.editHandler = {
+            placeholder: '',
+            afterAction: function(result) {}
+        }
+
+        coreEvents.deleteHandler = {
+            placeholder: 'Berhasil menghapus jenis user',
+            afterAction: function() {}
+        }
+
+        coreEvents.resetHandler = {
+            action: function() {
+                // reset form
+                $('#form')[0].reset();
+                $('#form').parsley().reset();
+            }
+        }
+
+        select2Array.forEach(function(x) {
+            coreEvents.select2Init('#' + x.id, x.url, x.placeholder, x.params);
+        });
 
         $('#date-start').datepicker({
             format: 'yyyy-mm-dd',
@@ -87,6 +128,8 @@
             endDate: '0d',
         });
         coreEvents.datepicker('#date-start', 'yyyy-mm-dd')
+
+        coreEvents.load();
     });
 
     function select2Init(id, url, placeholder, parameter) {

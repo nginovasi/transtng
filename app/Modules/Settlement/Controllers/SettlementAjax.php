@@ -45,5 +45,54 @@ class SettlementAjax extends BaseController {
         parent::_loadSelect2($data, $query, $where);
     }
 
+    public function ceksettlement() {
+        $data = $this->request->getGet();
+        $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL"; //QUERY belum fix
+        $where = ["a.nama"];
+        parent::_loadSelect2($data, $query, $where);
+    }
+
+    public function rekapsettlement() {
+        $data = $this->request->getGet();
+        $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL"; //QUERY belum fix
+        $where = ["a.nama"];
+        parent::_loadSelect2($data, $query, $where);
+    }
+
+    public function comparesettlement() {
+        $data = $this->request->getGet();
+        $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL"; //QUERY belum fix
+        $where = ["a.nama"];
+        parent::_loadSelect2($data, $query, $where);
+    }
+
+    public function laprekon() {
+        $data = $this->request->getGet();
+        $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL"; //QUERY belum fix
+        $where = ["a.nama"];
+        parent::_loadSelect2($data, $query, $where);
+    }
+
+    public function rekaprekon() {
+        $data = $this->request->getGet();
+        $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL"; //QUERY belum fix
+        $where = ["a.nama"];
+        parent::_loadSelect2($data, $query, $where);
+    }
+
+    public function importsettlement() {
+        $data = $this->request->getGet();
+        $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL"; //QUERY belum fix
+        $where = ["a.nama"];
+        parent::_loadSelect2($data, $query, $where);
+    }
+
+    public function importrsf() {
+        $data = $this->request->getGet();
+        $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL"; //QUERY belum fix
+        $where = ["a.nama"];
+        parent::_loadSelect2($data, $query, $where);
+    }
+
 
 }

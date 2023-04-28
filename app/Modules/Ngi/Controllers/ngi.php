@@ -2,19 +2,19 @@
 
 namespace App\Modules\Ngi\Controllers;
 
-use App\Modules\Ngi\Models\ngiModel;
+use App\Modules\Ngi\Models\NgiModel;
 use App\Core\BaseController;
 
 class Ngi extends BaseController
 {
-    private $ngiModel;
+    private $NgiModel;
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->ngiModel = new ngiModel();
+        $this->NgiModel = new NgiModel();
     }
 
     public function index()
@@ -33,27 +33,32 @@ class Ngi extends BaseController
         return parent::_authView();
     }
 
-    public function manalat()
+    public function dataalat()
     {
         return parent::_authView();
     }
 
-    public function koreksi_topup()
+    public function koreksitopup()
     {
         return parent::_authView();
     }
 
-    public function reset_pass_petugas()
+    public function resetpasswordpetugas()
     {
         return parent::_authView();
     }
 
-    public function app_update()
+    public function appupdate()
     {
         return parent::_authView();
     }
 
     public function laporantrouble()
+    {
+        return parent::_authView();
+    }
+
+    public function laprekoninternal()
     {
         return parent::_authView();
     }

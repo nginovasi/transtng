@@ -39,5 +39,8 @@ class Settlement extends BaseController {
     public function importrsf() {
         return parent::_authView();
     }
+    public function importsettlement() {
+        return parent::_authView();
+    }
 
 }
