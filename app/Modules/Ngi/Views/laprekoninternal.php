@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="col-md-12">
-                                        <select class=" custom-select select2" id="comparesettlement" name="comparesettlement" required></select>
+                                        <select class=" custom-select select2" id="laprekoninternal" name="laprekoninternal" required></select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -74,8 +74,8 @@
     var coreEvents;
 
     const select2Array = [{
-        id: 'comparesettlement',
-        url: '/comparesettlement',
+        id: 'laprekoninternal',
+        url: '/laprekoninternal',
         placeholder: 'PILIH BANK',
         params: null
     }];

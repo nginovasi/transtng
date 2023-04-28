@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Modules\Administrator\Controllers;
+namespace App\Modules\Ngi\Controllers;
 
 use App\Core\BaseController;
-use App\Modules\Administrator\Models\AdministratorModel;
+use App\Modules\Ngi\Models\NgiModel;
 
-class AdministratorAction extends BaseController
+
+class NgiAction extends BaseController
 {
-    private $administratorModel;
+    private $NgiModel;
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->administratorModel = new AdministratorModel();
+        $this->NgiModel = new NgiModel();
     }
 
     public function index()
@@ -24,7 +25,7 @@ class AdministratorAction extends BaseController
 
     public function test()
     {
-        $data['load_view'] = "App\Modules\Administrator\Views\\test";
+        $data['load_view'] = "App\Modules\Ngi\Views\\test";
         return view('App\Modules\Main\Views\layout', $data);
     }
 
@@ -57,6 +58,35 @@ class AdministratorAction extends BaseController
         parent::_authDelete(function () {
             parent::_delete('s_user_web_role', $this->request->getPost());
         });
+    }
+    
+    public function laporantrouble_upload()
+    {
+        $input = $this->validate([
+            'file' => [
+                'uploaded[file]',
+                'mime_in[file,image/jpg,image/jpeg,image/png]',
+                'max_size[file,1024]',
+            ],
+        ]);
+
+        if (!$input) {
+            $msg = array("status" => 0, "msg" => $this->validator->getErrors());
+        } else {
+            $x_file = $this->request->getFile('file');
+            
+            $nama_file = $x_file->getRandomName();
+            $image = \Config\Services::image()
+                        ->withFile($x_file)
+                        ->resize(480, 480, true, 'width')
+                        ->save(FCPATH . 'public/uploads/foto_laporan/' . $nama_file);
+            if ($image) {
+                $msg = array("status" => 1, "msg" => "File Has Been Uploaded", "path" => '/public/uploads/foto_laporan/' . $nama_file);
+            } else {
+                $msg = array("status" => 0, "msg" => $this->upload->display_errors());
+            }
+            echo json_encode($msg);
+        }
     }
 
     // public function mantarif_load()

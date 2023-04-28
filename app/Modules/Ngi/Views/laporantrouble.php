@@ -1,6 +1,26 @@
 <style>
+    #sig-canvas {
+        border: 2px dotted #CCCCCC;
+        border-radius: 15px;
+        cursor: crosshair;
+        /* disable scroll when touch */
+        touch-action: none;
+    }
+
     .select2-container {
         width: 100% !important;
+    }
+
+    ul.list-unstyled {
+        margin: 0 !important;
+        padding: 0;
+    }
+
+    /* set nav-item responsive on mobile view */
+    @media (max-width: 767px) {
+        .nav-item {
+            width: 50%;
+        }
     }
 </style>
 <div>
@@ -49,81 +69,110 @@
                                 <input type="hidden" class="form-control" id="id" name="id" value="" required>
                                 <?= csrf_field(); ?>
                                 <div class="form-group row">
+
                                     <div class="col-md-12">
-                                        <label for="jenis" class="col-form-label">IMEI Number</label>
-                                        <input class="form-control" type="text" placeholder="Device IMEI Number " id="jenis" name="jenis" required />
+                                        <label for="jenis" class="col-form-label">Nomor IMEI</label>
+                                        <select class=" custom-select select2" id="findimeialat" name="findimeialat" required></select>
+                                        <!-- <select class="form-control select2" id="findimeialat" name="findimeialat" required></select> -->
                                     </div>
+
                                     <div class="col-md-12">
-                                        <label for="imei" class="col-form-label">Imei</label>
-                                        <input class="form-control ro" type="text" placeholder="Imei alat" id="imei" name="imei" required="" />
+                                        <label for="jenis" class="col-form-label">Username PTA</label>
+                                        <select class=" custom-select select2" id="username" name="username" required></select>
+                                        <!-- <select class="form-control select2" id="findimeialat" name="findimeialat" required></select> -->
                                     </div>
+
                                     <div class="col-md-12">
-                                        <label for="nomorBus" class="col-form-label">Nomor Bus</label>
-                                        <input class="form-control" type="text" placeholder="Nomor bus alat" id="nomorBus" name="nomorBus" required="" />
+                                        <label for="jenis" class="col-form-label">Kode Bus/Halte</label>
+                                        <select class=" custom-select select2" id="bis" name="bis" required></select>
+                                        <!-- <select class="form-control select2" id="findimeialat" name="findimeialat" required></select> -->
                                     </div>
+
                                     <div class="col-md-12">
-                                        <label for="noTelp" class="col-form-label">Nomor Telp</label>
-                                        <input class="form-control" type="text" placeholder="Nomor telepon alat" id="noTelp" name="noTelp" required="" />
+                                        <label for="jenis" class="col-form-label">Koridor</label>
+                                            <select class="custom-select" name="koridor" id="koridor" required="">
+                                                <option value="" selected="">-- Pilih Jalur --</option>
+                                                <option value="1A">Jalur 1A</option>
+                                                <option value="1B">Jalur 1B</option>
+                                                <option value="2A">Jalur 2A</option>
+                                                <option value="2B">Jalur 2B</option>
+                                                <option value="3A">Jalur 3A</option>
+                                                <option value="3B">Jalur 3B</option>
+                                                <option value="4A">Jalur 4A</option>
+                                                <option value="4B">Jalur 4B</option>
+                                                <option value="5A">Jalur 5A</option>
+                                                <option value="5B">Jalur 5B</option>
+                                                <option value="6A">Jalur 6A</option>
+                                                <option value="6B">Jalur 6B</option>
+                                                <option value="7">Jalur 7</option>
+                                                <option value="8">Jalur 8</option>
+                                                <option value="9">Jalur 9</option>
+                                                <option value="10">Jalur 10</option>
+                                                <option value="11">Jalur 11</option>
+                                                <option value="CAD1">Jalur CAD1</option>
+                                                <option value="CAD2">Jalur CAD2</option>
+                                                <option value="13">Jalur 13</option>
+                                                <option value="14">Jalur 14</option>
+                                                <option value="15">Jalur 15</option>
+                                            </select>
                                     </div>
+                                    
+                               
                                     <div class="col-md-12">
-                                        <label for="bnimid" class="col-form-label">BNI MID</label>
-                                        <input class="form-control" type="text" id="bnimid" name="bnimid" />
+                                        <label for="kerusakan" class="col-form-label">Kerusakan</label>
+                                        <textarea class="form-control" type="text" placeholder="Keterangan Kerusakan Alat" id="kerusakan" name="kerusakan" required ></textarea>
                                     </div>
+
                                     <div class="col-md-12">
-                                        <label for="bnitid" class="col-form-label">BNI TID</label>
-                                        <input class="form-control" type="text" id="bnitid" name="bnitid" />
+                                        <label for="penanganan" class="col-form-label">Penanganan</label>
+                                        <textarea class="form-control" type="text" placeholder="Deskripsi Penanganan yang akan dilakukan" id="kerusakan" name="kerusakan" required ></textarea>
                                     </div>
+        
                                     <div class="col-md-12">
-                                        <label for="bnitid" class="col-form-label">BNI Marry Code</label>
-                                        <input class="form-control" type="text" id="marrycode" name="marrycode" />
+                                        <label for="foto" class="col-form-label">Upload Foto Alat<br><small>(Allowed file types: png, jpg, jpeg.)</small></label>
+                                            <div class="input-group mb-3">
+                                                <input type="file" class="foto_upload" id="foto_upload" name="file">
+                                                <div id="foto_progres" style="display: inline;"></div>
+                                                <div id="foto_error" style="display: inline;"></div><br>
+                                                <div class="files" id="files" style="display: inline-block; width: 200px;"></div>
+                                                <input type="hidden" name="">
+                                            </div>
                                     </div>
+
                                     <div class="col-md-12">
-                                        <label for="brimid" class="col-form-label">BRI MID</label>
-                                        <input class="form-control" type="text" id="brimid" name="brimid" />
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label for="britid" class="col-form-label">BRI TID</label>
-                                        <input class="form-control" type="text" id="britid" name="britid" />
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label for="briprocode" class="col-form-label">BRI Procode</label>
-                                        <input class="form-control ro" type="text" id="briprocode" name="briprocode" />
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label for="mandirimid" class="col-form-label">Mandiri MID</label>
-                                        <input class="form-control ro" type="text" id="mandirimid" name="mandirimid" />
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label for="mandiritid" class="col-form-label">Mandiri TID</label>
-                                        <input class="form-control ro" type="text" id="mandiritid" name="mandiritid" />
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label for="mandiriPinCode" class="col-form-label">Mandiri PIN Code</label>
-                                        <input class="form-control ro" type="text" id="mandiriPinCode" name="mandiriPinCode" />
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label for="mandiriSamOperator" class="col-form-label">Mandiri SAM Operator</label>
-                                        <input class="form-control ro" type="text" id="mandiriSamOperator" name="mandiriSamOperator" />
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label for="mandiriSamUid" class="col-form-label">Mandiri SAM UID</label>
-                                        <input class="form-control ro" type="text" id="mandiriSamUid" name="mandiriSamUid" />
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label for="mandiriSamUid" class="col-form-label">BCA MID</label>
-                                        <input class="form-control ro" type="text" id="bcamid" name="bcamid" />
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label for="mandiriSamUid" class="col-form-label">BCA TID</label>
-                                        <input class="form-control ro" type="text" id="bcatid" name="bcatid" />
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label for="kmtSamId" class="col-form-label">KMT SAM ID</label>
-                                        <input class="form-control ro" type="text" id="kmtSamId" name="kmtSamId" />
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label for="kmtSamConfig" class="col-form-label">KMT SAM CONFIG</label>
-                                        <input class="form-control ro" type="text" id="kmtSamConfig" name="kmtSamConfig" />
+                                        <div class="form-group row">
+                                            <div class="col-lg-12">
+                                                <!-- //test signature -->
+                                                <!-- Content -->
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <p><b>Tanda Tangan</b></p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <canvas id="sig-canvas" name="rampcheck_kesimpulan_ttd_pengemudi"></canvas>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="btn btn-info btn-sm" id="sig-submitBtn">
+                                                            Simpan Tanda Tangan</div>
+                                                        <div class="btn btn-default btn-sm" id="sig-clearBtn">
+                                                            Clear</div>
+                                                        <!-- icon checked if signature is saved -->
+                                                        <i class="fa fa-check" id="sig-check" style="display:none;"> Tanda Tangan Pengemudi
+                                                            Tersimpan</i>
+                                                    </div>
+                                                </div>
+                                                <div hidden>
+                                                    <div class="col-md-12">
+                                                        <textarea id="sig-dataUrl" class="form-control" rows="5"></textarea>
+                                                    </div>
+                                                </div>
+                                                <!-- //test signature -->
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="text-right">
@@ -143,6 +192,7 @@
     const auth_delete = '<?= $rules->d ?>';
     const auth_otorisasi = '<?= $rules->o ?>';
 
+    const base_url = '<?= base_url() ?>';
     const url = '<?= base_url() . "/" . uri_segment(0) . "/action/" . uri_segment(1) ?>';
     const url_ajax = '<?= base_url() . "/" . uri_segment(0) . "/ajax" ?>';
 
@@ -150,9 +200,19 @@
     var coreEvents;
 
     const select2Array = [{
-        id: 'nama_tenant',
-        url: '/getTenant',
-        placeholder: 'Pilih Tenant',
+        id: 'findimeialat',
+        url: '/findimeialat',
+        placeholder: 'Ketik/Cari IMEI Alat',
+        params: null,
+    }, {
+        id: 'username',
+        url: '/username',
+        placeholder: 'Ketik/Cari Username PTA',
+        params: null
+    }, {
+        id: 'bis',
+        url: '/bis',
+        placeholder: 'Ketik/Cari Kode Bis/Halte',
         params: null
     }];
 
@@ -163,7 +223,7 @@
         coreEvents.csrf = {
             "<?= csrf_token() ?>": "<?= csrf_hash() ?>"
         };
-        coreEvents.tableColumn = datatableColumn();
+        // coreEvents.tableColumn = datatableColumn();
 
         coreEvents.insertHandler = {
             placeholder: 'Berhasil menyimpan jenis user',
@@ -193,7 +253,7 @@
         }
 
         select2Array.forEach(function(x) {
-            select2Init('#' + x.id, x.url, x.placeholder, x.params);
+            coreEvents.select2Init('#' + x.id, x.url, x.placeholder, x.params);
         });
 
         $('#nama_tenant').on('change', function() {
@@ -204,53 +264,47 @@
         coreEvents.load();
     });
 
-    function select2Init(id, url, placeholder, parameter) {
-        $(id).select2({
-            id: function(e) {
-                return e.id
-            },
-            placeholder: placeholder,
-            multiple: false,
-            ajax: {
-                url: url_ajax + url,
-                dataType: 'json',
-                quietMillis: 500,
-                delay: 500,
-                data: function(param) {
-                    var def_param = {
-                        keyword: param.term, //search term
-                        perpage: 5, // page size
-                        page: param.page || 0, // page number
-                    };
 
-                    return Object.assign({}, def_param, parameter);
-                },
-                processResults: function(data, params) {
-                    params.page = params.page || 0
+    $("#foto_upload").fileupload({
+        url: url + '_upload',
+        dataType: 'json',
+        formData: {
+            "<?= csrf_token() ?>": "<?= csrf_hash() ?>"
+        },
+        autoUpload: false
+    }).on('fileuploadadd', function(e, data) {
+        var fileTypeAllowed = /.\.(gif|jpg|png|jpeg|bmp|svg)$/i;
+        var fileName = data.originalFiles[0]['name'];
+        var fileSize = data.originalFiles[0]['size'];
 
-                    return {
-                        results: data.rows,
-                        pagination: {
-                            more: false
-                        }
-                    }
-                }
-            },
-            templateResult: function(data) {
-                return data.text;
-            },
-            templateSelection: function(data) {
-                if (data.id === '') {
-                    return placeholder;
-                }
+        $("#foto_error").html("");
 
-                return data.text;
-            },
-            escapeMarkup: function(m) {
-                return m;
-            }
-        });
-    }
+        if (!fileTypeAllowed.test(fileName))
+            $("#foto_error").html('Only images are allowed!');
+        else if (fileSize > 10000000)
+            $("#foto_error").html('Your file is too big! Max allowed size is: 1Mb');
+        else {
+            $("#foto_error").html("");
+            data.submit();
+        }
+    }).on('fileuploaddone', function(e, data) {
+        var status = data.jqXHR.responseJSON.status;
+        var msg = data.jqXHR.responseJSON.msg;
+
+        if (status == 1) {
+            var path = data.jqXHR.responseJSON.path;
+            $("#files").html('<div style="display: inline-block; padding: 5px;"><img style="height: 150px; border: 1px solid #000" src="' + base_url + path + '" /></div>');
+            $("#banner_link").val(path);
+        } else {
+            $("#foto_error").html(msg);
+        }
+    }).on('fileuploadprogressall', function(e, data) {
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        $("#foto_progres").html("Proses: " + progress + "%");
+        if (progress == 100) {
+            $("#foto_progres").html("");
+        }
+    });
 
     // function datatableColumn() {
     //     let columns = [{
@@ -261,14 +315,14 @@
     //                 return dataStart + index.row + 1
     //             }
     //         },
-    //         {
-    //             data: "jenis",
-    //             orderable: true
-    //         },
-    //         {
-    //             data: "tarif",
-    //             orderable: true
-    //         },
+    //         // {
+    //         //     data: "fullname",
+    //         //     orderable: true
+    //         // },
+    //         // {
+    //         //     data: "telp",
+    //         //     orderable: true
+    //         // },
     //         {
     //             data: "id",
     //             orderable: false,
@@ -292,7 +346,6 @@
     //             }
     //         }
     //     ];
-
     //     return columns;
     // }
 </script>
