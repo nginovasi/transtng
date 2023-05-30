@@ -12,7 +12,7 @@ class WebAuthentication implements FilterInterface
     {
         $session = \Config\Services::session();
 
-        if(!$session->get('logged_in_transhubdat')){
+        if(!$session->get('logged_in_transtng')){
         	return redirect()->route('login');
         }
     }

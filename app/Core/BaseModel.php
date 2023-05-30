@@ -121,28 +121,6 @@ class BaseModel extends Model
         return [ "data" => $this->db->query($q, $whereKey)->getResult(), "allData" => $allData, "filteredData" => $filteredData ];
 	}
 
-	function base_load_datatable_blue($baseQuery, $whereQuery, $whereTerm, $start, $length, $orderColumn, $orderDirection, $groupBy = NULL){
-		$q = ($whereTerm != "" 
-				? $baseQuery . " where (" . implode(" or ", array_map(function($x) use ($whereTerm) {
-					return $x == "json" ? "JSON_SEARCH(".$x.", 'one', ?, '', '$[*]')" : $x . " like ?";
-					}, $whereQuery)) . ")" 
-				: $baseQuery) . ($groupBy != NULL ? "group by " . implode(", ", $groupBy) : "") . " order by ".$orderColumn." ".$orderDirection;
-
-		$whereKey = array_map(function($x) use ($whereTerm){
-			return addslashes($whereTerm)."%";
-		}, $whereQuery);
-
-		$m_blueData = $this->db->query("select count(id) as jml from m_blue where is_deleted = 0")->getRow();
-		$m_bluerfidData = $this->db->query("select count(id) as jml from m_bluerfid where is_deleted = 0")->getRow();
-
-        $allData = count($this->db->query($baseQuery)->getResult());
-        $filteredData = count($this->db->query($q, $whereKey)->getResult());
-
-        $q .= $length > -1 ? " limit ".$start.",".$length : "";
-
-        return [ "data" => $this->db->query($q, $whereKey)->getResult(), "allData" => $m_blueData->jml + $m_bluerfidData->jml, "filteredData" => $filteredData];
-	}
-
 	function base_load_select2($baseQuery, $whereField, $keyword, $page, $perpage){
         $q = $whereField != "" ? $baseQuery . " and (" .implode(" or ", array_map(function($x) use ($keyword) {
             return $x . " like ?";

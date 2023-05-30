@@ -39,22 +39,23 @@ class AuthAction extends BaseController
         $password = $this->request->getPost('password');
 
         if ($username != '' && $password != '') {
+            $encSHA512 = parent::sha512($password, getenv('app.salt'));
+            $password = base64_encode($encSHA512);
             $user = $this->authModel->getUser($username, $password);
             if (!is_null($user)) {
                 if ($user->is_deleted == 0) {
                     $menu = $this->authModel->getMenu($user->user_web_role_id);
                     $sessionData = array(
-                        'logged_in_transhubdat' => true,
+                        'logged_in_transtng'    => true,
                         'id'                    => $user->id,
                         'role'                  => $user->user_web_role_id,
                         'role_name'             => $user->user_web_role_name,
                         'username'              => $user->user_web_username,
                         'name'                  => $user->user_web_name,
                         'email'                 => $user->user_web_email,
-                        'instansi_detail_id'    => $user->bptd_id,
-                        'instansi_detail_name'  => $user->instansi_detail_name,
                         'menu'                  => $menu
                     );
+                    // var_dump($sessionData);
                     $session->set($sessionData);
                     $this->baseModel->log_action("login", "Akses Diberikan");
                     $response = ["success" => TRUE, "title"   => "Success", "text"    => "Berhasil"];
@@ -89,16 +90,14 @@ class AuthAction extends BaseController
             if ($user->is_deleted == 0) {
                 $menu = $this->authModel->getMenu($user->user_web_role_id);
                 $sessionData = array(
-                    'logged_in_transhubdat' => true,
-                    'id' => $user->id,
-                    'role' => $user->user_web_role_id,
-                    'role_name' => $user->user_web_role_name,
-                    'username' => $user->user_web_username,
-                    'name' => $user->user_web_name,
-                    'email' => $user->user_web_email,
-                    'instansi_detail_id' => $user->bptd_id,
-                    'instansi_detail_name' => $user->instansi_detail_name,
-                    'menu' => $menu
+                    'logged_in_transtng'    => true,
+                    'id'                    => $user->id,
+                    'role'                  => $user->user_web_role_id,
+                    'role_name'             => $user->user_web_role_name,
+                    'username'              => $user->user_web_username,
+                    'name'                  => $user->user_web_name,
+                    'email'                 => $user->user_web_email,
+                    'menu'                  => $menu
                 );
                 $session->set($sessionData);
                 $this->baseModel->log_action("login", "Akses Diberikan");
@@ -114,30 +113,16 @@ class AuthAction extends BaseController
         echo json_encode($response);
     }
 
-    // public function callback()
-    // {
-    //     $client = new Client();
-
-    //     $client->fetchAccessTokenWithAuthCode($this->request->getGet('code'));
-
-    //     $oauth2 = new \Google_Service_Oauth2($client);
-    //     $userInfo = $oauth2->userinfo->get();
-    // }
-
-    // public function process()
-    // {
-    //     $response = ['success' => true,'message' => 'Password changed successfully.'];
-    //     return $this->response->setJSON($response);
-    // }
-
     function checkpassword()
     {
         $userData = $_SESSION;
-        $q = $this->db->query('select id from m_user_web where id = "' . $userData['id'] . '" and user_web_password = md5("' . $_POST['pass'] . '") ');
+        $encSHA512 = parent::sha512($this->request->getPost('password'), getenv('app.salt'));
+        $password = base64_encode($encSHA512);
+        $q = $this->db->query("SELECT * FROM m_user_web WHERE id = ? AND user_web_password = ?", array($userData['id'], $password));
         if ($q->getNumRows() == 0) {
-            echo json_encode(array('available' => false));
+            echo json_encode(array('success' => FALSE));
         } else {
-            echo json_encode(array('available' => true));
+            echo json_encode(array('success' => TRUE));
         }
     }
 
@@ -145,24 +130,29 @@ class AuthAction extends BaseController
     {
         $session = \Config\Services::session();
         $userData = $_SESSION;
+
         $currentPassword = $this->request->getPost('current-password');
         $newPassword = $this->request->getPost('new-password');
         $confirmPassword = $this->request->getPost('confirm-password');
+
+        $encSHA512 = parent::sha512($newPassword, getenv('app.salt'));
+        $password = base64_encode($encSHA512);
+
         $user = $this->authModel->getUser($userData['username'], $currentPassword);
         if (!is_null($user)) {
             if ($newPassword == $confirmPassword) {
-                $result = $this->authModel->changePassword($newPassword, $userData['id']);
+                $result = $this->authModel->changePassword($password, $userData['id']);
                 if ($result) {
-                    $response = ["success" => true,"title" => "Success","text" => "Password Berhasil Diubah"];
+                    $response = ["success" => true, "title" => "Success", "text" => "Password Berhasil Diubah"];
                     $session->destroy();
                 } else {
-                    $response = ["success" => false,"title" => "Error","text" => "Password Gagal Diubah"];
+                    $response = ["success" => false, "title" => "Error", "text" => "Password Gagal Diubah"];
                 }
             } else {
-                $response = ["success" => false,"title" => "Peringatan","text" => "Konfirmasi Password Tidak Sama"];
+                $response = ["success" => false, "title" => "Peringatan", "text" => "Konfirmasi Password Tidak Sama"];
             }
         } else {
-            $response = ["success" => false,"title" => "Peringatan","text" => "Password Saat Ini Salah"];
+            $response = ["success" => false, "title" => "Peringatan", "text" => "Password Saat Ini Salah"];
         }
         echo json_encode($response);
     }

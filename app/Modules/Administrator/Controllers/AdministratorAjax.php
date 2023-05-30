@@ -66,7 +66,17 @@ class AdministratorAjax extends BaseController
             implode("", $option) . "<select>";
     }
 
-    public function getTenant() {
+    public function web_role_get()
+    {
+        $data = $this->request->getGet();
+        $query = "SELECT a.id, a.user_web_role_name AS 'text' FROM s_user_web_role a WHERE a.is_deleted != '1' ";
+        $where = ["a.user_web_role_name"];
+
+        parent::_loadSelect2($data, $query, $where);
+    }
+
+    public function getTenant()
+    {
         $data = $this->request->getGet();
         $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL";
         $where = ["a.nama"];

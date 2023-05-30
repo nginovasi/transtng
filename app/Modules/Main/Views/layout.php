@@ -7,7 +7,6 @@
     <meta name="description" content="Trans Kota Tangerang adalah sistem transportasi Bus Rapid Transit yang mulai beroperasi pada tanggal 1 Desember 2016 di Kota Tangerang, Banten. Layanan BRT ini diciptakan untuk mengurangi kemacetan dan menyediakan kendaraan massal yang nyaman, aman, bersih, dan cepat. Pada masa perkenalan, layanan BRT ini dibebaskan dari tarif selama 2 minggu." />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <!-- style -->
-    <!-- build:css ../assets/css/site.min.css -->
     <link rel="shortcut icon" href="<?= base_url(); ?>/assets/img/icon.png" type="image/png">
     <link rel="stylesheet" href="<?= base_url() ?>/assets/css/bootstrap.css" type="text/css" />
     <link rel="stylesheet" href="<?= base_url() ?>/assets/css/theme.css" type="text/css" />
@@ -21,10 +20,7 @@
     <!-- datepicker -->
     <link rel="stylesheet" href="<?= base_url() ?>/assets/libs/daterangepicker/daterangepicker.css">
     <!-- <link rel="stylesheet" -->
-    <!-- href="<?= base_url() ?>/assets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css"> -->
     <link href='<?= base_url() ?>/assets/css/leaflet.fullscreen.css' rel='stylesheet' />
-    <link href="<?= base_url() ?>/assets/css/video-js.css" rel="stylesheet" />
-
     <link rel="stylesheet" href="<?= base_url() ?>/assets/css/leaflet.draw-src.css" />
 
     <link rel="stylesheet" href="<?= base_url() ?>/assets/css/easy-button.css">
@@ -41,9 +37,6 @@
     <script src="<?= base_url() ?>/assets/js/leaflet.js" type="text/javascript"></script>
     <script src='<?= base_url() ?>/assets/js/Leaflet.fullscreen.min.js'></script>
     <script src="<?= base_url() ?>/assets/js/L.Icon.Pulse.js" type="text/javascript"></script>
-    <script src="<?= base_url() ?>/assets/js/video.js"></script>
-    <!--This is for HLS compatibility with all major browsers-->
-    <script src="<?= base_url() ?>/assets/js/videojs-http-streaming.min.js"></script>
     <script src="<?= base_url() ?>/assets/js/easy-button.js"></script>
     <script src="<?= base_url() ?>/assets/js/leaflet.draw.js"></script>
     <script src="<?= base_url() ?>/assets/js/Polyline.encoded.js"></script>
@@ -51,8 +44,7 @@
     <script src="<?= base_url() ?>/assets/js/editable/src/Leaflet.Editable.js"></script>
     <script src="<?= base_url() ?>/assets/js/Control.Geocoder.js"></script>
     <script src="<?= base_url() ?>/assets/js/jquery-ui.min.js"></script>
-    <!-- endbuild 
-    -->
+    <!-- endbuild -->
 
     <script type="text/javascript" src="<?= base_url() ?>/assets/js/moment.min.js"></script>
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>/assets/css/bootstrap-datetimepicker.min.css">
@@ -150,15 +142,10 @@
         }
     </style>
 </head>
-
 <body class="layout-row">
-
     <?php echo view('App\Modules\Main\Views\menu'); ?>
-
     <div id="main" class="layout-column flex">
-
         <?php echo view('App\Modules\Main\Views\navbar'); ?>
-
         <!-- ############ Content START-->
         <div id="content" class="flex " style="background:#F9FAFB">
             <!-- ############ Main START-->
@@ -167,68 +154,54 @@
             } else {
                 $session = \Config\Services::session();
                 $login_id = $session->get('role');
-                if ($login_id == 1 || $login_id == 13) {
-                    echo view('App\Modules\Main\Views\dashboard');
-                } else if ($login_id == 6 || $login_id == 12 || $login_id == 18) {
-                    // specific to roles user eo || admin eo
-                    echo view('App\Modules\Main\Views\dashboard_eo');
-                } else {
-                    echo view('App\Modules\Main\Views\dashboard_user');
-                }
+                echo view('App\Modules\Main\Views\dashboard');
             } ?>
             <!-- ############ Main END-->
         </div>
         <!-- ############ Content END-->
-
         <?php echo view('App\Modules\Main\Views\footer'); ?>
     </div>
-    <script type="text/javascript">
-        function debounce(func, wait, immediate) {
-            let timeout;
-            return function executedFunction() {
-                let context = this;
-                let args = arguments;
-                let later = function() {
-                    timeout = null;
-                    if (!immediate) func.apply(context, args);
-                };
-                let callNow = immediate && !timeout;
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-                if (callNow) func.apply(context, args);
-            };
-        }
-    </script>
-    <!-- build:js ../assets/js/site.min.js -->
-    <!-- Bootstrap -->
-    <script src="<?= base_url() ?>/assets/libs/popper.js/dist/umd/popper.min.js"></script>
-    <script src="<?= base_url() ?>/assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- ajax page -->
-    <!-- <script src="<?= base_url() ?>assets/libs/pjax/pjax.min.js"></script> -->
-    <!-- <script src="<?= base_url() ?>assets/js/ajax.js"></script> -->
-    <!-- lazyload plugin -->
-    <script src="<?= base_url() ?>/assets/js/lazyload.config.js"></script>
-    <script src="<?= base_url() ?>/assets/js/lazyload.js"></script>
-    <script src="<?= base_url() ?>/assets/js/plugin.js"></script>
-    <!-- scrollreveal -->
-    <script src="<?= base_url() ?>/assets/libs/scrollreveal/dist/scrollreveal.min.js"></script>
-    <!-- feathericon -->
-    <script src="<?= base_url() ?>/assets/libs/feather-icons/dist/feather.min.js"></script>
-    <script src="<?= base_url() ?>/assets/js/plugins/feathericon.js"></script>
-    <!-- theme -->
-    <script src="<?= base_url() ?>/assets/js/theme.js"></script>
-    <script src="<?= base_url() ?>/assets/js/utils.js"></script>
-    <!-- endbuild -->
-    <script src="<?= base_url() ?>/assets/libs/datatables/media/js/jquery.dataTables.min.js"></script>
-    <script src="<?= base_url() ?>/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="<?= base_url() ?>/assets/libs/select2/dist/js/select2.full.min.js"></script>
-    <script src="<?= base_url() ?>/assets/js/plugins/sweetalert.js"></script>
-    <!-- datepicker -->
-    <script src="<?= base_url() ?>/assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-
-    <script src="<?= base_url() ?>/assets/js/coreevents.js?dt=<?= date('HisYmd') ?>"></script>
-    <script src="<?= base_url() ?>/assets/js/coreeventshubdat.js"></script>
-    <script src="<?= base_url() ?>/assets/js/coreeventstrayek.js"></script>
 </body>
+<script type="text/javascript">
+    function debounce(func, wait, immediate) {
+        let timeout;
+        return function executedFunction() {
+            let context = this;
+            let args = arguments;
+            let later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            let callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    }
+</script>
+<!-- Bootstrap -->
+<script src="<?= base_url() ?>/assets/libs/popper.js/dist/umd/popper.min.js"></script>
+<script src="<?= base_url() ?>/assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- lazyload plugin -->
+<script src="<?= base_url() ?>/assets/js/lazyload.config.js"></script>
+<script src="<?= base_url() ?>/assets/js/lazyload.js"></script>
+<script src="<?= base_url() ?>/assets/js/plugin.js"></script>
+<!-- scrollreveal -->
+<script src="<?= base_url() ?>/assets/libs/scrollreveal/dist/scrollreveal.min.js"></script>
+<!-- feathericon -->
+<script src="<?= base_url() ?>/assets/libs/feather-icons/dist/feather.min.js"></script>
+<script src="<?= base_url() ?>/assets/js/plugins/feathericon.js"></script>
+<!-- theme -->
+<script src="<?= base_url() ?>/assets/js/theme.js"></script>
+<script src="<?= base_url() ?>/assets/js/utils.js"></script>
+<!-- endbuild -->
+<script src="<?= base_url() ?>/assets/libs/datatables/media/js/jquery.dataTables.min.js"></script>
+<script src="<?= base_url() ?>/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="<?= base_url() ?>/assets/libs/select2/dist/js/select2.full.min.js"></script>
+<script src="<?= base_url() ?>/assets/js/plugins/sweetalert.js"></script>
+<!-- datepicker -->
+<script src="<?= base_url() ?>/assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<!-- coreEvents -->
+<script src="<?= base_url() ?>/assets/js/coreevents.js?dt=<?= date('HisYmd') ?>"></script>
 
 </html>

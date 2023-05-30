@@ -87,79 +87,7 @@ $session = \Config\Services::session();
 <script>
 	$(document).ready(function() {
 
-		var stateChangingButton = L.easyButton({
-			states: [{
-				stateName: 'zoom-to-indonesia', // name the state
-				icon: 'fa-globe', // and define its properties
-				title: 'zoom to a indonesia', // like its title
-				onClick: function(btn, map) { // and its callback
-					map.setView([-0.789275, 113.921327], 5);
-					btn.state('zoom-to-java'); // change state on click!
-				}
-			}, {
-				stateName: 'zoom-to-java',
-				icon: 'fa-map',
-				title: 'zoom to a java',
-				onClick: function(btn, map) {
-					map.setView([-7.614529, 110.712246], 7);
-					btn.state('zoom-to-indonesia');
-				}
-			}]
-		});
-
-		stateChangingButton.addTo(map);
 	});
-
-	var google = L.tileLayer("https://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}", {
-		maxZoom: 20,
-		subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-		attribution: '&copy; Trans Tangerang <?php echo date("Y"); ?>'
-	});
-
-	var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {});
-	var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 20});
-
-	var map = L.map('map', {
-		center: [-0.789275, 113.921327],
-		zoom: 5,
-		fullscreenControl: true,
-		layers: [satellite, osm, google]
-	});
-
-	var baseMaps = {
-		"Satellite": satellite,
-		"OSM": osm,
-		"Google": google,
-	};
-
-		// var atms = L.layerGroup();
-		var cctv = L.layerGroup();
-	var kspn = L.layerGroup();
-	var terminal = L.layerGroup();
-	var jto = L.layerGroup();
-	// var trafficLight = L.layerGroup();
-	// var simpang = L.layerGroup();
-	// var ruteMudik = L.layerGroup();
-	var poskoMudik = L.layerGroup();
-    var ruteArusMudik = L.layerGroup();
-    var ruteArusBalik = L.layerGroup();
-
-
-	var overlays = {
-		// "ATMS": atms,
-		// "CCTV": cctv,
-		// "KSPN": kspn,
-		// "Terminal": terminal,
-		// "JTO": jto,
-		// "Traffic Light": trafficLight,
-		// "Simpang": simpang,
-		// "Rute Mudik": ruteMudik,
-		// "Posko Mudik": poskoMudik,
-        // "Rute Arus Mudik": ruteArusMudik,
-        // "Rute Arus Balik": ruteArusBalik,
-	};
-
-	L.control.layers(baseMaps, overlays).addTo(map);
 
 	function get_random_color() {
 		var letters = '0123456789ABCDEF'.split('');

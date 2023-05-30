@@ -32,11 +32,6 @@ class Auth extends BaseController
         }
     }
 
-    public function test()
-    {
-        return view('App\Modules\Auth\Views\test');
-    }
-
     public function change_Password()
     {
         helper('form');
