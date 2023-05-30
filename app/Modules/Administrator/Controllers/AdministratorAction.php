@@ -167,112 +167,18 @@ class AdministratorAction extends BaseController
             $data = $this->request->getPost();
             $nip = $this->request->getPost('user_web_nik');
 
-            // get URL Photo Profile if $nip is not null
-            $curl = curl_init();
-
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://api.hubdat.dephub.go.id/ehubdat/v1/sik-pegawai?nip=' . $nip,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'GET',
-                CURLOPT_HTTPHEADER => array(
-                    'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTAsInVzZXJfbmFtZSI6ImRpdGplbmxhdXQiLCJleHAiOjE2ODc4NzgzOTh9.j1-4obhSgpcbUI9BsD9_5OR13K-jLTMM5Mn43I9tHWw',
-                ),
-            ));
-
-            $response = curl_exec($curl);
-
-            curl_close($curl);
-            $userPhoto = json_decode($response);
-            $userPhotoUrl = null;
-
-            if (count($userPhoto->data) > 0) {
-                if ($userPhoto->data[0]->foto != null || $userPhoto->data[0]->foto != '') {
-                    $userPhotoUrl = $userPhoto->data[0]->foto;
-                } else {
-                    $userPhotoUrl = '-';
-                }
-            } else {
-                $userPhotoUrl = '-';
-            }
-
             if ($data['id'] != '') {
-                $user = $this->db->query('select * from m_user_web where id = ' . $this->session->get('id'))->getRow();
-
                 if (!$this->administratorModel->checkExistingPass($data['id'], $data['user_web_password'])) {
-                    $data["user_web_password"] = md5($data["user_web_password"]);
+                    $encSHA512 = parent::sha512($data['user_web_password'], getenv('app.salt'));
+                    $data['user_web_password'] = base64_encode($encSHA512);
                 }
-
-                if ($user->instansi_detail_id != null) {
-                    $cekRoleInstansi = $this->db->query('select * from m_instansi_detail where id = ' . $data['instansi_detail_id_not_role'])->getRow();
-
-                    $data["instansi_detail_id"] = $data['instansi_detail_id_not_role'];
-                    $data["user_web_role_id"] = $cekRoleInstansi->user_web_role_id;
-
-                    unset($data['instansi_detail_id_not_role']);
-                }
-                $data["user_web_photo"] = $userPhotoUrl;
-
                 parent::_insert('m_user_web', $data);
             } else {
                 if ($this->administratorModel->checkUsername($data['user_web_username'])) {
                     if ($this->administratorModel->checkEmailuser($data['user_web_email'])) {
-                        $user = $this->db->query('select * from m_user_web where id = ' . $this->session->get('id'))->getRow();
-
-                        $data["user_web_password"] = md5($data["user_web_password"]);
-
-                        if ($user->instansi_detail_id != null) {
-                            $cekRoleInstansi = $this->db->query('select * from m_instansi_detail where id = ' . $data['instansi_detail_id_not_role'])->getRow();
-
-                            $data["instansi_detail_id"] = $data['instansi_detail_id_not_role'];
-                            $data["user_web_role_id"] = $cekRoleInstansi->user_web_role_id;
-
-                            unset($data['instansi_detail_id_not_role']);
-                        }
-                        $data["user_web_photo"] = $userPhotoUrl;
-
+                        $encSHA512 = parent::sha512($data['user_web_password'], getenv('app.salt'));
+                        $data['user_web_password'] = base64_encode($encSHA512);
                         parent::_insert('m_user_web', $data);
-
-                        $getUserMobile = $this->db->query('select * from m_user_mobile where user_mobile_email = ' . '"' . $data['user_web_email'] . '"')->getRow();
-
-                        $dataUserMobile = [
-                            "user_mobile_email" => $data['user_web_email'],
-                            "user_mobile_type" => "Android",
-                            "user_mobile_role" => 2,
-                        ];
-
-                        if ($getUserMobile) {
-                            $builder = $this->db->table('m_user_mobile');
-                            $builder->where(array('id' => $getUserMobile->id));
-                            $builder->update($dataUserMobile);
-
-                            // after update by diyar 31 Mar
-                            $update = $this->db->query('UPDATE m_user_web 
-                                                        SET user_mobile_id = ' . $getUserMobile->id . ' 
-                                                        WHERE user_web_email = "' . $data['user_web_email'] . '"');
-                        } else {
-                            $builder = $this->db->table('m_user_mobile');
-                            $builder->insert($dataUserMobile);
-                            $userMobileId = $this->db->insertID();
-
-                            $dataUserWeb = [
-                                "user_mobile_id" => $userMobileId,
-                            ];
-
-                            // before
-                            // $updateUserWeb = $this->db->table('m_user_web');
-                            // $updateUserWeb->where(array('user_web_email' => $data['user_web_email']));
-                            // $updateUserWeb->update($dataUserWeb);
-
-                            // after update by diyar 31 Mar
-                            $update = $this->db->query('UPDATE m_user_web 
-                                                        SET user_mobile_id = ' . $userMobileId . ' 
-                                                        WHERE user_web_email = "' . $data['user_web_email'] . '"');
-                        }
                     } else {
                         echo json_encode(array('success' => false, 'message' => "email sudah terpakai, silahkan menginput email lainnya"));
                     }
@@ -287,11 +193,8 @@ class AdministratorAction extends BaseController
     {
         parent::_authEdit(function () {
             $data = $this->request->getPost();
-            $query = "SELECT a.*,b.id as instansi_detail_id_not_role, b.instansi_detail_name as instansi_detail_nama_not_role from m_user_web a left join m_instansi_detail b on a.instansi_detail_id=b.id and b.is_deleted='0' where a.is_deleted = 0 and a.id = '" . $this->request->getPost('id') . "' ";
-
+            $query = "SELECT a.* from m_user_web a where a.is_deleted = 0 and a.id = '" . $this->request->getPost('id') . "' ";
             parent::_edit('m_user_web', $data, null, $query);
-            // parent::_edit('m_user_web', $this->request->getPost());
-
         });
     }
 

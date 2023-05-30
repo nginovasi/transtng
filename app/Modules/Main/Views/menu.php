@@ -3,7 +3,7 @@ $session = \Config\Services::session();
 $user = $session->get('name');
 $request = \Config\Services::request();
 $uri = $request->uri;
-$module_active = $uri->getSegment(1); 
+$module_active = $uri->getSegment(1);
 
 ?>
 <style type="text/css">
@@ -40,11 +40,11 @@ $module_active = $uri->getSegment(1);
 		border-radius: 4px;
 	}
 
-	.italicthis{
+	.italicthis {
 		font-style: oblique;
 	}
 
-	.largerfont{
+	.largerfont {
 		font-size: 16px;
 	}
 </style>
@@ -63,26 +63,22 @@ $module_active = $uri->getSegment(1);
 		</div>
 		<!-- Flex nav content -->
 		<div class="flex scrollable hover" id="sidenav-ngi">
-			<?php
-			if($module_active!='main'){
-			?>
-			<div class="pt-2" id="mobile-profile">
-				<div class="nav-fold px-2">
-					<a class="d-flex p-2" data-toggle="dropdown">
-						<img src="<?= base_url() ?>/assets/img/avatar-pri.svg" alt="..." class="w-40 r">
-					</a>
-					<div class="flex p-2">
-						<div class="">
+			<?php if ($module_active != 'main') { ?>
+				<div class="pt-2" id="mobile-profile">
+					<div class="nav-fold px-2">
+						<a class="d-flex p-2" data-toggle="dropdown">
+							<img src="<?= base_url() ?>/assets/img/avatar-pri.svg" alt="..." class="w-40 r">
+						</a>
+						<div class="flex p-2">
+							<div class="">
 								<div class="largerfont"><?= $user ?></div>
 								<div class="boldthis"><?= $session->get('username') ?></div>
-								<div class="italicthis"><?= $session->get('role_name')?></div>
+								<div class="italicthis"><?= $session->get('role_name') ?></div>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<?php
-			}
-			?>
+			<?php } ?>
 			<div class="nav-active-text-primary" data-nav>
 				<ul class="nav bg">
 					<li class="nav-header hidden-folded">
@@ -102,25 +98,18 @@ $module_active = $uri->getSegment(1);
 							<span class="nav-text" style="font-size: 16px;color: #1D2939;">Main Dashboard </span>
 						</a>
 					</li>
-
-					<?php
-					$session = \Config\Services::session();
-
-					function group_by($array, $by)
-					{
+					<?php $session = \Config\Services::session();
+					function group_by($array, $by) {
 						$groups = array();
-
 						foreach ($array as $key => $value) {
 							$groups[$value->$by][] = $value;
 						}
-
 						return $groups;
 					}
 
 					$module = group_by($session->get('menu'), 'module_name');
 
 					foreach ($module as $key => $_module) {
-
 						echo '<li class="nav-header hidden-folded">
 							<span class="text-muted" style="color: #98A2B3 !important; font-size: 12px !important;">' . strtoupper($key) . '</span>
 							</li>';
@@ -131,12 +120,12 @@ $module_active = $uri->getSegment(1);
 							if ($_key == "") {
 								foreach ($_grouped as $__key => $menu) {
 									$checkStatus = $menu->menu_status;
-										if($checkStatus == 'new'){
-											$isNew = '<span class="badge badge-pill badge-danger" style="margin-left: 10px;">New</span>';
-										} else {
-											$isNew = '';
-										}
-									
+									if ($checkStatus == 'new') {
+										$isNew = '<span class="badge badge-pill badge-success" style="margin-left: 10px;">New</span>';
+									} else {
+										$isNew = '';
+									}
+
 									echo '<li class="' . (($menu_active == $menu->menu_url) ? 'active' : '') . '">
 											<a href="' . base_url() . '/' . $menu->module_url . '/' . $menu->menu_url . '" class="menu1" style="margin:4px 8px 4px 8px; border-radius: 12px; padding: 0px !important;">
 											<span class="nav-icon"><i data-feather="chevrons-right"></i>
@@ -161,11 +150,11 @@ $module_active = $uri->getSegment(1);
 
 								foreach ($_grouped as $__key => $menu) {
 									$checkStatus = $menu->menu_status;
-										if($checkStatus == 'new'){
-											$isNew = '<span class="badge badge-pill badge-danger" style="margin-left: 10px;">New</span>';
-										} else {
-											$isNew = '';
-										}
+									if ($checkStatus == 'new') {
+										$isNew = '<span class="badge badge-pill badge-success" style="margin-left: 10px;">New</span>';
+									} else {
+										$isNew = '';
+									}
 
 									echo '<li class="' . (($menu_active == $menu->menu_url) ? 'active' : '') . '">
 											<a href="' . base_url() . '/' . $menu->module_url . '/' . $menu->menu_url . '" class="non-submenu1" style="padding-left: 3.3rem !important;">
@@ -183,22 +172,4 @@ $module_active = $uri->getSegment(1);
 		</div>
 	</div>
 </div>
-<script type="text/javascript">
-	$(document).ready(function() {
-		hideDiv();
-		$(window).resize(function() {
-			hideDiv();
-		});
-	});
-
-	function hideDiv() {
-		if ($(window).width() < 1024) {
-			// $("#mobile-profile").fadeIn("slow");
-			// $("#d-profile").fadeOut("slow");
-		} else {
-			// $("#mobile-profile").fadeOut("slow");
-			// $("#d-profile").fadeIn("slow");
-		}
-	}
-</script>
 <!-- ############ Aside END -->

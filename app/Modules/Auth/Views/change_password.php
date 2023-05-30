@@ -19,6 +19,8 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 	<script src="https://accounts.google.com/gsi/client" async defer></script>
 
+	<link rel="stylesheet" href="<?= base_url() ?>/assets/css/font-awesome.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
 </head>
 <style type="text/css">
 	#buttonDiv {
@@ -66,6 +68,7 @@
 							<?= csrf_field() ?>
 							<div class="form-group mb-5">
 								<input class="form-control h-auto form-control-solid py-4 px-8" type="password" placeholder="current-password" name="current-password" id="current-password" />
+								<span class="ngi"></span>
 							</div>
 							<div class="form-group mb-5">
 								<input class="form-control h-auto form-control-solid py-4 px-8" type="password" placeholder="New Password" name="new-password" id="new-password" />
@@ -90,8 +93,8 @@
 				title: "",
 				icon: "info",
 				text: "Mohon ditunggu...",
-				onOpen: function() {
-					Swal.showLoading()
+				didOpen: function() {
+					Swal.showLoading();
 				}
 			});
 			var url = '<?= base_url() ?>/auth/action/changePassword';
@@ -140,7 +143,7 @@
 					dataType: 'json',
 					data: {
 						'<?= csrf_token() ?>': '<?= csrf_hash() ?>',
-						'pass': value
+						'password': value
 					},
 					success: function(result) {
 						if (result.success) {
@@ -150,8 +153,9 @@
 						}
 					}
 				});
-			}, 500));
+			}, 1000));
 		});
 	});
 </script>
+
 </html>

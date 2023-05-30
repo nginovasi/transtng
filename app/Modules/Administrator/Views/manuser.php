@@ -32,14 +32,12 @@
                                 <table id="datatable" class="table table-theme table-row v-middle">
                                     <thead>
                                         <tr>
-                                            <th><span>#</span></th>
-                                            <th><span>Nama User</span></th>
-                                            <th><span>Email User</span></th>
-                                            <th><span>Username</span></th>
-                                            <th><span>Jenis User</span></th>
-                                            <th><span>Instansi</span></th>
-                                            <th><span>NIP</span></th>
-                                            <th><span>Foto</span></th>
+                                            <th>#</th>
+                                            <th>Username</th>
+                                            <th>Nama Lengkap</th>
+                                            <th>Email User</th>
+                                            <th>NIP</th>
+                                            <th>Jenis User</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -53,6 +51,10 @@
                                 <input type="hidden" class="form-control" id="id" name="id" value="" required>
                                 <?= csrf_field(); ?>
                                 <div class="form-group">
+                                    <label>Username</label>
+                                    <input type="text" class="form-control" id="user_web_username" name="user_web_username" required autocomplete="off" placeholder="username user untuk login" maxlength="30">
+                                </div>
+                                <div class="form-group">
                                     <label>Nama</label>
                                     <input type="text" class="form-control" id="user_web_name" name="user_web_name" required autocomplete="off" placeholder="Nama lengkap user" maxlength="50">
                                 </div>
@@ -61,45 +63,16 @@
                                     <input type="email" class="form-control" id="user_web_email" name="user_web_email" required autocomplete="off" placeholder="email user" maxlength="50">
                                 </div>
                                 <div class="form-group">
-                                    <label>Username</label>
-                                    <input type="text" class="form-control" id="user_web_username" name="user_web_username" required autocomplete="off" placeholder="username user untuk login" maxlength="30">
-                                </div>
-                                <div class="form-group">
                                     <label>NIP</label>
-                                    <input type="text" class="form-control" id="user_web_nik" name="user_web_nik" autocomplete="off" placeholder="nik user" maxlength="25">
+                                    <input type="text" class="form-control" id="user_web_nik" name="user_web_nik" autocomplete="off" placeholder="NIP user" maxlength="16">
                                 </div>
                                 <div class="form-group">
                                     <label>Password</label>
                                     <input type="password" class="form-control" id="user_web_password" name="user_web_password" required autocomplete="off" placeholder="password user untuk login" maxlength="32">
                                 </div>
-                                <?php
-                                    if($user->instansi_detail_id == null) {
-                                ?>
-                                    <div class="form-group">
-                                        <label>Jenis User</label>
-                                        <select class="form-control" id="user_web_role_id" name="user_web_role_id" required>
-                                            <option></option>
-                                            <?php
-                                                foreach ($jenisusers as $jenisuser) {
-                                                    echo '<option value="' . $jenisuser->id . '">' . $jenisuser->user_web_role_name . '</option>';
-                                                }
-                                            ?>
-                                        </select>
-                                    </div>
-                                <?php
-                                    } else {
-                                ?>
-                                     <div class="form-group">
-                                        <label>Instansi</label>
-                                        <select class="form-control sel2 instansi_detail_id_not_role" id="instansi_detail_id_not_role" name="instansi_detail_id_not_role">
-                                            <option value=""></option>
-                                        </select>
-                                    </div>
-                                <?php
-                                    }
-                                ?>
-                                <div class="code-dinamic">
-
+                                <div class="form-group">
+                                    <label>Jenis User</label>
+                                    <select class="form-control" id="user_web_role_id" name="user_web_role_id" placeholder="Pilih jenis user" required></select>
                                 </div>
                                 <div class="text-right">
                                     <button type="submit" class="btn btn-primary">Simpan</button>
@@ -125,15 +98,12 @@
     var dataStart = 0;
     var coreEvents;
 
-    const select2Array = [
-        {
-            id: 'instansi_detail_id_not_role',
-            url: '/instansi_detail_id_select_get',
-            placeholder: 'Pilih Instansi',
-            params: null
-        }
-    ];
-
+    const select2Array = [{
+        id: 'user_web_role_id',
+        url: '/web_role_get',
+        placeholder: 'Pilih Jenis User',
+        params: null
+    }];
 
     $(document).ready(function() {
         coreEvents = new CoreEvents();
@@ -146,54 +116,35 @@
 
         coreEvents.insertHandler = {
             placeholder: 'Berhasil menyimpan user',
-            afterAction: function(result) {
-
-            }
+            afterAction: function(result) {}
         }
 
         coreEvents.editHandler = {
             placeholder: '',
             afterAction: function(result) {
-                //$('#user_web_role_id').val(result.data.user_web_role_id).trigger('change');
-                setTimeout(function() {
-                    select2Array.forEach(function(x) {
-                        console.log(x.id);
-                        console.log(x.id.replace('id', 'nama'));
-                        //console.log(result.data);
-                        //console.log(result.data[x.id]);
-                        $('#' + x.id).select2('trigger', 'select', {
-                            data: {
-                                id: result.data[x.id],
-                                text: result.data[x.id.replace('id', 'nama')]
-                            }
-                        });
-                    });
-                }, 100);
+                $('#user_web_password').attr('disabled', true);
+                $('#user_web_role_id').val(result.data.user_web_role_id).trigger('change');
             }
         }
 
         coreEvents.deleteHandler = {
             placeholder: 'Berhasil menghapus user',
-            afterAction: function() {
-
-            }
+            afterAction: function() {}
         }
 
         coreEvents.resetHandler = {
-            action: function() {
-
-            }
+            action: function() {}
         }
+
+        select2Array.forEach(function(x) {
+            coreEvents.select2Init('#' + x.id, x.url, x.placeholder, x.params);
+        });
 
         coreEvents.load();
 
-        select2Array.forEach(function(x) {
-            select2Init('#' + x.id, x.url, x.placeholder, x.params);
-        });
-
-        $('#user_web_role_id').select2({
-            placeholder: "Pilih jenis user"
-        });
+        // $('#user_web_role_id').select2({
+        //     placeholder: "Pilih jenis user"
+        // });
 
         $('#user_web_username').keypress(function (e) {
             var txt = String.fromCharCode(e.which);
@@ -202,54 +153,6 @@
             }
         });
     });
-
-    function select2Init(id, url, placeholder, parameter) {
-        $(id).select2({
-            id: function(e) {
-                return e.id
-            },
-            placeholder: placeholder,
-            multiple: false,
-            ajax: {
-                url: url_ajax + url,
-                dataType: 'json',
-                quietMillis: 500,
-                delay: 500,
-                data: function(param) {
-                    var def_param = {
-                        keyword: param.term, //search term
-                        perpage: 5, // page size
-                        page: param.page || 0, // page number
-                    };
-
-                    return Object.assign({}, def_param, parameter);
-                },
-                processResults: function(data, params) {
-                    params.page = params.page || 0
-
-                    return {
-                        results: data.rows,
-                        pagination: {
-                            more: false
-                        }
-                    }
-                }
-            },
-            templateResult: function(data) {
-                return data.text;
-            },
-            templateSelection: function(data) {
-                if (data.id === '') {
-                    return placeholder;
-                }
-
-                return data.text;
-            },
-            escapeMarkup: function(m) {
-                return m;
-            }
-        });
-    }
 
     function datatableColumn() {
         let columns = [{
@@ -261,6 +164,10 @@
                 }
             },
             {
+                data: "user_web_username",
+                orderable: true
+            },
+            {
                 data: "user_web_name",
                 orderable: true
             },
@@ -269,45 +176,19 @@
                 orderable: true
             },
             {
-                data: "user_web_username",
-                orderable: true
-            },
-            {
-                data: "user_web_role_name",
-                orderable: true
-            },
-            {
-                data: "instansi_detail_name",
-                orderable: true,
-                render: function(a, type, data, index) {
-                    if(data.instansi_detail_name == null) {
-                        return "-"
-                    } else {
-                        return data.instansi_detail_name
-                    }
-                }
-            },
-            {
                 data: "user_web_nik",
                 orderable: true,
                 render: function(a, type, data, index) {
                     if(data.user_web_nik == null || data.user_web_nik == "") {
-                        return "<span class='badge badge-danger'>NIP Belum Diinput / Diupdate</span>"
+                        return "<span class='badge badge-warning'>NIP Belum Diinput / Diupdate</span>"
                     } else {
                         return "<span class='badge badge-success'>"+data.user_web_nik+"</span>"
                     }
                 }
             },
             {
-                data: "user_web_photo",
-                orderable: true,
-                render: function(a, type, data, index) {
-                    if(data.user_web_photo == null || data.user_web_photo == "-") {
-                        return "<span class='badge badge-danger'>Foto Tidak Ditemukan</span>"
-                    } else {
-                        return "<img src='"+data.user_web_photo+"' style='width: 50px; height: 50px; border-radius: 50%;'>"
-                    }
-                }
+                data: "user_web_role_name",
+                orderable: true
             },
             {
                 data: "id",
@@ -329,33 +210,12 @@
                                     </button></div>';
                     }
 
-                    if(data.instansi_detail_id != null && data.user_mobile_role != 2) {
-                        button += '<button class="btn btn-sm btn-outline-success sync" data-id="' + data.id + '" title="Delete">\
-                                        SYNC\
-                                    </button></div>';
-                    }
-
                     button += (button == '') ? "<b>Tidak ada aksi</b>" : ""
 
                     return button;
                 }
             }
         ];
-
         return columns;
     }
-
-    $("#user_web_role_id").on("change", function() {
-        let id = $(this).val()
-
-        $(".code-dinamic").html(`
-            <div class="form-group">
-                <label>Instansi</label>
-                <select class="form-control sel2 instansi_detail_id" id="instansi_detail_id" name="instansi_detail_id">
-                </select>
-            </div>
-        `)
-
-        select2Init('#' + 'instansi_detail_id', '/instansi_detail_id_select_by_role_get', 'Pilih Instansi', { user_web_role_id: function() { return id }})
-    })
 </script>

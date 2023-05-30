@@ -2,15 +2,12 @@
 $session = \Config\Services::session();
 $user = $session->get('name');
 ?>
-<style type="text/css">
-    
-</style>
 <!-- ############ NAVBAR START-->
 <div id="header" class="page-header">
     <div class="navbar navbar-expand-lg">
         <!-- brand -->
         <a href="<?= base_url() ?>/main" class="navbar-brand d-lg-none">
-            <img src="<?= base_url(); ?>/assets/img/logo.svg   ">
+            <img src="<?= base_url(); ?>/assets/img/logo.svg">
         </a>
         <!-- / brand -->
         <!-- Navbar collapse -->
@@ -21,13 +18,10 @@ $user = $session->get('name');
                     <span class="avatar w-24" style="margin: -2px;" id="d-profile"><img src="<?= base_url() ?>/assets/img/avatar-pri.svg" alt="..."></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right w mt-3 animate fadeIn">
-                    <a class="dropdown-item" href="javascript:void(0)">
-                        <span>Hello, <b><?= $user ?></b></span>
-                    </a>
+                    <a class="dropdown-item" href="javascript:void(0)"><span class="badge bg-success">Hai, <?= $user ?></span></a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="<?= base_url() ?>/auth/change_Password">Change Password</a>
-                    <a class="dropdown-item" href="<?= base_url() ?>/auth/action/logout">Sign out</a>
-                </div>
+                    <a class="dropdown-item" href="<?= base_url() ?>/auth/change_Password"><i class="fa fa-key"></i> Ganti Password</a>
+                    <a class="dropdown-item" href="<?= base_url() ?>/auth/action/logout"><i class="fa fa-sign-out"></i> Keluar</a>
             </li>
             <!-- Navarbar toggle btn -->
             <li class="nav-item d-lg-none">

@@ -1,4 +1,6 @@
-<?php namespace App\Modules\Administrator\Models;
+<?php
+
+namespace App\Modules\Administrator\Models;
 
 class UserEntity
 {
@@ -7,7 +9,6 @@ class UserEntity
 
     public function __construct()
     {
-
     }
 
     public static function of($uid, $uname)
