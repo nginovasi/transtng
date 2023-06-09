@@ -83,4 +83,17 @@ class AdministratorAjax extends BaseController
 
         parent::_loadSelect2($data, $query, $where);
     }
+
+    public function type_bis_id_select_get()
+    {
+        $data = $this->request->getGet();
+
+        // $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL";
+
+        $query = "SELECT id, name as 'text' from m_type_bis where is_deleted = 0";
+        
+        $where = ["name"];
+
+        parent::_loadSelect2($data, $query, $where);
+    }
 }

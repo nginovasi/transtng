@@ -518,8 +518,13 @@ class AdministratorAction extends BaseController
     public function manjalur_load()
     {
         parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
+            $query = "SELECT a.*, b.name as m_type_bis_nama
+                        FROM ref_koridor a
+                        LEFT JOIN m_type_bis b
+                            ON a.type_bis_id = b.id
+                        WHERE a.is_deleted = 0";
+
+            $where = ["a.rute", "a.origin", "a.toward", "b.name"];
 
             parent::_loadDatatable($query, $where, $this->request->getPost());
         });
@@ -528,15 +533,31 @@ class AdministratorAction extends BaseController
     public function manjalur_save()
     {
         parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+            parent::_insert('ref_koridor', $this->request->getPost());
         });
     }
 
     public function manjalur_edit()
     {
         parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
+            parent::_edit('ref_koridor', $this->request->getPost());
         });
+
+        // parent::_authEdit(function () {
+        //     $data = $this->request->getPost();
+
+        //     $query = "SELECT a.*, b.po_name as po_nama, CONCAT(d.route_name, ' - ( ', c.jadwal_date_depart, ' ' , c.jadwal_time_depart, ' s/d ', c.jadwal_date_arrived, ' ', c.jadwal_time_arrived, ' )') as jadwal_motis_mudik_nama
+        //                 FROM m_armada_motis_mudik a
+        //                 JOIN m_po b
+        //                     ON a.po_id = b.id
+        //                 LEFT JOIN t_jadwal_motis_mudik c
+        //                 ON a.jadwal_motis_mudik_id = c.id
+        //                 LEFT JOIN m_route d
+        //                 ON c.jadwal_route_id = d.id
+        //                 WHERE a.id = " . $this->request->getPost('id');
+
+        //     parent::_edit('m_armada_motis_mudik', $data, null, $query);
+        // });
     }
 
     public function manjalur_delete()
