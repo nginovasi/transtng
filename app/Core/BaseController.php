@@ -212,6 +212,38 @@ class BaseController extends Controller
         }
     }
 
+    protected function _insertv2($tableName, $data, callable $callback = NULL)
+    {
+        if ($data['id'] == "") {
+            $data['created_by'] = $this->session->get('id');
+
+            if ($this->baseModel->base_insert($data, $tableName)) {
+                if ($callback != NULL) {
+                    $callback();
+                }
+
+                echo json_encode(array('success' => true, 'message' => $data));
+            } else {
+                echo json_encode(array('success' => false, 'message' => $this->baseModel->db->error()));
+            }
+        } else {
+            $id = $data['id'];
+            $data['updated_at'] = date('Y-m-d H:i:s');
+            $data['updated_by'] = $this->session->get('id');
+            unset($data['id']);
+
+            if ($this->baseModel->base_update($data, $tableName, array('id' => $id))) {
+                if ($callback != NULL) {
+                    $callback();
+                }
+
+                echo json_encode(array('success' => true, 'message' => $data));
+            } else {
+                echo json_encode(array('success' => false, 'message' => $this->baseModel->db->error()));
+            }
+        }
+    }
+
     protected function _edit($tableName, $data, $keys = NULL, $query = NULL)
     {
         $key = $keys == NULL ? 'id' : $keys;
@@ -253,7 +285,7 @@ class BaseController extends Controller
 
     protected function _delete($tableName, $data)
     {
-        if ($this->baseModel->base_delete($tableName, ["id" => $data['id']])) {
+        if ($this->baseModel->base_deletev2($tableName, ["id" => $data['id']])) {
             echo json_encode(array('success' => true));
         } else {
             echo json_encode(array('success' => false, 'message' => $this->baseModel->db->error()));

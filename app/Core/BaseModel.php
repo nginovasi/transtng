@@ -104,6 +104,18 @@ class BaseModel extends Model
 		return $builder->update($updateData);
 	}
 
+	function base_deletev2($table, $where){
+		$builder = $this->db->table($table);
+		$builder->where($where);
+
+		$updateData['is_deleted'] = 1;
+		$updateData['deleted_at'] = date('Y-m-d H:i:s');
+		$updateData['deleted_by'] = $this->session->get('id');
+
+		return $builder->update($updateData);
+	}
+
+
 	function base_load_datatable($baseQuery, $whereQuery, $whereTerm, $start, $length, $orderColumn, $orderDirection, $groupBy = NULL){
 		$q = ($whereTerm != "" ? $baseQuery . " and (" . implode(" or ", array_map(function($x) use ($whereTerm) {
 			return $x == "json" ? "JSON_SEARCH(".$x.", 'one', ?, '', '$[*]')" : $x . " like ?";

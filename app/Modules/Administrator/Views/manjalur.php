@@ -159,8 +159,19 @@
 
         // update
         coreEvents.editHandler = {
-            placeholder: 'Data jalur berhasil diubah',
-            afterAction: function(result) {}
+            placeholder : '',
+            afterAction : function(result) {
+                setTimeout(function() {
+                    select2Array.forEach(function(x) {
+                        $('#' + x.id).select2('trigger', 'select', {
+                            data: {
+                                id: result.data[x.id],
+                                text: result.data[x.id.replace('id', 'nama')]
+                            }
+                        });
+                    });
+                }, 100);
+            }
         }
 
         coreEvents.deleteHandler = {
