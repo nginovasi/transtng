@@ -5,7 +5,7 @@ namespace App\Modules\Administrator\Controllers;
 use App\Modules\Administrator\Models\AdministratorModel;
 use App\Core\BaseController;
 
-// test push
+// test push mamen
 class Administrator extends BaseController
 {
     private $administratorModel;
