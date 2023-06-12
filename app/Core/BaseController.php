@@ -216,7 +216,7 @@ class BaseController extends Controller
     {
         if ($data['id'] == "") {
             $data['created_by'] = $this->session->get('id');
-
+            
             if ($this->baseModel->base_insert($data, $tableName)) {
                 if ($callback != NULL) {
                     $callback();

@@ -28,10 +28,11 @@ class Ngi extends BaseController
         return view('App\Modules\Main\Views\layout', $data);
     }
 
-    public function softwarelicense()
-    {
-        return parent::_authView();
-    }
+    // software licence not use
+    // public function softwarelicense()
+    // {
+    //     return parent::_authView();
+    // }
 
     public function dataalat()
     {

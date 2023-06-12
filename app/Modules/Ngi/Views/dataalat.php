@@ -39,8 +39,7 @@
                                     <thead>
                                         <tr>
                                             <th><span>#</span></th>
-                                            <th><span>IMEI</span></th>
-                                            <th><span>Kode Alat</span></th>
+                                            <th><span>Device ID</span></th>
                                             <th><span>No SIM Card</span></th>
                                             <th><span>Actions</span></th>
                                         </tr>
@@ -55,15 +54,9 @@
                                 <input type="hidden" class="form-control" id="id" name="id" value="" required>
                                 <?= csrf_field(); ?>
                                 <div class="form-group row">
-                                    <label for="imei" class="col-2">IMEI</label>
+                                    <label for="device_id" class="col-2">Device ID</label>
                                     <div class="col-10">
-                                        <input class="form-control" type="text" placeholder="Imei" id="imei" name="imei" autocomplete="off" required />
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="tool_code" class="col-2">Kode Alat</label>
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" placeholder="Kode Alat" id="tool_code" name="tool_code" autocomplete="off" required />
+                                        <input class="form-control" type="text" placeholder="Device ID" id="device_id" name="device_id" autocomplete="off" required />
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -257,11 +250,7 @@
                 }
             },
             {
-                data: "imei",
-                orderable: true
-            },
-            {
-                data: "tool_code",
+                data: "device_id",
                 orderable: true
             },
             {
