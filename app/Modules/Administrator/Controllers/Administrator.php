@@ -61,6 +61,11 @@ class Administrator extends BaseController
         return parent::_authView($data);
     }
 
+    public function mantenant()
+    {
+        return parent::_authView();
+    }
+
     public function mantarif()
     {
         return parent::_authView();

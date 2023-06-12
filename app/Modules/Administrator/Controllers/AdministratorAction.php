@@ -341,6 +341,41 @@ class AdministratorAction extends BaseController
         return $result;
     }
 
+    public function mantenant_load()
+    {
+        parent::_authLoad(function () {
+            $query = "SELECT * 
+                        FROM ref_tenant
+                        WHERE is_deleted = 0";
+
+            $where = ["name"];
+
+            parent::_loadDatatable($query, $where, $this->request->getPost());
+        });
+    }
+
+    public function mantenant_save()
+    {
+        parent::_authInsert(function () {
+            parent::_insertv2('ref_tenant', $this->request->getPost());
+        });
+    }
+
+    public function mantenant_edit()
+    {
+        parent::_authEdit(function () {
+            parent::_edit('ref_tenant', $this->request->getPost());
+        });
+    }
+
+    public function mantenant_delete()
+    {
+        parent::_authDelete(function () {
+            parent::_deletev2('ref_tenant', $this->request->getPost());
+        });
+    }
+
+
     public function mantarif_load()
     {
         parent::_authLoad(function () {
