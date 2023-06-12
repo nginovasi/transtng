@@ -52,6 +52,37 @@ class EksekutifAction extends BaseController {
         echo view("Eksekutif/Views/$url", $data);
     }
 
+    public function info30haritransaksi_load()
+    {
+        parent::_authLoad(function () {
+            $query = "SELECT a.* FROM ref_narasi_tiket a";
+            $where = ["a.header", "a.footer"];
+
+            parent::_loadDatatable($query, $where, $this->request->getPost());
+        });
+    }
+
+    // public function info30haritransaksi_save()
+    // {
+    //     parent::_authInsert(function () {
+    //         // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+    //     });
+    // }
+
+    // public function info30haritransaksi_edit()
+    // {
+    //     parent::_authEdit(function () {
+    //         // parent::_edit('ref_narasi_tiket', $this->request->getPost());
+    //     });
+    // }
+
+    // public function info30haritransaksi_delete()
+    // {
+    //     parent::_authDelete(function () {
+    //         // parent::_delete('ref_narasi_tiket', $this->request->getPost());
+    //     });
+    // }
+
     public function cekmutasikartu_load()
     {
         parent::_authLoad(function () {
@@ -201,37 +232,6 @@ class EksekutifAction extends BaseController {
     }
 
     public function grafiktransaksimesinkartu_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function info30haritransaksi_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function info30haritransaksi_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function info30haritransaksi_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function info30haritransaksi_delete()
     {
         parent::_authDelete(function () {
             // parent::_delete('ref_narasi_tiket', $this->request->getPost());

@@ -16,9 +16,13 @@ class Eksekutif extends BaseController {
         return redirect()->to(base_url());
     }
 
-    public function cekmutasikartu() {
+    public function info30haritransaksi() {
         return parent::_authView();
     }
+
+    // public function cekmutasikartu() {
+    //     return parent::_authView();
+    // }
 
     public function cekpta() {
         return parent::_authView();
@@ -37,10 +41,6 @@ class Eksekutif extends BaseController {
     }
 
     public function grafiktransaksimesinkartu() {
-        return parent::_authView();
-    }
-
-    public function info30haritransaksi() {
         return parent::_authView();
     }
 

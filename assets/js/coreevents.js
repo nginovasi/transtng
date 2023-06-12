@@ -395,6 +395,58 @@ class CoreEvents {
 		});
 	}
 
+	select2InitCtmListHalteBisPendapatan(id, url, placeholder, parameter) {
+		var thisClass = this;
+
+		$(id).select2({
+			id: function (e) { return e.id },
+			placeholder: '',
+			multiple: false,
+			ajax: {
+				url: thisClass.ajax + url,
+				dataType: 'json',
+				quietMillis: 500,
+				delay: 500,
+				data: function (param) {
+					var def_param = {
+						keyword: param.term, //search term
+						perpage: 5, // page size
+						page: param.page || 0, // page number
+					};
+
+					return Object.assign({}, def_param, parameter);
+				},
+				processResults: function (data, params) {
+					params.page = params.page || 0
+
+					return {
+						results: data.rows,
+						pagination: {
+							more: false
+						}
+					}
+				}
+			},
+			templateResult: function (data) { 
+				return  `<li>
+							<b>${data.bis}</b> <br>
+							${data.text} <br>
+							Pendapatan : <b>Rp.  ${data.pendapatan}</b>
+						</li>`;
+			},
+			templateSelection: function (data) {
+				if (data.id === '') {
+					return placeholder;
+				}
+
+				return data.text;
+			},
+			escapeMarkup: function (m) {
+				return m;
+			}
+		});
+	}
+
 	datepicker(element, fdata = 'dd/mm/yyyy', forientation = 'bottom') {
 		$(element).datepicker({
 			format: fdata,
