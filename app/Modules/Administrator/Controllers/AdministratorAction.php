@@ -518,13 +518,13 @@ class AdministratorAction extends BaseController
     public function manjalur_load()
     {
         parent::_authLoad(function () {
-            $query = "SELECT a.*, b.name as m_type_bis_nama
-                        FROM ref_koridor a
+            $query = "SELECT a.*, b.name as type_bis_nama
+                        FROM ref_jalur a
                         LEFT JOIN m_type_bis b
                             ON a.type_bis_id = b.id
                         WHERE a.is_deleted = 0";
 
-            $where = ["a.rute", "a.origin", "a.toward", "b.name"];
+            $where = ["b.name", "a.jalur", "a.rute", "a.origin", "a.toward"];
 
             parent::_loadDatatable($query, $where, $this->request->getPost());
         });
@@ -533,7 +533,7 @@ class AdministratorAction extends BaseController
     public function manjalur_save()
     {
         parent::_authInsert(function () {
-            parent::_insertv2('ref_koridor', $this->request->getPost());
+            parent::_insertv2('ref_jalur', $this->request->getPost());
         });
     }
 
@@ -543,7 +543,7 @@ class AdministratorAction extends BaseController
             $data = $this->request->getPost();
 
             $query = "SELECT a.*, b.name as type_bis_nama
-                        FROM ref_koridor a
+                        FROM ref_jalur a
                         LEFT JOIN m_type_bis b
                             ON a.type_bis_id = b.id
                         WHERE a.id = " . $data['id'];
@@ -555,38 +555,51 @@ class AdministratorAction extends BaseController
     public function manjalur_delete()
     {
         parent::_authDelete(function () {
-            parent::_delete('ref_koridor', $this->request->getPost());
+            parent::_deletev2('ref_jalur', $this->request->getPost());
         });
     }
 
-    public function manbus_load()
+    public function manhaltebus_load()
     {
         parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
+            $query = "SELECT a.*, b.jalur as jalur_nama
+                            FROM ref_haltebis a
+                            LEFT JOIN ref_jalur b
+                                ON a.jalur_id = b.id
+                            WHERE a.is_deleted = 0";
+
+            $where = ["a.kode_bus", "a.name", "a.merk", "b.jalur", "a.nopol"];
 
             parent::_loadDatatable($query, $where, $this->request->getPost());
         });
     }
 
-    public function manbus_save()
+    public function manhaltebus_save()
     {
         parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+            parent::_insertv2('ref_haltebis', $this->request->getPost());
         });
     }
 
-    public function manbus_edit()
+    public function manhaltebus_edit()
     {
         parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
+            $data = $this->request->getPost();
+
+            $query = "SELECT a.*, b.jalur as jalur_nama
+                        FROM ref_haltebis a
+                        LEFT JOIN ref_jalur b
+                            ON a.jalur_id = b.id
+                        WHERE a.id = " . $data['id'];
+
+            parent::_edit('ref_haltebis', $data, null, $query);
         });
     }
 
-    public function manbus_delete()
+    public function manhaltebus_delete()
     {
         parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
+            parent::_deletev2('ref_haltebis', $this->request->getPost());
         });
     }
 }

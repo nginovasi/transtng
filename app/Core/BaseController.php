@@ -285,6 +285,15 @@ class BaseController extends Controller
 
     protected function _delete($tableName, $data)
     {
+        if ($this->baseModel->base_delete($tableName, ["id" => $data['id']])) {
+            echo json_encode(array('success' => true));
+        } else {
+            echo json_encode(array('success' => false, 'message' => $this->baseModel->db->error()));
+        }
+    }
+
+    protected function _deletev2($tableName, $data)
+    {
         if ($this->baseModel->base_deletev2($tableName, ["id" => $data['id']])) {
             echo json_encode(array('success' => true));
         } else {
@@ -345,4 +354,21 @@ class BaseController extends Controller
 
         return $result;
     }
+
+    protected function _cekEmptyValue($data)
+    {
+        $result = [];
+        foreach($data as $key => $val) {
+            if($key != "id") {
+                if(!empty($val)) {
+                    $result[$key] = $val;
+                }
+            } else {
+                $result[$key] = $val;
+            }
+        }
+
+        return $result;
+    }
+
 }
