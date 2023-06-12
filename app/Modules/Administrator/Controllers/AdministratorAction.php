@@ -344,11 +344,13 @@ class AdministratorAction extends BaseController
     public function mantarif_load()
     {
         parent::_authLoad(function () {
-            $query = "SELECT a.*, b.nama AS tenant_name
-                        FROM tarif a
-                        LEFT JOIN ref_tenant b ON b.id = a.kategori
-                        WHERE a.is_aktif = 0";
-            $where = ["a.jenis", "a.tarif", "a.tarif_normal", "b.nama"];
+            $query = "SELECT a.*, b.name as tenant_nama
+                        FROM ref_tarif a
+                        LEFT JOIN ref_tenant b
+                            ON a.tenant_id = b.id
+                        WHERE a.is_deleted = 0";
+
+            $where = ["a.jenis", "a.tarif", "a.tarif_normal", "b.name"];
 
             parent::_loadDatatable($query, $where, $this->request->getPost());
         });
@@ -357,132 +359,140 @@ class AdministratorAction extends BaseController
     public function mantarif_save()
     {
         parent::_authInsert(function () {
-            parent::_insert('tarif', $this->request->getPost());
+            parent::_insertv2('ref_tarif', $this->request->getPost());
         });
     }
 
     public function mantarif_edit()
     {
         parent::_authEdit(function () {
-            parent::_edit('tarif', $this->request->getPost());
+            $data = $this->request->getPost();
+
+            $query = "SELECT a.*, b.name as tenant_nama
+                        FROM ref_tarif a
+                        LEFT JOIN ref_tenant b
+                            ON a.tenant_id = b.id
+                        WHERE a.id = " . $data['id'];
+
+            parent::_edit('ref_tarif', $data, null, $query);
         });
     }
 
     public function mantarif_delete()
     {
         parent::_authDelete(function () {
-            parent::_delete('tarif', $this->request->getPost());
+            parent::_deletev2('ref_tarif', $this->request->getPost());
         });
     }
 
-    public function narasitiket_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
+    // public function narasitiket_load()
+    // {
+    //     parent::_authLoad(function () {
+    //         $query = "SELECT a.* FROM ref_narasi_tiket a";
+    //         $where = ["a.header", "a.footer"];
 
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
+    //         parent::_loadDatatable($query, $where, $this->request->getPost());
+    //     });
+    // }
 
-    public function narasitiket_save()
-    {
-        parent::_authInsert(function () {
-            parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
+    // public function narasitiket_save()
+    // {
+    //     parent::_authInsert(function () {
+    //         parent::_insert('ref_narasi_tiket', $this->request->getPost());
+    //     });
+    // }
 
-    public function narasitiket_edit()
-    {
-        parent::_authEdit(function () {
-            parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
+    // public function narasitiket_edit()
+    // {
+    //     parent::_authEdit(function () {
+    //         parent::_edit('ref_narasi_tiket', $this->request->getPost());
+    //     });
+    // }
 
-    public function narasitiket_delete()
-    {
-        parent::_authDelete(function () {
-            parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
+    // public function narasitiket_delete()
+    // {
+    //     parent::_authDelete(function () {
+    //         parent::_delete('ref_narasi_tiket', $this->request->getPost());
+    //     });
+    // }
 
-    public function manpegawai_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM pegawai a";
-            $where = ["a.header", "a.footer"];
+    // public function manpegawai_load()
+    // {
+    //     parent::_authLoad(function () {
+    //         $query = "SELECT a.* FROM pegawai a";
+    //         $where = ["a.header", "a.footer"];
 
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
+    //         parent::_loadDatatable($query, $where, $this->request->getPost());
+    //     });
+    // }
 
-    public function manpegawai_upload()
-    {
-        $input = $this->validate([
-            'file' => [
-                'uploaded[file]',
-                'mime_in[file,image/jpg,image/jpeg,image/png]',
-                'max_size[file,1024]',
-            ],
-        ]);
+    // public function manpegawai_upload()
+    // {
+    //     $input = $this->validate([
+    //         'file' => [
+    //             'uploaded[file]',
+    //             'mime_in[file,image/jpg,image/jpeg,image/png]',
+    //             'max_size[file,1024]',
+    //         ],
+    //     ]);
 
-        if (!$input) {
-            $msg = array("status" => 0, "msg" => $this->validator->getErrors());
-        } else {
-            $x_file = $this->request->getFile('file');
+    //     if (!$input) {
+    //         $msg = array("status" => 0, "msg" => $this->validator->getErrors());
+    //     } else {
+    //         $x_file = $this->request->getFile('file');
 
-            $nama_file = $x_file->getRandomName();
-            $image = \Config\Services::image()
-                ->withFile($x_file)
-                ->resize(480, 480, true, 'width')
-                ->save(FCPATH . 'public/uploads/foto_pegawai/' . $nama_file);
-            if ($image) {
-                $msg = array("status" => 1, "msg" => "File Has Been Uploaded", "path" => '/public/uploads/foto_pegawai/' . $nama_file);
-            } else {
-                $msg = array("status" => 0, "msg" => $this->upload->display_errors());
-            }
-            echo json_encode($msg);
-        }
-    }
+    //         $nama_file = $x_file->getRandomName();
+    //         $image = \Config\Services::image()
+    //             ->withFile($x_file)
+    //             ->resize(480, 480, true, 'width')
+    //             ->save(FCPATH . 'public/uploads/foto_pegawai/' . $nama_file);
+    //         if ($image) {
+    //             $msg = array("status" => 1, "msg" => "File Has Been Uploaded", "path" => '/public/uploads/foto_pegawai/' . $nama_file);
+    //         } else {
+    //             $msg = array("status" => 0, "msg" => $this->upload->display_errors());
+    //         }
+    //         echo json_encode($msg);
+    //     }
+    // }
 
-    public function manpegawai_save()
-    {
-        $data = $this->request->getPost();
-        unset($data['id']);
-        if ($data['jabtext'] == 'PRAMUGARA') {
-            if ($this->db->table('user_pramugara')->insert($data)) {
-                echo json_encode(array("status" => 1, "msg" => "Data Berhasil Disimpan"));
-            } else {
-                echo json_encode(array("status" => 0, "msg" => "Data Gagal Disimpan"));
-            }
-        } else if ($data['jabtext'] == 'PRAMUGARI') {
-            if ($this->db->table('user_pramugari')->insert($data)) {
-                echo json_encode(array("status" => 1, "msg" => "Data Berhasil Disimpan"));
-            } else {
-                echo json_encode(array("status" => 0, "msg" => "Data Gagal Disimpan"));
-            }
-        } else {
-            if ($this->db->table('user_halte')->insert($data)) {
-                echo json_encode(array("status" => 1, "msg" => "Data Berhasil Disimpan"));
-            } else {
-                echo json_encode(array("status" => 0, "msg" => "Data Gagal Disimpan"));
-            }
-        }
-    }
+    // public function manpegawai_save()
+    // {
+    //     $data = $this->request->getPost();
+    //     unset($data['id']);
+    //     if ($data['jabtext'] == 'PRAMUGARA') {
+    //         if ($this->db->table('user_pramugara')->insert($data)) {
+    //             echo json_encode(array("status" => 1, "msg" => "Data Berhasil Disimpan"));
+    //         } else {
+    //             echo json_encode(array("status" => 0, "msg" => "Data Gagal Disimpan"));
+    //         }
+    //     } else if ($data['jabtext'] == 'PRAMUGARI') {
+    //         if ($this->db->table('user_pramugari')->insert($data)) {
+    //             echo json_encode(array("status" => 1, "msg" => "Data Berhasil Disimpan"));
+    //         } else {
+    //             echo json_encode(array("status" => 0, "msg" => "Data Gagal Disimpan"));
+    //         }
+    //     } else {
+    //         if ($this->db->table('user_halte')->insert($data)) {
+    //             echo json_encode(array("status" => 1, "msg" => "Data Berhasil Disimpan"));
+    //         } else {
+    //             echo json_encode(array("status" => 0, "msg" => "Data Gagal Disimpan"));
+    //         }
+    //     }
+    // }
 
-    public function manpegawai_edit()
-    {
-        parent::_authEdit(function () {
-            parent::_edit('pegawai', $this->request->getPost());
-        });
-    }
+    // public function manpegawai_edit()
+    // {
+    //     parent::_authEdit(function () {
+    //         parent::_edit('pegawai', $this->request->getPost());
+    //     });
+    // }
 
-    public function manpegawai_delete()
-    {
-        parent::_authDelete(function () {
-            parent::_delete('pegawai', $this->request->getPost());
-        });
-    }
+    // public function manpegawai_delete()
+    // {
+    //     parent::_authDelete(function () {
+    //         parent::_delete('pegawai', $this->request->getPost());
+    //     });
+    // }
 
     public function manpool_load()
     {
