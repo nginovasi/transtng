@@ -51,7 +51,11 @@ class Ngi extends BaseController
 
     public function appupdate()
     {
-        return parent::_authView();
+        $latestVersion = $this->db->query("SELECT MAX(app_version) as app_version FROM ref_haltebis WHERE is_deleted = 0")->getRow();
+
+        $data['latest_version'] = $latestVersion->app_version;
+        
+        return parent::_authView($data);
     }
 
     // public function laporantrouble()
