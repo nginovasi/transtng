@@ -23,7 +23,7 @@
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills no-border" id="tab">
                     <li class="nav-item">
-                        <a class="nav-link active" id="nav-data" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="false"><i class="fa fa-table"></i> Data</a>
+                        <a class="nav-link active" id="nav-data" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="false"><i class="fa fa-table"></i> Data <?= $latest_version ?></a>
                     </li>
                 </ul>
             </div>
@@ -67,6 +67,8 @@
 
     var dataStart = 0;
     var coreEvents;
+
+    console.info('<?= $latest_version ?>')
 
     // init select2
     const select2Array = [];
@@ -176,7 +178,7 @@
 
                     if(data.device_id == '') {
                         badge = `
-                            <span class="badge badge-danger">device not sync</span>
+                            <span class="badge badge-danger">device belum tersambung</span>
                         `;
                     } else {
                         badge = `
@@ -195,11 +197,15 @@
 
                     if(data.app_version == null) {
                         badge = `
-                            <span class="badge badge-danger">device not ready</span>
+                            <span class="badge badge-danger">device belum ready</span>
+                        `;
+                    } else if(data.app_version < '<?= $latest_version ?>') {
+                        badge = `
+                            ${data.app_version} <span class="badge badge-warning"> belum update</span>
                         `;
                     } else {
                         badge = `
-                            <span class="badge badge-success">${data.app_version}</span>
+                            ${data.app_version} <span class="badge badge-success"> Up to date</span>
                         `;
                     }
 
