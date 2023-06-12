@@ -593,10 +593,12 @@ class AdministratorAction extends BaseController
         parent::_authEdit(function () {
             $data = $this->request->getPost();
 
-            $query = "SELECT a.*, b.jalur as jalur_nama
+            $query = "SELECT a.*, b.jalur as jalur_nama, c.name as pool_nama
                         FROM ref_haltebis a
                         LEFT JOIN ref_jalur b
                             ON a.jalur_id = b.id
+                        LEFT JOIN ref_pool c
+                        	ON a.pool_id = c.id
                         WHERE a.id = " . $data['id'];
 
             parent::_edit('ref_haltebis', $data, null, $query);

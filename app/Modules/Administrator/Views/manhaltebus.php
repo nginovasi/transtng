@@ -107,6 +107,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
+                                    <label for="pool_id" class="col-2">Pool</label>
+                                    <div class="col-10">
+                                        <select class="form-control sel2" id="pool_id" name="pool_id" placeholder="Pilih Pool" required></select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <label for="is_active" class="col-2">Status</label>
                                     <div class="col-10">
                                         <div class="form-check form-check-inline">
@@ -160,6 +166,12 @@
             id: 'device_id',
             url: '/device_id_not_use_select_get',
             placeholder: 'Pilih Device',
+            params: null
+        },
+        {
+            id: 'pool_id',
+            url: '/pool_id_select_get',
+            placeholder: 'Pilih Pool',
             params: null
         }
     ];

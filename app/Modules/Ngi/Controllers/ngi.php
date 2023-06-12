@@ -39,28 +39,28 @@ class Ngi extends BaseController
         return parent::_authView();
     }
 
-    public function koreksitopup()
-    {
-        return parent::_authView();
-    }
+    // public function koreksitopup()
+    // {
+    //     return parent::_authView();
+    // }
 
-    public function resetpasswordpetugas()
-    {
-        return parent::_authView();
-    }
+    // public function resetpasswordpetugas()
+    // {
+    //     return parent::_authView();
+    // }
 
     public function appupdate()
     {
         return parent::_authView();
     }
 
-    public function laporantrouble()
-    {
-        return parent::_authView();
-    }
+    // public function laporantrouble()
+    // {
+    //     return parent::_authView();
+    // }
 
-    public function laprekoninternal()
-    {
-        return parent::_authView();
-    }
+    // public function laprekoninternal()
+    // {
+    //     return parent::_authView();
+    // }
 }
