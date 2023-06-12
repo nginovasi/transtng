@@ -128,4 +128,18 @@ class AdministratorAjax extends BaseController
 
         parent::_loadSelect2($data, $query, $where);
     }
+
+    public function pool_id_select_get()
+    {
+        $data = $this->request->getGet();
+
+        $query = "SELECT id, name as text 
+                    FROM ref_pool 
+                    WHERE is_deleted = 0";
+        
+        $where = ["name"];
+
+        parent::_loadSelect2($data, $query, $where);
+    }
+
 }
