@@ -88,11 +88,24 @@ class AdministratorAjax extends BaseController
     {
         $data = $this->request->getGet();
 
-        // $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL";
-
-        $query = "SELECT id, name as 'text' from m_type_bis where is_deleted = 0";
+        $query = "SELECT id, name as 'text' 
+                    FROM m_type_bis 
+                    WHERE is_deleted = 0";
         
         $where = ["name"];
+
+        parent::_loadSelect2($data, $query, $where);
+    }
+
+    public function jalur_id_select_get()
+    {
+        $data = $this->request->getGet();
+
+        $query = "SELECT id, CONCAT(jalur, ' (', rute, ')') as text
+                    FROM ref_jalur 
+                    WHERE is_deleted = 0";
+        
+        $where = ["jalur", "rute"];
 
         parent::_loadSelect2($data, $query, $where);
     }

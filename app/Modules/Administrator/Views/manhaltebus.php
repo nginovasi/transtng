@@ -39,12 +39,12 @@
                                     <thead>
                                         <tr>
                                             <th><span>#</span></th>
-                                            <th><span>Type</span></th>
+                                            <th><span>Kode Bus/Halte</span></th>
+                                            <th><span>Nama</span></th>
+                                            <th><span>Merk Bus</span></th>
                                             <th><span>Jalur</span></th>
-                                            <th><span>Rute</span></th>
-                                            <th><span>Trip A</span></th>
-                                            <th><span>Trip B</span></th>
-                                            <th><span>Warna Bis</span></th>
+                                            <th><span>Nomor Polisi</span></th>
+                                            <th><span>Status</span></th>
                                             <th><span>Actions</span></th>
                                         </tr>
                                     </thead>
@@ -58,39 +58,59 @@
                                 <input type="hidden" class="form-control" id="id" name="id" value="" required>
                                 <?= csrf_field(); ?>
                                 <div class="form-group row">
-                                    <label for="type_bis_id" class="col-2">Jenis Bis</label>
+                                    <label for="jen_pos" class="col-2">Jenis Pos</label>
                                     <div class="col-10">
-                                        <select class="form-control sel2" id="type_bis_id" name="type_bis_id" placeholder="Pilih jenis bis" required></select>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="jen_pos" id="jen_pos0" value="0" checked="checked">
+                                            <label class="form-check-label" for="jen_pos0">Bis</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="jen_pos" id="jen_pos1" value="1">
+                                            <label class="form-check-label" for="jen_pos1">Halte</label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="jalur" class="col-2">Jalur</label>
+                                    <label for="name" class="col-2">Nama</label>
                                     <div class="col-10">
-                                        <input class="form-control" type="text" placeholder="Jalur menggunakan romawi huruf besar" id="jalur" name="jalur" autocomplete="off" required />
+                                        <input class="form-control" type="text" placeholder="Name" id="name" name="name" autocomplete="off" required />
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="rute" class="col-2">Rute</label>
+                                    <label for="kode_haltebis" class="col-2">Kode</label>
                                     <div class="col-10">
-                                        <input class="form-control" type="text" placeholder="Contoh: Terminal Poris Plawad - Jl. Gatot Subroto" id="rute" name="rute" autocomplete="off" required/>
+                                        <input class="form-control" type="text" placeholder="Kode" id="kode_haltebis" name="kode_haltebis" autocomplete="off" required />
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="origin" class="col-2">Trip A</label>
+                                    <label for="jalur_id" class="col-2">Jalur</label>
                                     <div class="col-10">
-                                        <input class="form-control" type="text" placeholder="Posisi Awal" id="origin" name="origin" autocomplete="off" required/>
+                                        <select class="form-control sel2" id="jalur_id" name="jalur_id" placeholder="Pilih jenis bis" required></select>
+                                    </div>
+                                </div>
+                                <div class="form-group row change-jen-pos-0">
+                                    <label for="merk" class="col-2">Merk</label>
+                                    <div class="col-10">
+                                        <input class="form-control" type="text" placeholder="Merk" id="merk" name="merk" autocomplete="off" required />
+                                    </div>
+                                </div>
+                                <div class="form-group row change-jen-pos-0">
+                                    <label for="nopol" class="col-2">Nopol</label>
+                                    <div class="col-10">
+                                        <input class="form-control" type="text" placeholder="Nopol" id="nopol" name="nopol" autocomplete="off" required />
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="toward" class="col-2">Trip B</label>
+                                    <label for="is_active" class="col-2">Status</label>
                                     <div class="col-10">
-                                        <input class="form-control" type="text" placeholder="Posisi Akhir" id="toward" name="toward" autocomplete="off" required/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="color" class="col-sm-2">Warna Marker</label>
-                                    <div class="col-10">
-                                        <input type="color" class="form-control" id="color" name="color" placeholder="#000000" required/>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="is_active" id="is_active0" value="0" checked="checked">
+                                            <label class="form-check-label" for="is_active0">Aktif</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="is_active" id="is_active1" value="1">
+                                            <label class="form-check-label" for="is_active1">Tidak Aktif</label>
+                                        </div>
                                     </div>
                                 </div>
                                 <hr class="mt-3">
@@ -124,9 +144,9 @@
 
     // init select2
     const select2Array = [{
-        id: 'type_bis_id',
-        url: '/type_bis_id_select_get',
-        placeholder: 'Pilih Type Bis',
+        id: 'jalur_id',
+        url: '/jalur_id_select_get',
+        placeholder: 'Pilih Jalur',
         params: null
     }];
 
@@ -144,7 +164,7 @@
 
         // insert
         coreEvents.insertHandler = {
-            placeholder: 'Data jalur berhasil ditambahkan',
+            placeholder: 'Data halte/bus berhasil ditambahkan',
             afterAction: function(result) {
                 $('#tab-data').addClass('active show');
                 $('#tab-form').removeClass('active show');
@@ -152,6 +172,30 @@
                 $('#nav-form').removeClass('active');
 
                 $(".sel2").val(null).trigger('change');
+
+                console.info($("input[name='jen_pos']:checked").val())
+
+                if($("input[name='jen_pos']:checked").val() == 0) {
+
+                    $('.change-jen-pos-0').remove();
+                    
+                    $("input[name='jen_pos']").closest('form').find('.form-group').eq(3).after(`
+                        <div class="form-group row change-jen-pos-0">
+                            <label for="merk" class="col-2">Merk</label>
+                            <div class="col-10">
+                                <input class="form-control" type="text" placeholder="Merk" id="merk" name="merk" autocomplete="off" required />
+                            </div>
+                        </div>
+                        <div class="form-group row change-jen-pos-0">
+                            <label for="nopol" class="col-2">Nopol</label>
+                            <div class="col-10">
+                                <input class="form-control" type="text" placeholder="Nopol" id="nopol" name="nopol" autocomplete="off" required />
+                            </div>
+                        </div>
+                    `);
+                } else {
+                    $('.change-jen-pos-0').remove();
+                }
 
                 coreEvents.table.ajax.reload();
             }
@@ -171,6 +215,21 @@
                         });
                     });
                 }, 100);
+
+                if (result.data.jen_pos == 0) {
+                    $("#jen_pos0").click();
+
+                    $("#merk").val(result.data.merk)
+                    $("#nopol").val(result.data.nopol)
+                } else if (result.data.jen_pos == 1) {
+                    $("#jen_pos1").click();
+                }
+
+                if (result.data.is_active == 0) {
+                    $("#is_active0").click();
+                } else if (result.data.is_active == 1) {
+                    $("#is_active1").click();
+                }
             }
         }
 
@@ -196,6 +255,28 @@
         coreEvents.load(null, [0, 'asc'], null);
     });
 
+    // on change jen pos
+    $('input[name="jen_pos"]').on('change', function () {
+        if($(this).val() == 0) {
+            $(this).closest('form').find('.form-group').eq(3).after(`
+                <div class="form-group row change-jen-pos-0">
+                    <label for="merk" class="col-2">Merk</label>
+                    <div class="col-10">
+                        <input class="form-control" type="text" placeholder="Merk" id="merk" name="merk" autocomplete="off" required />
+                    </div>
+                </div>
+                <div class="form-group row change-jen-pos-0">
+                    <label for="nopol" class="col-2">Nopol</label>
+                    <div class="col-10">
+                        <input class="form-control" type="text" placeholder="Nopol" id="nopol" name="nopol" autocomplete="off" required />
+                    </div>
+                </div>
+            `);
+        } else {
+            $('.change-jen-pos-0').remove();
+        }
+    });
+
     // datatable column
     function datatableColumn() {
         let columns = [{
@@ -207,33 +288,38 @@
                 }
             },
             {
-                data: "type_bis_nama",
+                data: "kode_haltebis",
                 orderable: true
             },
             {
-                data: "jalur",
+                data: "name",
                 orderable: true
             },
             {
-                data: "rute",
+                data: "merk",
                 orderable: true
             },
             {
-                data: "origin",
+                data: "jalur_nama",
                 orderable: true
             },
             {
-                data: "toward",
+                data: "nopol",
                 orderable: true
             },
             {
-                data: "color",
-                orderable: false,
+                data: "is_active",
+                orderable: true,
                 render: function(a, type, data, index) {
-                    return `<div style="border: 1px solid black; 
-                                        width: 50px; 
-                                        height: 25px; 
-                                        background-color: ${data.color} "></div>`
+
+                    let badge = ""
+                    if(data.is_active == 0) {
+                        badge = '<span class="badge badge-success">Aktif</span>'
+                    } else {
+                        badge = '<span class="badge badge-danger">Non-Aktif</span>'
+                    }
+
+                    return badge
                 }
             },
             {

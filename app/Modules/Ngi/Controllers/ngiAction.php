@@ -32,8 +32,9 @@ class NgiAction extends BaseController
     public function softwarelicense_load()
     {
         parent::_authLoad(function () {
-            $query = "select a.* from s_user_web_role a where a.is_deleted = 0";
-            $where = ["a.user_web_role_name"];
+            $query = "select * from ngi_license where is_deleted = 0";
+
+            $where = ["imei", "enkripsi"];
 
             parent::_loadDatatable($query, $where, $this->request->getPost());
         });
@@ -42,21 +43,60 @@ class NgiAction extends BaseController
     public function softwarelicense_save()
     {
         parent::_authInsert(function () {
-            parent::_insert('s_user_web_role', $this->request->getPost());
+            $data = $this->request->getPost();
+            $data['enkripsi'] = md5($data['imei']);
+
+            parent::_insertv2('ngi_license', $data);
         });
     }
 
     public function softwarelicense_edit()
     {
         parent::_authEdit(function () {
-            parent::_edit('s_user_web_role', $this->request->getPost());
+            parent::_edit('ngi_license', $this->request->getPost());
         });
     }
 
     public function softwarelicense_delete()
     {
         parent::_authDelete(function () {
-            parent::_delete('s_user_web_role', $this->request->getPost());
+            parent::_deletev2('ngi_license', $this->request->getPost());
+        });
+    }
+
+    public function dataalat_load()
+    {
+        parent::_authLoad(function () {
+            $query = "select * from ref_midtid where is_deleted = 0";
+
+            $where = ["imei", "tool_code", "no_telp"];
+
+            parent::_loadDatatable($query, $where, $this->request->getPost());
+        });
+    }
+
+    public function dataalat_save()
+    {
+        parent::_authInsert(function () {
+            $data = $this->request->getPost();
+
+            $cekEmpty = parent::_cekEmptyValue($data);
+
+            parent::_insertv2('ref_midtid', $cekEmpty);
+        });
+    }
+
+    public function dataalat_edit()
+    {
+        parent::_authEdit(function () {
+            parent::_edit('ref_midtid', $this->request->getPost());
+        });
+    }
+
+    public function dataalat_delete()
+    {
+        parent::_authDelete(function () {
+            parent::_deletev2('ref_midtid', $this->request->getPost());
         });
     }
     
