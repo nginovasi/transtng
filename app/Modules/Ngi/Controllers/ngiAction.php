@@ -29,47 +29,47 @@ class NgiAction extends BaseController
         return view('App\Modules\Main\Views\layout', $data);
     }
 
-    public function softwarelicense_load()
-    {
-        parent::_authLoad(function () {
-            $query = "select * from ngi_license where is_deleted = 0";
+    // software licence not use
+    // public function softwarelicense_load()
+    // {
+    //     parent::_authLoad(function () {
+    //         $query = "select * from ngi_license where is_deleted = 0";
 
-            $where = ["imei", "enkripsi"];
+    //         $where = ["imei", "enkripsi"];
 
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
+    //         parent::_loadDatatable($query, $where, $this->request->getPost());
+    //     });
+    // }
 
-    public function softwarelicense_save()
-    {
-        parent::_authInsert(function () {
-            $data = $this->request->getPost();
-            $data['enkripsi'] = md5($data['imei']);
+    // public function softwarelicense_save()
+    // {
+    //     parent::_authInsert(function () {
+    //         $data = $this->request->getPost();
 
-            parent::_insertv2('ngi_license', $data);
-        });
-    }
+    //         parent::_insertv2('ngi_license', $data);
+    //     });
+    // }
 
-    public function softwarelicense_edit()
-    {
-        parent::_authEdit(function () {
-            parent::_edit('ngi_license', $this->request->getPost());
-        });
-    }
+    // public function softwarelicense_edit()
+    // {
+    //     parent::_authEdit(function () {
+    //         parent::_edit('ngi_license', $this->request->getPost());
+    //     });
+    // }
 
-    public function softwarelicense_delete()
-    {
-        parent::_authDelete(function () {
-            parent::_deletev2('ngi_license', $this->request->getPost());
-        });
-    }
+    // public function softwarelicense_delete()
+    // {
+    //     parent::_authDelete(function () {
+    //         parent::_deletev2('ngi_license', $this->request->getPost());
+    //     });
+    // }
 
     public function dataalat_load()
     {
         parent::_authLoad(function () {
             $query = "select * from ref_midtid where is_deleted = 0";
 
-            $where = ["imei", "tool_code", "no_telp"];
+            $where = ["device_id", "no_telp"];
 
             parent::_loadDatatable($query, $where, $this->request->getPost());
         });

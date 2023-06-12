@@ -109,4 +109,23 @@ class AdministratorAjax extends BaseController
 
         parent::_loadSelect2($data, $query, $where);
     }
+
+    public function device_id_not_use_select_get()
+    {
+        $data = $this->request->getGet();
+
+        $query = "SELECT device_id as id, device_id AS text
+                    FROM ref_midtid
+                    WHERE is_deleted = 0
+                    AND device_id NOT IN (
+                        SELECT device_id
+                        FROM ref_haltebis
+                        WHERE is_deleted = 0
+                        AND device_id IS NOT NULL
+                    )";
+        
+        $where = ["device_id"];
+
+        parent::_loadSelect2($data, $query, $where);
+    }
 }

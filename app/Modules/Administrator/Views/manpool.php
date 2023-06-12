@@ -39,11 +39,7 @@
                                     <thead>
                                         <tr>
                                             <th><span>#</span></th>
-                                            <th><span>Kode Bus/Halte</span></th>
                                             <th><span>Nama</span></th>
-                                            <th><span>Merk Bus</span></th>
-                                            <th><span>Jalur</span></th>
-                                            <th><span>Nomor Polisi</span></th>
                                             <th><span>Status</span></th>
                                             <th><span>Actions</span></th>
                                         </tr>
@@ -58,52 +54,9 @@
                                 <input type="hidden" class="form-control" id="id" name="id" value="" required>
                                 <?= csrf_field(); ?>
                                 <div class="form-group row">
-                                    <label for="jen_pos" class="col-2">Jenis Pos</label>
-                                    <div class="col-10">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="jen_pos" id="jen_pos0" value="0" checked="checked">
-                                            <label class="form-check-label" for="jen_pos0">Bis</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="jen_pos" id="jen_pos1" value="1">
-                                            <label class="form-check-label" for="jen_pos1">Halte</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
                                     <label for="name" class="col-2">Nama</label>
                                     <div class="col-10">
                                         <input class="form-control" type="text" placeholder="Name" id="name" name="name" autocomplete="off" required />
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="kode_haltebis" class="col-2">Kode</label>
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" placeholder="Kode" id="kode_haltebis" name="kode_haltebis" autocomplete="off" required />
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="jalur_id" class="col-2">Jalur</label>
-                                    <div class="col-10">
-                                        <select class="form-control sel2" id="jalur_id" name="jalur_id" placeholder="Pilih jenis bis" required></select>
-                                    </div>
-                                </div>
-                                <div class="form-group row change-jen-pos-0">
-                                    <label for="merk" class="col-2">Merk</label>
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" placeholder="Merk" id="merk" name="merk" autocomplete="off" required />
-                                    </div>
-                                </div>
-                                <div class="form-group row change-jen-pos-0">
-                                    <label for="nopol" class="col-2">Nopol</label>
-                                    <div class="col-10">
-                                        <input class="form-control" type="text" placeholder="Nopol" id="nopol" name="nopol" autocomplete="off" required />
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="device_id" class="col-2">Device ID</label>
-                                    <div class="col-10">
-                                        <select class="form-control sel2" id="device_id" name="device_id" placeholder="Pilih Device ID" required></select>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -149,20 +102,7 @@
     var coreEvents;
 
     // init select2
-    const select2Array = [
-        {
-            id: 'jalur_id',
-            url: '/jalur_id_select_get',
-            placeholder: 'Pilih Jalur',
-            params: null
-        },
-        {
-            id: 'device_id',
-            url: '/device_id_not_use_select_get',
-            placeholder: 'Pilih Device',
-            params: null
-        }
-    ];
+    const select2Array = [];
 
     $(document).ready(function() {
         // init core event
@@ -178,36 +118,12 @@
 
         // insert
         coreEvents.insertHandler = {
-            placeholder: 'Data halte/bus berhasil ditambahkan',
+            placeholder: 'Data pool berhasil ditambahkan',
             afterAction: function(result) {
                 $('#tab-data').addClass('active show');
                 $('#tab-form').removeClass('active show');
                 $('#nav-data').addClass('active');
                 $('#nav-form').removeClass('active');
-
-                $(".sel2").val(null).trigger('change');
-
-                if($("input[name='jen_pos']:checked").val() == 0) {
-
-                    $('.change-jen-pos-0').remove();
-                    
-                    $("input[name='jen_pos']").closest('form').find('.form-group').eq(3).after(`
-                        <div class="form-group row change-jen-pos-0">
-                            <label for="merk" class="col-2">Merk</label>
-                            <div class="col-10">
-                                <input class="form-control" type="text" placeholder="Merk" id="merk" name="merk" autocomplete="off" required />
-                            </div>
-                        </div>
-                        <div class="form-group row change-jen-pos-0">
-                            <label for="nopol" class="col-2">Nopol</label>
-                            <div class="col-10">
-                                <input class="form-control" type="text" placeholder="Nopol" id="nopol" name="nopol" autocomplete="off" required />
-                            </div>
-                        </div>
-                    `);
-                } else {
-                    $('.change-jen-pos-0').remove();
-                }
 
                 coreEvents.table.ajax.reload();
             }
@@ -228,15 +144,6 @@
                     });
                 }, 100);
 
-                if (result.data.jen_pos == 0) {
-                    $("#jen_pos0").click();
-
-                    $("#merk").val(result.data.merk)
-                    $("#nopol").val(result.data.nopol)
-                } else if (result.data.jen_pos == 1) {
-                    $("#jen_pos1").click();
-                }
-
                 if (result.data.is_active == 0) {
                     $("#is_active0").click();
                 } else if (result.data.is_active == 1) {
@@ -247,7 +154,7 @@
 
         // delete
         coreEvents.deleteHandler = {
-            placeholder: 'Data jalur berhasil dihapus',
+            placeholder: 'Data pool berhasil dihapus',
             afterAction: function() {}
         }
 
@@ -267,28 +174,6 @@
         coreEvents.load(null, [0, 'asc'], null);
     });
 
-    // on change jen pos
-    $('input[name="jen_pos"]').on('change', function () {
-        if($(this).val() == 0) {
-            $(this).closest('form').find('.form-group').eq(3).after(`
-                <div class="form-group row change-jen-pos-0">
-                    <label for="merk" class="col-2">Merk</label>
-                    <div class="col-10">
-                        <input class="form-control" type="text" placeholder="Merk" id="merk" name="merk" autocomplete="off" required />
-                    </div>
-                </div>
-                <div class="form-group row change-jen-pos-0">
-                    <label for="nopol" class="col-2">Nopol</label>
-                    <div class="col-10">
-                        <input class="form-control" type="text" placeholder="Nopol" id="nopol" name="nopol" autocomplete="off" required />
-                    </div>
-                </div>
-            `);
-        } else {
-            $('.change-jen-pos-0').remove();
-        }
-    });
-
     // datatable column
     function datatableColumn() {
         let columns = [{
@@ -300,23 +185,7 @@
                 }
             },
             {
-                data: "kode_haltebis",
-                orderable: true
-            },
-            {
                 data: "name",
-                orderable: true
-            },
-            {
-                data: "merk",
-                orderable: true
-            },
-            {
-                data: "jalur_nama",
-                orderable: true
-            },
-            {
-                data: "nopol",
                 orderable: true
             },
             {

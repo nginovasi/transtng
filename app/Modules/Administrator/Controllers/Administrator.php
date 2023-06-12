@@ -76,7 +76,7 @@ class Administrator extends BaseController
         return parent::_authView();
     }
 
-    public function manpos()
+    public function manpool()
     {
         return parent::_authView();
     }

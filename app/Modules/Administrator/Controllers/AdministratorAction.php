@@ -484,34 +484,37 @@ class AdministratorAction extends BaseController
         });
     }
 
-    public function manpos_load()
+    public function manpool_load()
     {
         parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
+            $query = "SELECT * 
+                        FROM ref_pool 
+                        WHERE is_deleted = 0";
+
+            $where = ["name"];
 
             parent::_loadDatatable($query, $where, $this->request->getPost());
         });
     }
 
-    public function manpos_save()
+    public function manpool_save()
     {
         parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+            parent::_insertv2('ref_pool', $this->request->getPost());
         });
     }
 
-    public function manpos_edit()
+    public function manpool_edit()
     {
         parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
+            parent::_edit('ref_pool', $this->request->getPost());
         });
     }
 
-    public function manpos_delete()
+    public function manpool_delete()
     {
         parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
+            parent::_deletev2('ref_pool', $this->request->getPost());
         });
     }
 
@@ -577,7 +580,11 @@ class AdministratorAction extends BaseController
     public function manhaltebus_save()
     {
         parent::_authInsert(function () {
-            parent::_insertv2('ref_haltebis', $this->request->getPost());
+            $data = $this->request->getPost();
+
+            $cekEmpty = parent::_cekEmptyValue($data);
+
+            parent::_insertv2('ref_haltebis', $cekEmpty);
         });
     }
 

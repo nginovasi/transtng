@@ -39,7 +39,7 @@
                                     <thead>
                                         <tr>
                                             <th><span>#</span></th>
-                                            <th><span>IMEI</span></th>
+                                            <th><span>Device ID</span></th>
                                             <th><span>Kode Lisensi</span></th>
                                             <th><span>Tanggal Input</span></th>
                                             <th><span>Actions</span></th>
@@ -55,9 +55,9 @@
                                 <input type="hidden" class="form-control" id="id" name="id" value="" required>
                                 <?= csrf_field(); ?>
                                 <div class="form-group row">
-                                    <label for="name" class="col-2">Imei</label>
+                                    <label for="device_id" class="col-2">Device ID</label>
                                     <div class="col-10">
-                                        <input class="form-control" type="text" placeholder="Imei" id="imei" name="imei" autocomplete="off" required />
+                                        <input class="form-control" type="text" placeholder="Devide ID" id="device_id" name="device_id" autocomplete="off" required />
                                     </div>
                                 </div>
                                 <hr class="mt-3">
@@ -167,7 +167,7 @@
                 }
             },
             {
-                data: "imei",
+                data: "device_id",
                 orderable: true
             },
             {
