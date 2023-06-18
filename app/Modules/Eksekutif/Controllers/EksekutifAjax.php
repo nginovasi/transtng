@@ -259,4 +259,37 @@ class EksekutifAjax extends BaseController {
         ]);
     }
 
+    public function getTransaksiPerHalteBisHarian() 
+    {
+        $data = $this->request->getPost();
+
+        $result = $this->db->query("SELECT a.id, 
+                                        CONCAT(b.name, ' - ', b.kode_haltebis) as haltebis, 
+                                        a.shift, 
+                                        a.imei,
+                                        d.jalur,
+                                        SUM(CASE WHEN c.is_cashless = 0 THEN a.kredit ELSE 0 END) AS is_cashless,
+                                        SUM(CASE WHEN c.is_cashless = 1 THEN a.kredit ELSE 0 END) AS cash,
+                                        SUM(CASE WHEN c.is_cashless = 0 THEN a.kredit ELSE 0 END) + SUM(CASE WHEN c.is_cashless = 1 THEN a.kredit ELSE 0 END) as ttl
+                                    FROM transaksi_bis a  
+                                    LEFT JOIN ref_haltebis b
+                                        ON a.kode_bis = b.kode_haltebis
+                                    LEFT JOIN ref_tarif c
+                                        ON a.jenis = c.jenis
+                                    LEFT JOIN ref_jalur d
+                                        ON a.jalur = d.id
+                                    WHERE a.is_dev = 0
+                                    AND tanggal = " . "'" . $data['date'] . "'" . "
+                                    GROUP BY CONCAT(b.kode_haltebis, ' - ', b.name), a.shift, a.jenis, a.jalur
+                                    ")->getResult();
+
+        echo json_encode([
+            "success" => true, 
+            "message" => "get data success", 
+            "data" => [
+                "result" => $result
+            ]
+        ]);
+    }
+
 }

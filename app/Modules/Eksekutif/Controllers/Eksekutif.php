@@ -24,13 +24,13 @@ class Eksekutif extends BaseController {
         return parent::_authView();
     }
 
-    // public function cekmutasikartu() {
-    //     return parent::_authView();
-    // }
-
     public function cekpta() {
         return parent::_authView();
     }
+
+    // public function cekmutasikartu() {
+    //     return parent::_authView();
+    // }
 
     public function dataalat() {
         return parent::_authView();

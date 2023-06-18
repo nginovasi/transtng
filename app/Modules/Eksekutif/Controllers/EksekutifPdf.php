@@ -208,4 +208,48 @@ class EksekutifPdf extends BaseController {
         $this->export('Laporan transaksi per jenis tahun ' . $data['date'], $data['date'], $result, '\exportTransaksiPerJenisTahunan_pdf');
 	}
 
+    function exportTransaksiPerHalteBisHarian(){
+        $data = $this->request->getGet();
+
+        $ttlTunai = 0;
+        $ttlIsCashless = 0;
+        $ttl = 0;
+
+        $result = $this->db->query("SELECT a.id, 
+                                        CONCAT(b.name, ' - ', b.kode_haltebis) as haltebis, 
+                                        a.shift, 
+                                        a.imei,
+                                        d.jalur,
+                                        SUM(CASE WHEN c.is_cashless = 0 THEN a.kredit ELSE 0 END) AS is_cashless,
+                                        SUM(CASE WHEN c.is_cashless = 1 THEN a.kredit ELSE 0 END) AS cash,
+                                        SUM(CASE WHEN c.is_cashless = 0 THEN a.kredit ELSE 0 END) + SUM(CASE WHEN c.is_cashless = 1 THEN a.kredit ELSE 0 END) as ttl
+                                    FROM transaksi_bis a  
+                                    LEFT JOIN ref_haltebis b
+                                        ON a.kode_bis = b.kode_haltebis
+                                    LEFT JOIN ref_tarif c
+                                        ON a.jenis = c.jenis
+                                    LEFT JOIN ref_jalur d
+                                        ON a.jalur = d.id
+                                    WHERE a.is_dev = 0
+                                    AND tanggal = " . "'" . $data['date'] . "'" . "
+                                    GROUP BY CONCAT(b.kode_haltebis, ' - ', b.name), a.shift, a.jenis, a.jalur
+                                    ")->getResult();
+
+        foreach($result as $key => $val) {
+            $ttlTunai += $val->cash;
+            $ttlIsCashless += $val->is_cashless;
+            $ttl += $val->ttl;
+        }
+
+        $result = [
+                    "date" => $data['date'],
+                    "result" => $result,
+                    "ttl_tunai" => $ttlTunai,
+                    "ttl_is_cashless" => $ttlIsCashless,
+                    "ttl" => $ttl
+                ];
+
+        $this->export('Laporan transaksi per halte/bis ' . $data['date'], $data['date'], $result, '\exportTransaksiPerHalteBisHarian_pdf');
+	}
+
 }
