@@ -43,6 +43,9 @@
                                         <input type="text" class="form-control form-control-md date" name="date-haltebis" id="date-haltebis" placeholder="Masukkan Tanggal" required autocomplete="off">
                                     </div>
                                 </div>
+                                <div class="input-group mb-3 col-md-3">
+                                    <select class="custom-select select2" name="jalur" id="jalur" required></select>
+                                </div>
                                 <div class="mb-2">
                                     <div class="btn-group-haltebis" style="display: none;">
                                         <button class="btn btn-white">Export</button>

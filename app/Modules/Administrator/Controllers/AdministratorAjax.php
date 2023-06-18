@@ -103,7 +103,8 @@ class AdministratorAjax extends BaseController
 
         $query = "SELECT id, CONCAT(jalur, ' (', rute, ')') as text
                     FROM ref_jalur 
-                    WHERE is_deleted = 0";
+                    WHERE is_deleted = 0
+                    AND is_dev = 0";
         
         $where = ["jalur", "rute"];
 

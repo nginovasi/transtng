@@ -484,6 +484,15 @@ class CoreEvents {
 		});
 	}
 
+	daterangepicker(element, fdata = 'yyyy/mm/dd', forientation = 'bottom') {
+		$(element).daterangepicker({
+			autoApply: true,
+			locale: {
+				format: 'YYYY-MM-DD'
+			}
+		});
+	}
+
 	datetimepickerDate(element) {
 		$(function () {
 			$(element).datetimepicker({
