@@ -5,7 +5,8 @@ namespace App\Modules\Eksekutif\Controllers;
 use App\Modules\Eksekutif\Models\EksekutifModel;
 use App\Core\BaseController;
 
-class EksekutifAjax extends BaseController {
+class EksekutifPdf extends BaseController {
+
     private $eksekutifModel;
 
     public function __construct() {
@@ -16,89 +17,42 @@ class EksekutifAjax extends BaseController {
         return redirect()->to(base_url());
     }
 
-    public function findkartu() {
-        $data = $this->request->getGet();
-        $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL"; //QUERY belum fix
-        $where = ["a.nama"];
-        parent::_loadSelect2($data, $query, $where);
-    }
+    private function export($title, $id, $result, $file){
+        // mpf
+		$mpdf = new \Mpdf\Mpdf(['format' => 'A5']);
+		$mpdf->curlAllowUnsafeSslRequests = true;
 
-    public function loadtransaksipta() {
-        $tanggal = $this->request->getPost('tanggal');
-        $result = $this->db->query("SELECT * FROM ref_narasi_tiket WHERE tanggal = '$tanggal'")->getResultArray();
+        // layout html view
         $data = [];
-        foreach ($result as $key => $value) {
-            $data[] = [
-                'id' => $value['id'],
-                'tanggal' => $value['tanggal'],
-                'header' => $value['header'],
-                'footer' => $value['footer'],
-            ];
-        }
-        echo json_encode($data);
-    }
-
-    public function findpetugas() {
-        $data = $this->request->getGet();
-        $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL"; //QUERY belum fix
-        $where = ["a.nama"];
-        parent::_loadSelect2($data, $query, $where);
-    }
-
-    public function haltebis_id_per_pendapatan30d_select_get() {
-        $data = $this->request->getGet();
-
-        $query = "SELECT * FROM (
-                        SELECT a.kode_haltebis as id, a.kode_haltebis as bis, a.name as text, b.pendapatan
-                    FROM ref_haltebis a
-                    INNER JOIN (
-                        SELECT kode_bis, sum(kredit) as pendapatan 
-                        FROM transaksi_bis 
-                        WHERE (tanggal BETWEEN date_add(curdate(),INTERVAL -30 DAY) AND curdate()) 
-                        GROUP BY kode_bis
-                        HAVING pendapatan > 0
-                    ) b
-                    ON a.kode_haltebis = b.kode_bis
-                    WHERE a.is_deleted = 0
-                    GROUP BY a.kode_haltebis 
-                    ORDER BY b.pendapatan DESC
-                    ) a
-                WHERE a.bis IS NOT NULL";
-
-        $where = ["a.bis", "a.text", "a.pendapatan"];
-        
-        parent::_loadSelect2($data, $query, $where);
-    }
-
-    public function chartinfo30hari() 
-    {
-        $data = $this->request->getPost();
-
-        $query = "SELECT DATE_FORMAT(a.tanggal,'%d/%m/%y (%a)') AS tanggal,
-                        CONCAT(FLOOR(TIMESTAMPDIFF(minute,MIN(a.jam),MAX(a.jam))/60),' jam ', TIMESTAMPDIFF(minute,MIN(a.jam),MAX(a.jam)) mod 60,' menit') AS 'jam_aktif_transaksi',
-                        SUM(a.Kredit) AS pendapatan,
-                        SUM(1) AS trx 
-                    FROM transaksi_bis a
-                    where a.tanggal between date_add(curdate(),interval -30 day) and curdate() ";
-        if($data['haltebis_id'] != "") {
-            $query .= "and a.kode_bis = " . "'" . $data["haltebis_id"] . "' ";
+        foreach($result as $key => $val) {
+            $data[$key] = $val;
         }
 
-        $query .= "group by a.tanggal
-                    order by a.tanggal";
+		$html = view('App\Modules\Eksekutif\Views\pdf' . $file , $data);
 
-        $result = $this->db->query($query)->getResult();
-        
-        echo json_encode([
-            "success" => true, 
-            "message" => "get data success", 
-            "data" => $result
-        ]);
-    }
+        // margin left, right, top, bottom, header, footer
+		$mpdf->AddPage('L','', '', '', '', 20, 20, 5, 10, 90, 10);
 
-    public function getTransaksiPerjenisHarian() 
-    {
-        $data = $this->request->getPost();
+        // template background pdf
+        // $pagecount = $mpdf->SetSourceFile('assets/template.pdf');
+        // $tplIdx = $mpdf->ImportPage($pagecount);
+
+        // $mpdf->useTemplate($tplIdx);
+
+		$mpdf->WriteHTML($html);
+
+        // set header, so that the data return pdf, no binary text
+        $this->response->setHeader("Content-Type", "application/pdf");
+
+        // output name pdf
+        $name = "";
+		// $mpdf->Output('SKD - '.$id.' - '. $name .'.pdf','I');
+
+        $mpdf->Output($title . '.pdf','I');
+	}
+
+    function exportTransaksiPerJenisHarian(){
+        $data = $this->request->getGet();
 
         $result = [];
         $totalPerDate = [];
@@ -115,7 +69,7 @@ class EksekutifAjax extends BaseController {
                                         WHERE is_dev = 0
                                         AND date(tanggal) = " . "'" . $data['date'] . "'" . "
                                         GROUP BY jenis, DATE(created_at), HOUR(created_at)
-                                        ORDER BY HOUR(created_at), jenis, DATE(created_at)
+                                        ORDER BY HOUR(created_at), jenis, DATE(created_at);
                                         ")->getResult();
 
         $listTarif = $this->db->query("SELECT * 
@@ -136,22 +90,20 @@ class EksekutifAjax extends BaseController {
             $jmlTrx += $val->jml_trx;
         }
 
-        echo json_encode([
-            "success" => true, 
-            "message" => "get data success", 
-            "data" => [
-                "jenis" => $listTarif,
-                "total_per_date" => $totalPerDate,
-                "result" => $result,
-                "ttl_trx" => $ttlTrx,
-                "jml_trx" => $jmlTrx
-            ]
-        ]);
-    }
+        $result = [
+                    "date" => $data['date'],
+                    "jenis" => $listTarif,
+                    "total_per_date" => $totalPerDate,
+                    "result" => $result,
+                    "ttl_trx" => $ttlTrx,
+                    "jml_trx" => $jmlTrx
+                ];
 
-    public function getTransaksiPerjenisBulan() 
-    {
-        $data = $this->request->getPost();
+        $this->export('Laporan transaksi per jenis tanggal ' . $data['date'], $data['date'], $result, '\exportTransaksiPerJenisHarian_pdf');
+	}
+
+    function exportTransaksiPerJenisBulanan(){
+        $data = $this->request->getGet();
         $date = $data['date'];
         $monthOnly = explode("-", $date)[1];
         $yearOnly = explode("-", $date)[0];
@@ -193,22 +145,20 @@ class EksekutifAjax extends BaseController {
             $jmlTrx += $val->jml_trx;
         }
 
-        echo json_encode([
-            "success" => true, 
-            "message" => "get data success", 
-            "data" => [
-                "jenis" => $listTarif,
-                "total_per_date" => $totalPerDate,
-                "result" => $result,
-                "ttl_trx" => $ttlTrx,
-                "jml_trx" => $jmlTrx
-            ]
-        ]);
-    }
+        $result = [
+                    "date" => $data['date'],
+                    "jenis" => $listTarif,
+                    "total_per_date" => $totalPerDate,
+                    "result" => $result,
+                    "ttl_trx" => $ttlTrx,
+                    "jml_trx" => $jmlTrx
+                ];
 
-    public function getTransaksiPerjenisTahun() 
-    {
-        $data = $this->request->getPost();
+        $this->export('Laporan transaksi per jenis bulan ' . $data['date'], $data['date'], $result, '\exportTransaksiPerJenisBulanan_pdf');
+	}
+
+    function exportTransaksiPerJenisTahunan(){
+        $data = $this->request->getGet();
         $date = $data['date'];
 
         $result = [];
@@ -246,17 +196,16 @@ class EksekutifAjax extends BaseController {
             $jmlTrx += $val->jml_trx;
         }
 
-        echo json_encode([
-            "success" => true, 
-            "message" => "get data success", 
-            "data" => [
-                "jenis" => $listTarif,
-                "total_per_date" => $totalPerDate,
-                "result" => $result,
-                "ttl_trx" => $ttlTrx,
-                "jml_trx" => $jmlTrx
-            ]
-        ]);
-    }
+        $result = [
+                    "date" => $data['date'],
+                    "jenis" => $listTarif,
+                    "total_per_date" => $totalPerDate,
+                    "result" => $result,
+                    "ttl_trx" => $ttlTrx,
+                    "jml_trx" => $jmlTrx
+                ];
+
+        $this->export('Laporan transaksi per jenis tahun ' . $data['date'], $data['date'], $result, '\exportTransaksiPerJenisTahunan_pdf');
+	}
 
 }

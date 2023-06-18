@@ -447,11 +447,39 @@ class CoreEvents {
 		});
 	}
 
-	datepicker(element, fdata = 'dd/mm/yyyy', forientation = 'bottom') {
+	datepicker(element, fdata = 'yyyy/mm/dd', forientation = 'bottom') {
 		$(element).datepicker({
 			format: fdata,
 			orientation: forientation
 		}).on('changeDate', function () {
+			$(this).datepicker('hide');
+		});
+	}
+
+	datepickermonthly(element, fdata = 'yyyy/mm', forientation = 'bottom') {
+		$(element).datepicker({
+			format: fdata,
+			changeMonth: true,
+            changeYear: true,
+			autoClose: true,
+			orientation: forientation,
+			viewMode: "months",
+			minViewMode: "months"
+		}).on('change', function () {
+			$(this).datepicker('hide');
+		});
+	}
+
+	datepickeryears(element, fdata = 'yyyy', forientation = 'bottom') {
+		$(element).datepicker({
+			format: fdata,
+			changeMonth: true,
+            changeYear: true,
+			autoClose: true,
+			orientation: forientation,
+			viewMode: "years",
+			minViewMode: "years"
+		}).on('change', function () {
 			$(this).datepicker('hide');
 		});
 	}
