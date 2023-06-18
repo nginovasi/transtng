@@ -18,7 +18,11 @@
     <link rel="stylesheet" href="<?= base_url() ?>/assets/css/leaflet.css" type="text/css" />
     <link rel="stylesheet" href="<?= base_url() ?>/assets/css/L.Icon.Pulse.css" type="text/css">
     <!-- datepicker -->
-    <link rel="stylesheet" href="<?= base_url() ?>/assets/libs/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css" integrity="sha512-34s5cpvaNG3BknEWSuOncX28vz97bRI59UnVtEEpFX536A7BtZSJHsDyFoCl8S7Dt2TPzcrCEoHBGeM4SUBDBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- not use -->  
+    <!-- <link rel="stylesheet" href="<?= base_url() ?>/assets/libs/daterangepicker/daterangepicker.css"> -->
+
     <!-- <link rel="stylesheet" -->
     <link href='<?= base_url() ?>/assets/css/leaflet.fullscreen.css' rel='stylesheet' />
     <link rel="stylesheet" href="<?= base_url() ?>/assets/css/leaflet.draw-src.css" />
@@ -200,7 +204,10 @@
 <script src="<?= base_url() ?>/assets/libs/select2/dist/js/select2.full.min.js"></script>
 <script src="<?= base_url() ?>/assets/js/plugins/sweetalert.js"></script>
 <!-- datepicker -->
-<script src="<?= base_url() ?>/assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js" integrity="sha512-LsnSViqQyaXpD4mBBdRYeP6sRwJiJveh2ZIbW41EBrNmKxgr/LFZIiWT6yr+nycvhvauz8c2nYMhrP80YhG7Cw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- noy use -->
+<!-- <script src="<?= base_url() ?>/assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script> -->
+
 <!-- coreEvents -->
 <script src="<?= base_url() ?>/assets/js/coreevents.js?dt=<?= date('HisYmd') ?>"></script>
 

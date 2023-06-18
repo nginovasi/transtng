@@ -20,6 +20,10 @@ class Eksekutif extends BaseController {
         return parent::_authView();
     }
 
+    public function laptransaksimesinkartu() {
+        return parent::_authView();
+    }
+
     // public function cekmutasikartu() {
     //     return parent::_authView();
     // }
@@ -61,10 +65,6 @@ class Eksekutif extends BaseController {
     }
 
     public function laptopup() {
-        return parent::_authView();
-    }
-
-    public function laptransaksimesinkartu() {
         return parent::_authView();
     }
 
