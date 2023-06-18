@@ -350,4 +350,81 @@ class EksekutifPdf extends BaseController {
         $this->export('Laporan transaksi per jam & jalur ' . $data['date'], $data['date'], $result, '\exportTrxPenumpangPerJamJalur_pdf');
 	}
 
+    function exportTrxPerPos(){
+        $data = $this->request->getGet();
+
+        $dateStart = explode(" - ", $data['date'])[0];
+        $dateEnd = explode(" - ", $data['date'])[1];
+
+        $ttlTrxCashShiftPagi = 0;
+        $ttlTrxCashlessShiftPagi = 0;
+        $ttlTrxJmlShiftPagi = 0;
+        $ttlTrxCashShiftMalam = 0;
+        $ttlTrxCashlessShiftMalam = 0;
+        $ttlTrxJmlShiftMalam = 0;
+        $ttlTrxJml = 0;
+
+        $query = "SELECT a.id, 
+                    a.name, 
+                    IFNULL(b.cashless_shift_pagi, 0) as cashless_shift_pagi, 
+                    IFNULL(b.cash_shift_pagi, 0) as cash_shift_pagi,
+                    IFNULL(b.jml_shift_pagi, 0) as jml_shift_pagi,
+                    IFNULL(b.cashless_shift_malam, 0) as cashless_shift_malam,
+                    IFNULL(b.cash_shift_malam, 0) as cash_shift_malam,
+                    IFNULL(b.jml_shift_malam, 0) as jml_shift_malam,
+                    IFNULL(b.jml, 0) as jml
+                FROM ref_pool a
+                LEFT JOIN (
+                    SELECT b.pool_id as id,
+                        SUM(CASE WHEN c.is_cashless = 0 && a.shift = 1 THEN kredit ELSE 0 END) AS cashless_shift_pagi,
+                        SUM(CASE WHEN c.is_cashless = 1 && a.shift = 1 THEN kredit ELSE 0 END) AS cash_shift_pagi,
+                        SUM(CASE WHEN c.is_cashless = 0 && a.shift = 1 THEN kredit ELSE 0 END) + SUM(CASE WHEN c.is_cashless = 1 && a.shift = 1 THEN kredit ELSE 0 END) AS jml_shift_pagi,
+                        SUM(CASE WHEN c.is_cashless = 0 && a.shift = 2 THEN kredit ELSE 0 END) AS cashless_shift_malam,
+                        SUM(CASE WHEN c.is_cashless = 1 && a.shift = 2 THEN kredit ELSE 0 END) AS cash_shift_malam,
+                        SUM(CASE WHEN c.is_cashless = 0 && a.shift = 2 THEN kredit ELSE 0 END) + SUM(CASE WHEN c.is_cashless = 1 && a.shift = 2 THEN kredit ELSE 0 END) AS jml_shift_malam,
+                        SUM(CASE WHEN c.is_cashless = 0 && a.shift = 1 THEN kredit ELSE 0 END) + SUM(CASE WHEN c.is_cashless = 1 && a.shift = 1 THEN kredit ELSE 0 END) + SUM(CASE WHEN c.is_cashless = 0 && a.shift = 2 THEN kredit ELSE 0 END) + SUM(CASE WHEN c.is_cashless = 1 && a.shift = 2 THEN kredit ELSE 0 END) AS jml
+                    FROM transaksi_bis a
+                    LEFT JOIN ref_haltebis b
+                        ON a.kode_bis = b.kode_haltebis
+                    LEFT JOIN ref_tarif c
+                        ON a.jenis = c.jenis
+                    WHERE a.is_dev = 0 ";
+
+            if($data['date']) {
+            $query .= "AND a.tanggal BETWEEN " . "'" . $dateStart . "'" . " AND " . "'" . $dateEnd . "'" . " ";
+            }
+
+            $query .= "GROUP by b.pool_id
+                    ) b
+                    ON a.id = b.id
+                    WHERE is_deleted = 0
+                    AND is_dev = 0";
+
+            $result = $this->db->query($query)->getResult();
+
+        foreach($result as $key => $val) {
+            $ttlTrxCashShiftPagi += $val->cashless_shift_pagi;
+            $ttlTrxCashlessShiftPagi += $val->cash_shift_pagi;
+            $ttlTrxJmlShiftPagi += $val->jml_shift_pagi;
+            $ttlTrxCashShiftMalam += $val->cashless_shift_malam;
+            $ttlTrxCashlessShiftMalam += $val->cash_shift_malam;
+            $ttlTrxJmlShiftMalam += $val->jml_shift_malam;
+            $ttlTrxJml += $val->jml;
+        }
+
+        $result = [
+                    "date" => $data['date'],
+                    "result" => $result,
+                    "ttl_trx_cash_shift_pagi" => $ttlTrxCashShiftPagi,
+                    "jml_trx_cashless_shift_pagi" => $ttlTrxCashlessShiftPagi,
+                    "jml_trx_jml_shift_pagi" => $ttlTrxJmlShiftPagi,
+                    "ttl_trx_cash_shift_malam" => $ttlTrxCashShiftMalam,
+                    "jml_trx_cashless_shift_malam" => $ttlTrxCashlessShiftMalam,
+                    "jml_trx_jml_shift_malam" => $ttlTrxJmlShiftMalam,
+                    "jml_trx_jml" => $ttlTrxJml
+                ];
+
+        $this->export('Laporan transaksi per pos periode ' . $data['date'], $data['date'], $result, '\exportTrxPerPos_pdf');
+	}
+
 }

@@ -331,37 +331,6 @@ class EksekutifAction extends BaseController {
         });
     }
 
-    public function rekapposharian_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function rekapposharian_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function rekapposharian_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function rekapposharian_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
     public function sirkulasipenumpang_load()
     {
         parent::_authLoad(function () {

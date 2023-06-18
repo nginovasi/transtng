@@ -1,21 +1,15 @@
+<!-- style internal -->
 <style>
     .select2-container {
         width: 100% !important;
     }
 
-    .ui-datepicker-calendar {
-        display: none;
-    }
-
-    th {
-        border: 1px solid rgba(19, 24, 44, 0.125) !important;
-    }
-    tbody {
-        border: 1px solid rgba(19, 24, 44, 0.125) !important;
-    }
 </style>
+
+<!-- content -->
 <div>
-    <div class="page-hero page-container " id="page-hero">
+    <!-- title -->
+    <div class="page-hero page-container" id="page-hero">
         <div class="padding d-flex">
             <div class="page-title">
                 <h2 class="text-md text-highlight"><?= $page_title ?></h2>
@@ -23,12 +17,14 @@
             <div class="flex"></div>
         </div>
     </div>
-    <div class="page-content page-container" id="page-content">
+
+    <!-- body -->
+    <div class="container page-content page-container" id="page-content">
         <div class="card">
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills no-border" id="tab">
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="true"><i class="fa fa-exchange" aria-hidden="true"></i> Transaksi Harian PTA</a>
+                        <a class="nav-link active" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="true"><i class="fa fa-calendar" aria-hidden="true"></i> Data</a>
                     </li>
                 </ul>
             </div>
@@ -36,57 +32,39 @@
                 <div class="padding">
                     <div class="tab-content">
                         <div class="tab-pane fade active show" id="tab-data" role="tabpanel" aria-labelledby="tab-data">
-                            <form data-plugin="parsley" data-option="{}" id="form" method="post">
-                                <input type="hidden" class="form-control" id="id" name="id" value="" required>
-                                <?= csrf_field(); ?>
-                                <div class="form-group row">
-                                    <div class="input-group input-daterange mb-3 col-md-10">
-                                        <input type="text" class="form-control" name="start" id="startDate" placeholder="Pilih Tanggal Awal" required>
+                            <div class="form-group row">
+                                <div class="input-group mb-3 col-md-3">
+                                    <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                                            <span class="input-group-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar mx-2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                            </span>
                                         </div>
-                                        <input type="text" class="form-control" name="end" id="endDate" placeholder="Pilih Tanggal Akhir" required>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="submit" class="btn btn-primary w-sm" id="simpan"><i class="fa fa-search" aria-hidden="true"></i> Cari</button>
+                                        <input type="text" class="form-control form-control-md date" name="date" id="date" placeholder="Masukkan Tanggal" required autocomplete="off">
                                     </div>
                                 </div>
-                            </form>
-                            <hr class="mt-3">
-                            <h5 class="text-center my-4 text-uppercase" id="periode">Rekap Transaksi Hari Ini</h5>
-                            <table class="table table-striped ">
-                                <thead>
-                                    <tr>
-                                        <th rowspan="2" align="center">No</th>
-                                        <th rowspan="2" align="center">POS</th>
-                                        <th colspan="5" class="text-center">Shift Pagi</th>
-                                        <th colspan="5" class="text-center">Shift Siang</th>
-                                        <th rowspan="2" align="center">Total/POS</th>
-                                    </tr>
-                                    <tr>
-                                        <th>Cash</th>
-                                        <th>Cashless</th>
-                                        <th class="text-center text-wrap">Penjualan &amp;<br>Isi Ulang</th>
-                                        <th>Lain-lain</th>
-                                        <th>Jumlah</th>
-                                        <th>Cash</th>
-                                        <th>Cashless</th>
-                                        <th class="text-center text-wrap">Penjualan &amp;<br>Isi Ulang</th>
-                                        <th>Lain-lain</th>
-                                        <th>Jumlah</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td colspan="13" class="text-center">Tidak ada data</td>
-                                    </tr>
-                                </tbody>
-                                <tfoot class="text-center text-sm fw-lighter text-muted" style="border: 1px solid rgba(19, 24, 44, 0.125) !important;">
-                                    <tr>
-                                        <small><td colspan="13" >Last Update : <?= date('d-m-Y H:i:s') ?></td></small>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                                <div class="form-control-sm mt-n1 col-md-2">
+                                    <button class="btn btn-success btn-transaction" id="btn-transaction">Lihat Transaksi</button>
+                                </div>
+                                <div class="mb-2 col-md-2">
+                                    <div class="btn-group-export" style="display: none;">
+                                        <button class="btn btn-white">Export</button>
+                                        <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
+                                        <div class="dropdown-menu bg-dark" role="menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(93px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                            <a class="dropdown-item" id="download-data-pdf">
+                                                PDF
+                                            </a>    
+                                            <!-- <a class="dropdown-item">
+                                                Excel
+                                            </a> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div id="statistik-rekap-data"></div>
                         </div>
                     </div>
                 </div>
@@ -94,6 +72,8 @@
         </div>
     </div>
 </div>
+
+<!-- script internal -->
 <script type="text/javascript">
     const auth_insert = '<?= $rules->i ?>';
     const auth_edit = '<?= $rules->e ?>';
@@ -103,85 +83,159 @@
     const base_url = '<?= base_url() ?>';
     const url = '<?= base_url() . "/" . uri_segment(0) . "/action/" . uri_segment(1) ?>';
     const url_ajax = '<?= base_url() . "/" . uri_segment(0) . "/ajax" ?>';
-    const url_pdf_pnp = '<?= base_url() . "/" . uri_segment(0) . "/action/pdf/" . uri_segment(1) . "" ?>';
-    const url_excel_pnp = '<?= base_url() . "/" . uri_segment(0) . "/action/excel/" . uri_segment(1) . "" ?>';
+    const url_pdf_jalur = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTrxPerPos" . "" ?>';
 
     var dataStart = 0;
     var coreEvents;
 
+    // init select2
+    const select2Array = [];
+
     $(document).ready(function() {
-        var now = new Date();
-        var day = ("0" + now.getDate()).slice(-2);
-        var month = ("0" + (now.getMonth() + 1)).slice(-2);
-        var today = now.getFullYear() + "-" + (month) + "-" + (day);
-        $('#startDate').val(today);
-        $('#endDate').val(today);
-
-        $('#input-daterange').each(function() {
-            $(this).datepicker('clearDates');
-        });
-
-        $('#startDate').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            startView: 0,
-            endDate: today,
-            orientation: "bottom auto",
-        }).on('changeDate', function(e) {
-            const tanggal = e.format('yyyy-mm-dd');
-            console.log(tanggal);
-            $('span.input-group-text').html('<i class="fa fa-arrows-h" aria-hidden="true"></i>');
-            // your code here...
-        }).on('click', function(e) {
-            $('span.input-group-text').html('<i class="fa fa-long-arrow-left" aria-hidden="true"></i>');
-        })
-
-        $('#endDate').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            startView: 0,
-            endDate: today,
-            orientation: "bottom auto",
-        }).on('changeDate', function(e) {
-            const tanggal = e.format('yyyy-mm-dd');
-            console.log(tanggal);
-            $('span.input-group-text').html('<i class="fa fa-arrows-h" aria-hidden="true"></i>');
-            // your code here...
-        }).on('click', function(e) {
-            $('span.input-group-text').html('<i class="fa fa-long-arrow-right" aria-hidden="true"></i>');
-        })
-
+        // init core event
         coreEvents = new CoreEvents();
         coreEvents.url = url;
         coreEvents.ajax = url_ajax;
         coreEvents.csrf = {
             "<?= csrf_token() ?>": "<?= csrf_hash() ?>"
         };
+
+        // datatable load
         // coreEvents.tableColumn = datatableColumn();
 
+        // insert
         coreEvents.insertHandler = {
-            placeholder: 'Data pegawai berhasil ditambahkan',
-            afterAction: function(result) {}
         }
 
+        // update
         coreEvents.editHandler = {
-            placeholder: 'Data pegawai berhasil diubah',
-            afterAction: function(result) {}
         }
 
+        // delete
         coreEvents.deleteHandler = {
-            placeholder: 'Data pegawai berhasil dihapus',
-            afterAction: function() {}
         }
 
+        // reset
         coreEvents.resetHandler = {
-            action: function() {
-                // reset form
-                $('#form')[0].reset();
-                $('#form').parsley().reset();
-            }
         }
 
-        coreEvents.load(null, [0, 'asc'], null);
+        select2Array.forEach(function(x) {
+            coreEvents.select2Init('#' + x.id, x.url, x.placeholder, x.params);
+        });
+        
+        // coreEvents.load(null, [0, 'asc'], null);
+
+        coreEvents.daterangepicker('#date', 'yyyy-mm-dd')
+
+        $('#download-data-pdf').on('click', function(e) {
+            let date = $('#date').val()
+
+            $(this).attr("href", url_pdf_jalur + '?date=' + date);
+            $(this).attr("target", "_blank");
+        });
+
     });
+
+    $('#btn-transaction').on('click', function() {
+        let date = $('#date').val()
+
+        $.ajax({
+            method: "post",
+            dataType : "json",
+            url: url_ajax + "/getTrxPerPos",
+            data:{
+                <?= csrf_token() ?>: "<?= csrf_hash() ?>",
+                "date": date
+            },
+            success : function (rs) {
+
+                console.info(rs)
+
+                if(rs.success){
+                    $('#statistik-rekap-data').html('')
+
+                    $('.btn-group-export').css('display', 'block')
+
+                    let result = `
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover" id="">
+                                <thead>
+                                    <tr class="border-dark" style="border:1px solid #555255">
+                                        <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">No</th>
+                                        <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">POS</th>
+                                        <th colspan="3" class="text-center border-dark" style="border:1px solid #555255">Shift Pagi</th>
+                                        <th colspan="3" class="text-center border-dark" style="border:1px solid #555255">Shift Malam</th>
+                                        <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Jumlah</th>
+                                    </tr>
+                                    <tr class="border-dark" style="border:1px solid #555255">
+                                        <th class="text-center border-dark" style="border:1px solid #555255">Cash</th>
+                                        <th class="text-center border-dark" style="border:1px solid #555255">Cashless</th>
+                                        <th class="text-center border-dark" style="border:1px solid #555255">Jumlah</th>
+                                        <th class="text-center border-dark" style="border:1px solid #555255">Cash</th>
+                                        <th class="text-center border-dark" style="border:1px solid #555255">Cashless</th>
+                                        <th class="text-center border-dark" style="border:1px solid #555255">Jumlah</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `
+
+                    let ttlTrxCashShiftPagi = 0
+                    let ttlTrxCashlessShiftPagi = 0
+                    let ttlTrxJmlShiftPagi = 0
+                    let ttlTrxCashShiftMalam = 0
+                    let ttlTrxCashlessShiftMalam = 0
+                    let ttlTrxJmlShiftMalam = 0
+                    let ttlTrxJml = 0
+                    $.each(rs.data.result, function(i, val) {
+                        result += `
+                            <tr class="border-dark" style="border:1px solid #555255">
+                                <td class="text-center border-dark" style="border:1px solid #555255">${i + 1}</td>
+                                <td class="text-center border-dark" style="border:1px solid #555255">${val.name}</td>
+                                <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(val.cash_shift_pagi)}</td>
+                                <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(val.cashless_shift_pagi)}</td>
+                                <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(val.jml_shift_pagi)}</td>
+                                <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(val.cash_shift_malam)}</td>
+                                <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(val.cashless_shift_malam)}</td>
+                                <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(val.jml_shift_malam)}</td>
+                                <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(val.jml)}</td>
+                            </tr>
+                        `
+
+                        ttlTrxCashShiftPagi += parseInt(val.cash_shift_pagi)
+                        ttlTrxCashlessShiftPagi += parseInt(val.cashless_shift_pagi)
+                        ttlTrxJmlShiftPagi += parseInt(val.jml_shift_pagi)
+                        ttlTrxCashShiftMalam += parseInt(val.cash_shift_malam)
+                        ttlTrxCashlessShiftMalam += parseInt(val.cashless_shift_malam)
+                        ttlTrxJmlShiftMalam += parseInt(val.jml_shift_malam)
+                        ttlTrxJml += parseInt(val.jml)
+
+                    })
+
+                    result += `</tbody>
+                                <tfoot>
+                                    <td colspan="2" class="text-right font-weight-bold border-dark" style="border:1px solid #555255">Total</td>
+                                    <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(ttlTrxCashShiftPagi)}</td>
+                                    <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(ttlTrxCashlessShiftPagi)}</td>
+                                    <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(ttlTrxJmlShiftPagi)}</td>
+                                    <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(ttlTrxCashShiftMalam)}</td>
+                                    <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(ttlTrxCashlessShiftMalam)}</td>
+                                    <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(ttlTrxJmlShiftMalam)}</td>
+                                    <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(ttlTrxJml)}</td>
+                                </tfoot>
+                            </table>
+                        </div>
+                    `
+
+                    $('#statistik-rekap-data').append(result)
+
+                }
+
+            }
+        })
+    })
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
 </script>
