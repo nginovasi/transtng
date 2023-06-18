@@ -352,4 +352,40 @@ class EksekutifAjax extends BaseController {
         ]);
     }
 
+    public function getTrxPenumpangPerJamJalur() 
+    {
+        $data = $this->request->getPost();
+
+        $dateStart = explode(" - ", $data['date'])[0];
+        $dateEnd = explode(" - ", $data['date'])[1];
+
+        $query = "SELECT tanggal, 
+                    HOUR(jam) AS jam, 
+                    COUNT(id) AS ttl_trx, 
+                    SUM(kredit) AS jml_trx
+                FROM transaksi_bis a
+                WHERE is_dev = 0 ";
+
+        if($data['date']) {
+            $query .= "AND tanggal BETWEEN " . "'" . $dateStart . "'" . " AND " . "'" . $dateEnd . "'" . " ";
+        }
+
+        if($data['jalur_id']) {
+            $query .= "AND jalur = " . $data['jalur_id'] . " ";
+        }
+
+        $query .= "GROUP BY tanggal, HOUR(jam)
+                    ORDER BY tanggal, HOUR(jam)";
+
+        $result = $this->db->query($query)->getResult();
+        
+        echo json_encode([
+            "success" => true, 
+            "message" => "get data success", 
+            "data" => [
+                "result" => $result
+            ]
+        ]);
+    }
+
 }

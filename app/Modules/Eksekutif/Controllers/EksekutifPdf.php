@@ -306,4 +306,48 @@ class EksekutifPdf extends BaseController {
         $this->export('Laporan transaksi per jalur ' . $data['date'], $data['date'], $result, '\exportTransaksiPerJalurDateRangeJalurHalteBis_pdf');
 	}
 
+    function exportTrxPenumpangPerJamJalur(){
+        $data = $this->request->getGet();
+
+        $dateStart = explode(" - ", $data['date'])[0];
+        $dateEnd = explode(" - ", $data['date'])[1];
+
+        $ttlTrx = 0;
+        $jmlTrx = 0;
+
+        $query = "SELECT tanggal, 
+                    HOUR(jam) AS jam, 
+                    COUNT(id) AS ttl_trx, 
+                    SUM(kredit) AS jml_trx
+                FROM transaksi_bis a
+                WHERE is_dev = 0 ";
+
+        if($data['date']) {
+            $query .= "AND tanggal BETWEEN " . "'" . $dateStart . "'" . " AND " . "'" . $dateEnd . "'" . " ";
+        }
+
+        if($data['jalur_id']) {
+            $query .= "AND jalur = " . $data['jalur_id'] . " ";
+        }
+
+        $query .= "GROUP BY tanggal, HOUR(jam)
+                    ORDER BY tanggal, HOUR(jam)";
+
+        $result = $this->db->query($query)->getResult();
+
+        foreach($result as $key => $val) {
+            $ttlTrx += $val->ttl_trx;
+            $jmlTrx += $val->jml_trx;
+        }
+
+        $result = [
+                    "date" => $data['date'],
+                    "result" => $result,
+                    "ttl_trx" => $ttlTrx,
+                    "jml_trx" => $jmlTrx
+                ];
+
+        $this->export('Laporan transaksi per jam & jalur ' . $data['date'], $data['date'], $result, '\exportTrxPenumpangPerJamJalur_pdf');
+	}
+
 }
