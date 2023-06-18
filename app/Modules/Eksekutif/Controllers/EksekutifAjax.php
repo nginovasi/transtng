@@ -70,6 +70,20 @@ class EksekutifAjax extends BaseController {
         parent::_loadSelect2($data, $query, $where);
     }
 
+    public function jalur_id_select_get()
+    {
+        $data = $this->request->getGet();
+
+        $query = "SELECT id, CONCAT(jalur, ' (', rute, ')') as text
+                    FROM ref_jalur 
+                    WHERE is_deleted = 0
+                    AND is_dev = 0";
+        
+        $where = ["jalur", "rute"];
+
+        parent::_loadSelect2($data, $query, $where);
+    }
+
     public function chartinfo30hari() 
     {
         $data = $this->request->getPost();
@@ -283,6 +297,52 @@ class EksekutifAjax extends BaseController {
                                     GROUP BY CONCAT(b.kode_haltebis, ' - ', b.name), a.shift, a.jenis, a.jalur
                                     ")->getResult();
 
+        echo json_encode([
+            "success" => true, 
+            "message" => "get data success", 
+            "data" => [
+                "result" => $result
+            ]
+        ]);
+    }
+
+    public function getTransaksiPerJalurDateRangeJalurHalteBis() 
+    {
+        $data = $this->request->getPost();
+
+        $dateStart = explode(" - ", $data['date'])[0];
+        $dateEnd = explode(" - ", $data['date'])[1];
+
+        $query = "SELECT a.jenis, 
+                        CASE WHEN ttl_trx THEN ttl_trx ELSE 0 END AS ttl_trx,
+                        CASE WHEN jml_trx THEN jml_trx ELSE 0 END AS jml_trx
+                    FROM ref_tarif a
+                    LEFT JOIN (
+                        SELECT jenis,
+                            count(id) as ttl_trx, 
+                            SUM(kredit) AS jml_trx 
+                            FROM transaksi_bis a
+                            WHERE is_dev = 0 ";
+
+        if($data['date']) {
+            $query .= "AND tanggal BETWEEN " . "'" . $dateStart . "'" . " AND " . "'" . $dateEnd . "'" . " ";
+        }
+
+        if($data['jalur_id']) {
+            $query .= "AND jalur = " . $data['jalur_id'] . " ";
+        }
+
+        if($data['jenpos_id']) {
+            $query .= "AND jenpos= " . $data['jenpos_id'] . " ";
+        }
+
+        $query .= "GROUP BY jenis
+                    ) b
+                    ON a.jenis = b.jenis
+                    WHERE is_deleted = 0";
+
+        $result = $this->db->query($query)->getResult();
+        
         echo json_encode([
             "success" => true, 
             "message" => "get data success", 
