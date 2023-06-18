@@ -164,8 +164,6 @@
             },
             success : function (rs) {
 
-                console.info(rs)
-
                 if(rs.success){
                     $('#statistik-rekap-data').html('')
 
