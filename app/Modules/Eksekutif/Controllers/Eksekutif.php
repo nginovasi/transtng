@@ -44,6 +44,10 @@ class Eksekutif extends BaseController {
         return parent::_authView();
     }
 
+    public function grafikkoridor() {
+        return parent::_authView();
+    }
+
     // public function cekmutasikartu() {
     //     return parent::_authView();
     // }
@@ -53,10 +57,6 @@ class Eksekutif extends BaseController {
     }
 
     public function grafikbulanan() {
-        return parent::_authView();
-    }
-
-    public function grafikkoridor() {
         return parent::_authView();
     }
 

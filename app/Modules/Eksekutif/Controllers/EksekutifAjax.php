@@ -512,4 +512,38 @@ class EksekutifAjax extends BaseController {
         ]);
     }
 
+    public function getTrxGrfkPerJalurDateRange() 
+    {
+        $data = $this->request->getPost();
+
+        $dateStart = explode(" - ", $data['date'])[0];
+        $dateEnd = explode(" - ", $data['date'])[1];
+
+        $result = $this->db->query("SELECT b.rute as jalur, 
+                                        a.jenis,
+                                        count(a.id) as ttl_trx, 
+                                        SUM(a.kredit) AS jml_trx 
+                                    FROM transaksi_bis a 
+                                    LEFT JOIN ref_jalur b
+                                        on a.jalur = b.id
+                                    WHERE a.is_dev = 0
+                                    AND a.tanggal BETWEEN " . "'" . $dateStart . "'" . " AND " . "'" . $dateEnd . "'" . "
+                                    GROUP BY a.jenis, a.jalur ORDER BY a.jalur")->getResult();
+
+        $listJalur = $this->db->query("SELECT * 
+                                        FROM ref_jalur
+                                        WHERE is_deleted = 0
+                                        AND is_dev = 0
+                                        ")->getResult();
+
+        echo json_encode([
+            "success" => true, 
+            "message" => "get data success", 
+            "data" => [
+                "result" => $result,
+                "list_jalur" => $listJalur
+            ]
+        ]);
+    }
+
 }
