@@ -15,6 +15,8 @@ class TokenAuthentication implements FilterInterface
         date_default_timezone_set('Asia/Jakarta');
         $env = $_SERVER['CI_ENVIRONMENT'];
         $timestamp = $request->getHeader('X-TIMESTAMP');
+        $deviceId = $request->getHeader("X-DEVICE-ID");
+
         $baseModel = new BaseModel();
         $headers = [];
 
@@ -32,12 +34,20 @@ class TokenAuthentication implements FilterInterface
             "log_user_agent" => get_client_user_agent()
         ];
         
+        if(!isset($deviceId)||$deviceId==null||$deviceId->getValue() == ""){
+            $data["log_result"] = json_encode(["success" => false, "status" => 407, "message" => "X-DEVICE-ID not set", "data" => null]);
+            $baseModel->log_api($data);
+
+            header("HTTP/1.1 401 Unauthorized");
+            die($data["log_result"]);
+        }
+
         if(isset($timestamp) && $timestamp->getValue() != ""){
             $iat = strtotime(date($timestamp->getValue())) + 120;
             $exp = strtotime(date('Y-m-d H:i:s'));
 
             if($exp > $iat){
-                $data["log_result"] = json_encode(["success" => false, "error_code" => "408", "message" => "Request Expired"]);
+                $data["log_result"] = json_encode(["success" => false, "status" => 408, "message" => "Request Expired", "data" => null]);
                 $baseModel->log_api($data);
 
                 header("HTTP/1.1 401 Unauthorized");
@@ -47,7 +57,7 @@ class TokenAuthentication implements FilterInterface
                 // $baseModel->log_api($data);
             }
         }else{
-            $data["log_result"] = json_encode(["success" => false, "error_code" => "409", "message" => "Invalid Request"]);
+            $data["log_result"] = json_encode(["success" => false, "status" => 409, "message" => "X-TIMESTAMP not set", "data" => null]);
             $baseModel->log_api($data);
 
             header("HTTP/1.1 401 Unauthorized");
@@ -80,5 +90,29 @@ class TokenAuthentication implements FilterInterface
         ];
 
         $baseModel->log_api($data);
+    }
+
+    private function signatureService($payload,$client_secret,$timestamp){
+        $minify = json_encode(json_decode($payload));
+        $sha256 = hash('sha256', $minify);
+        $lowercase = strtolower($sha256);
+        $encriptsi = $lowercase;
+        $data = $encriptsi.':'.$timestamp;
+        $encSHA512 = $this->sha512($data,$client_secret);
+
+        $encBase64 = base64_encode($encSHA512);
+
+        return $encBase64;
+    }
+
+    private function sha512($payload,$secret_key){
+        $algo = 'sha512';
+        $signed_payload = hash_hmac(
+             $algo,
+             $payload,
+             $secret_key,
+             true,
+        );
+        return $signed_payload;
     }
 }
