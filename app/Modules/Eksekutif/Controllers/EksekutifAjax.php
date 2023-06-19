@@ -442,5 +442,74 @@ class EksekutifAjax extends BaseController {
         ]);
     }
 
+    public function getTrxGrfkPerjenisHarian() 
+    {
+        $data = $this->request->getPost();
+
+        $result = $this->db->query("SELECT jenis,
+                                        tanggal, 
+                                        CONCAT(HOUR(created_at), ':00 WIB') AS waktu, 
+                                        COUNT(id) AS ttl_trx, 
+                                        SUM(kredit) AS jml_trx
+                                    FROM transaksi_bis
+                                    WHERE is_dev = 0
+                                    AND date(tanggal) = " . "'" . $data['date'] . "'" . "
+                                    GROUP BY jenis, date(created_at), HOUR(created_at)
+                                    ORDER BY HOUR(created_at), jenis, date(created_at)")->getResult();
+
+        echo json_encode([
+            "success" => true, 
+            "message" => "get data success", 
+            "data" => [
+                "result" => $result
+            ]
+        ]);
+    }
+
+    public function getTrxGrfkPerjenisBulanan() 
+    {
+        $data = $this->request->getPost();
+
+        $result = $this->db->query("SELECT jenis, 
+                                        DATE_FORMAT(tanggal,'%d') AS waktu, 
+                                        COUNT(*) AS ttl_trx, 
+                                        SUM(kredit) AS jml_trx
+                                    FROM transaksi_bis a 
+                                    WHERE is_dev = 0
+                                    AND DATE_FORMAT(a.tanggal,'%Y-%m') = " . "'" . $data['date'] . "'" . " AND HOUR(a.Jam) BETWEEN 0 AND 23
+                                    GROUP BY jenis, tanggal
+                                    ORDER BY tanggal, jenis")->getResult();
+
+        echo json_encode([
+            "success" => true, 
+            "message" => "get data success", 
+            "data" => [
+                "result" => $result
+            ]
+        ]);
+    }
+
+    public function getTrxGrfkPerjenisTahunan() 
+    {
+        $data = $this->request->getPost();
+
+        $result = $this->db->query("SELECT jenis, 
+                                        MONTH(tanggal) AS waktu, 
+                                        COUNT(id) AS ttl_trx, 
+                                        SUM(kredit) AS jml_trx 
+                                    FROM transaksi_bis a 
+                                    WHERE is_dev = 0
+                                    AND YEAR(tanggal) = " . "'" . $data['date'] . "'" . " AND HOUR(jam) BETWEEN 0 AND 23 
+                                    GROUP BY jenis, month(tanggal)
+                                    ORDER BY month(tanggal), jenis")->getResult();
+
+        echo json_encode([
+            "success" => true, 
+            "message" => "get data success", 
+            "data" => [
+                "result" => $result
+            ]
+        ]);
+    }
 
 }
