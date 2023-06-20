@@ -126,38 +126,12 @@ class AdministratorAction extends BaseController
     {
         parent::_authLoad(function () {
             $user = $this->db->query('select * from m_user_web where id = ' . $this->session->get('id'))->getRow();
-
-            if ($user->instansi_detail_id != null) {
-                $query = "select a.*, b.user_web_role_name, c.instansi_detail_name 
-                            from m_user_web a
-                            join (
-                                select a.id, a.instansi_detail_name 
-                                from m_instansi_detail a
-                                join (
-                                    select b.*
-                                    from m_user_web a
-                                    join m_instansi_detail b
-                                    on a.instansi_detail_id = b.id
-                                    where a.id = " . $user->id . "
-                                    and b.is_deleted = 0
-                                ) b
-                                on a.instansi_detail_id = b.id
-                                where a.is_deleted = 0
-                            ) d
-                            on a.instansi_detail_id = d.id
-                            left join s_user_web_role b 
-                            on a.user_web_role_id = b.id
-                            left join m_instansi_detail c 
-                            on a.instansi_detail_id = c.id
-                            where a.is_deleted = 0";
-            } else {
-                $query = "SELECT a.*, b.user_web_role_name
+            $query = "SELECT a.*, b.user_web_role_name
                             FROM m_user_web a
                             LEFT JOIN s_user_web_role b ON b.id = a.user_web_role_id
                             WHERE a.is_deleted = 0";
-            }
 
-            $where = ["a.user_web_name", "a.user_web_username", "a.user_web_email", "b.user_web_role_name", "c.instansi_detail_name"];
+            $where = ["a.user_web_name", "a.user_web_username", "a.user_web_email", "b.user_web_role_name"];
 
             parent::_loadDatatable($query, $where, $this->request->getPost());
         });
