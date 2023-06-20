@@ -1,18 +1,14 @@
+<!-- style internal -->
 <style>
     .select2-container {
         width: 100% !important;
     }
-
-    .cekpta-menu {
-        position: absolute;
-        transform: translate3d(-60px, 34px, 0px) !important;
-        top: -107px !important;
-        left: 0px;
-        will-change: transform;
-    }
 </style>
+
+<!-- content -->
 <div>
-    <div class="page-hero page-container " id="page-hero">
+    <!-- title -->
+    <div class="page-hero page-container" id="page-hero">
         <div class="padding d-flex">
             <div class="page-title">
                 <h2 class="text-md text-highlight"><?= $page_title ?></h2>
@@ -20,45 +16,33 @@
             <div class="flex"></div>
         </div>
     </div>
-    <div class="page-content page-container" id="page-content">
+
+    <!-- body -->
+    <div class="container page-content page-container" id="page-content">
         <div class="card">
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills no-border" id="tab">
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="true"><i class="fa fa-list-alt" aria-hidden="true"></i> Daftar</a>
+                        <a class="nav-link active" id="nav-data" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="false"><i class="fa fa-list"></i> Transaksi Per Jalur</a>
                     </li>
                 </ul>
             </div>
             <div class="card-body">
                 <div class="padding">
                     <div class="tab-content">
+                        <div class="form-group row">
+                        </div>
                         <div class="tab-pane fade active show" id="tab-data" role="tabpanel" aria-labelledby="tab-data">
-                            <!-- <form data-plugin="parsley" data-option="{}" id="form" method="post">
-                                <input type="hidden" class="form-control" id="id" name="id" value="" required>
-                                <?= csrf_field(); ?>
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="pilihtanggal" name="pilihtanggal" placeholder="Tanggal" required>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fa fa-calendar" aria-hidden="true"></i></span>
-                                    </div>
-                                </div>
-                            </form>
-                            <hr class="mt-3"> -->
-                            <div class="btn-group pull-right" id="cekpta_group" hidden>
-                                <div class="btn-group dropdown">
-                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                                        <i class="fa fa-download" aria-hidden="true"></i> Export
-                                    </button>
-                                    <ul class="dropdown-menu cekpta-menu" x-placement="bottom-start">
-                                        <li class="dropdown-item">
-                                            <a id="dncekptaExcel" href="#"><i class="fa fa-file-excel-o" style="color: #1e7e34;"></i> Unduh Excel</a>
-                                        </li>
-                                        <li class="dropdown-item">
-                                            <a id="dncekptaPdf" href="#"><i class="fa fa-file-pdf-o" style="color: #dc3545;"></i> Unduh PDF</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+                            <div id="chartdiv1" style="min-height: 500px"></div>
+                            <table class="table table-striped table-bordered table-hover" id="tabel_pta" style="display: none;">
+                                <thead>
+                                    <tr class="border-dark" style="border:1px solid #555255">
+                                        <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">No</th>
+                                        <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Tanggal</th>
+                                        <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Jumlah Alat Aktif</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -66,6 +50,14 @@
         </div>
     </div>
 </div>
+
+<!-- script external -->
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<!-- script internal -->
 <script type="text/javascript">
     const auth_insert = '<?= $rules->i ?>';
     const auth_edit = '<?= $rules->e ?>';
@@ -75,122 +67,202 @@
     const base_url = '<?= base_url() ?>';
     const url = '<?= base_url() . "/" . uri_segment(0) . "/action/" . uri_segment(1) ?>';
     const url_ajax = '<?= base_url() . "/" . uri_segment(0) . "/ajax" ?>';
-    const url_pdf_pnp = '<?= base_url() . "/" . uri_segment(0) . "/action/pdf/" . uri_segment(1) . "" ?>';
-    const url_excel_pnp = '<?= base_url() . "/" . uri_segment(0) . "/action/excel/" . uri_segment(1) . "" ?>';
 
     var dataStart = 0;
     var coreEvents;
 
-    $(document).ready(function() {
-        var now = new Date();
-        var day = ("0" + now.getDate()).slice(-2);
-        var month = ("0" + (now.getMonth() + 1)).slice(-2);
-        var today = now.getFullYear() + "-" + (month) + "-" + (day);
-        $('#pilihtanggal').val(today);
-        $('#pilihtanggal').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            todayHighlight: false,
-            endDate: today,
-            startView: 0,
-            orientation: "bottom auto",
-        }).on('changeDate', function(e) {
-            const tanggal = e.format('yyyy-mm-dd');
-            $('#cekpta-group').attr('hidden', 'hidden');
-            $.ajax({
-                url: url_ajax + '/loadtransaksipta',
-                type: 'POST',
-                data: {
-                    tanggal: tanggal,
-                    <?= csrf_token() ?>: '<?= csrf_hash() ?>'
-                },
-                dataType: 'json',
-                success: function(data) {
-                    console.log(data);
-                    $('#cekpta-group').removeAttr('hidden');
-                    $('#dncekptaExcel').attr('href', url_excel_pnp + '?tanggal=' + tanggal);
-                    $('#dncekptaPdf').attr('href', url_pdf_pnp + '?tanggal=' + tanggal);
-                },
-                error: function(xhr, status, error) {
-                    console.log(xhr.responseText);
-                }
-            });
-        });
+    var chart1 = null;
+    var chart2 = null;
 
+    // init select2
+    const select2Array = [{
+        id: 'haltebis_id',
+        url: '/haltebis_id_per_pendapatan30d_select_get',
+        placeholder: 'Pilih Halte/Bis',
+        params: null
+    }];
+
+    $(document).ready(function() {
+        // init core event
         coreEvents = new CoreEvents();
         coreEvents.url = url;
         coreEvents.ajax = url_ajax;
         coreEvents.csrf = {
             "<?= csrf_token() ?>": "<?= csrf_hash() ?>"
         };
+
+        // datatable load
         // coreEvents.tableColumn = datatableColumn();
 
-        coreEvents.insertHandler = {
-            placeholder: 'Data pegawai berhasil ditambahkan',
-            afterAction: function(result) {}
-        }
+        // insert
+        coreEvents.insertHandler = {}
 
-        coreEvents.editHandler = {
-            placeholder: 'Data pegawai berhasil diubah',
-            afterAction: function(result) {}
-        }
+        // update
+        coreEvents.editHandler = {}
 
-        coreEvents.deleteHandler = {
-            placeholder: 'Data pegawai berhasil dihapus',
-            afterAction: function() {}
-        }
+        // delete
+        coreEvents.deleteHandler = {}
 
-        coreEvents.resetHandler = {
-            action: function() {
-                // reset form
-                $('#form')[0].reset();
-                $('#form').parsley().reset();
-            }
-        }
+        // reset
+        coreEvents.resetHandler = {}
 
-        coreEvents.load(null, [0, 'asc'], null);
+        select2Array.forEach(function(x) {
+            coreEvents.select2InitCtmListHalteBisPendapatan('#' + x.id, x.url, x.placeholder, x.params);
+        });
+
+        // coreEvents.load(null, [0, 'asc'], null);
+
+        loadGraph()
     });
 
-    // function datatableColumn() {
-    //     let columns = [{
-    //             data: "id",
-    //             orderable: false,
-    //             width: 100,
-    //             render: function(a, type, data, index) {
-    //                 return dataStart + index.row + 1
-    //             }
-    //         },
-    //         {
-    //             data: "fullname",
-    //             orderable: true
-    //         },
-    //         {
-    //             data: "telp",
-    //             orderable: true
-    //         },
-    //         {
-    //             data: "id",
-    //             orderable: false,
-    //             width: 100,
-    //             render: function(a, type, data, index) {
-    //                 let button = ''
+    $('#haltebis_id').on('change', function() {
+        loadGraph()
+    })
 
-    //                 if (auth_edit == "1") {
-    //                     button += '<button class="btn btn-sm btn-outline-primary edit" data-id="' + data.id + '" title="Edit">\
-    //                                 <i class="fa fa-edit"></i></button>';
-    //                 }
+    function loadGraph() {
+        var haltebis_id = $('#haltebis_id').val();
 
-    //                 if (auth_delete == "1") {
-    //                     button += '<button class="btn btn-sm btn-outline-danger delete" data-id="' + data.id + '" title="Delete">\
-    //                                     <i class="fa fa-trash-o"></i></button></div>';
-    //                 }
+        //start loader
+        // loaderStart();
 
-    //                 button += (button == '') ? "<b>Tidak ada aksi</b>" : ""
+        $.ajax({
+            method: "post",
+            dataType: "json",
+            url: url_ajax + "/loadalataktif30hari",
+            data: {
+                <?= csrf_token() ?>: "<?= csrf_hash() ?>"
+            },
+            success: function(rs) {
+                if (rs.success) {
+                    var alataktif = [];
+                    var tanggalarray = [];
 
-    //                 return button;
-    //             }
-    //         }
-    //     ];
-    //     return columns;
-    // }
+                    rs['data'].forEach(function(data) {
+                        alataktif.push(parseInt(data.alataktif));
+                        tanggalarray.push(data.tanggal);
+                    });
+
+                    var options1 = {
+                        series: [{
+                            name: "Jumlah alat aktif",
+                            data: alataktif
+                        }],
+                        chart: {
+                            height: 350,
+                            type: 'line',
+                            dropShadow: {
+                                enabled: true,
+                                color: '#000',
+                                top: 18,
+                                left: 7,
+                                blur: 10,
+                                opacity: 0.2
+                            },
+                            toolbar: {
+                                show: true
+                            },
+                            offsetX: 20
+                        },
+                        colors: ['#77B6EA', '#545454'],
+                        dataLabels: {
+                            enabled: true,
+                            formatter: function(val, {
+                                seriesIndex,
+                                dataPointIndex,
+                                w
+                            }) {
+                                return numberWithCommas(val)
+                            }
+                        },
+                        stroke: {
+                            curve: 'smooth'
+                        },
+                        title: {
+                            text: 'Grafik Pendapatan',
+                            align: 'left'
+                        },
+                        grid: {
+                            borderColor: '#e7e7e7',
+                            row: {
+                                colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                                opacity: 0.5
+                            },
+                            padding: {
+                                top: 0,
+                                right: 50,
+                                bottom: 0,
+                                left: 50
+                            }
+                        },
+                        markers: {
+                            size: 1
+                        },
+                        xaxis: {
+                            categories: tanggalarray,
+                            title: {
+                                text: 'Tanggal'
+                            },
+                            labels: {
+                                rotate: -45
+                            }
+                        },
+                        yaxis: {
+                            title: {
+                                text: 'Kredit'
+                            },
+                            labels: {
+                                formatter: function(val, index) {
+                                    return numberWithCommas(val);
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                            horizontalAlign: 'right',
+                            floating: true,
+                            offsetY: -25,
+                            offsetX: -5
+                        }
+                    };
+
+                    $('#chartdiv1').empty();
+
+                    if (chart1 != null) {
+                        chart1.destroy();
+                    }
+
+                    chart1 = new ApexCharts(document.querySelector("#chartdiv1"), options1);
+
+                    chart1.render();
+
+                    $('#tabel_pta').show();
+                    $('#tgl_export_action').show();
+                    $("#tabel_pta").find("tr:gt(0)").remove();
+                    $.each(rs.data, function(index, value) {
+                        var result = `
+                            <tr class="border-dark">
+                                <td class="border-dark text-center" class="text-center">${index + 1 }</td>
+                                <td class="border-dark text-center" class="text-center">${value.tanggal}</td>
+                                <td class="border-dark text-center">${value.alataktif}</td>
+                            </tr>
+                        `;
+
+                        $("#tabel_pta").append(result);
+                    });
+
+                } else {
+                    $("#tabel_pta").find("tr:gt(0)").remove();
+                    $('#tabel_pta').css('display', 'none');
+                    $("#tgl_export_action").css('display', 'none');
+                    swal("Belum ada data \nuntuk filter ini", {
+                        icon: "error"
+                    });
+                }
+            }
+        })
+    }
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 </script>
