@@ -91,28 +91,4 @@ class TokenAuthentication implements FilterInterface
 
         $baseModel->log_api($data);
     }
-
-    private function signatureService($payload,$client_secret,$timestamp){
-        $minify = json_encode(json_decode($payload));
-        $sha256 = hash('sha256', $minify);
-        $lowercase = strtolower($sha256);
-        $encriptsi = $lowercase;
-        $data = $encriptsi.':'.$timestamp;
-        $encSHA512 = $this->sha512($data,$client_secret);
-
-        $encBase64 = base64_encode($encSHA512);
-
-        return $encBase64;
-    }
-
-    private function sha512($payload,$secret_key){
-        $algo = 'sha512';
-        $signed_payload = hash_hmac(
-             $algo,
-             $payload,
-             $secret_key,
-             true,
-        );
-        return $signed_payload;
-    }
 }
