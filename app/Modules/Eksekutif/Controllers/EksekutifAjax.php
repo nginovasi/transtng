@@ -96,5 +96,24 @@ class EksekutifAjax extends BaseController {
         ]);
     }
 
+    public function loadalataktif30hari() {
+        $data = $this->request->getPost();
+        $query = "SELECT a.tanggal, count(*) AS alataktif
+                    FROM
+                        (
+                            SELECT tanggal, imei
+                            FROM transaksi_bis a
+                            WHERE a.tanggal BETWEEN date_add(curdate(), INTERVAL -30 DAY) AND curdate()
+                            GROUP BY a.tanggal, a.imei
+                        ) a
+                    GROUP BY a.tanggal
+                    ORDER BY a.tanggal desc";
 
+        $result = $this->db->query($query)->getResult();
+        echo json_encode([
+            "success" => true, 
+            "message" => "get data success", 
+            "data" => $result
+        ]);
+    }
 }
