@@ -206,6 +206,7 @@ class TicketingDev extends BaseController
         $arrDataTrx = json_decode($this->request->getBody());
         $arrNoTrx = array();
         // print_r($arrDataTrx);
+        
         foreach ($arrDataTrx as $data) {
             $this->db->transStart();
             $nomor_kartu = $data->nomor_kartu;
