@@ -52,37 +52,6 @@ class EksekutifAction extends BaseController {
         echo view("Eksekutif/Views/$url", $data);
     }
 
-    public function info30haritransaksi_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    // public function info30haritransaksi_save()
-    // {
-    //     parent::_authInsert(function () {
-    //         // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-    //     });
-    // }
-
-    // public function info30haritransaksi_edit()
-    // {
-    //     parent::_authEdit(function () {
-    //         // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-    //     });
-    // }
-
-    // public function info30haritransaksi_delete()
-    // {
-    //     parent::_authDelete(function () {
-    //         // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-    //     });
-    // }
-
     public function cekmutasikartu_load()
     {
         parent::_authLoad(function () {
@@ -108,37 +77,6 @@ class EksekutifAction extends BaseController {
     }
 
     public function cekmutasikartu_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function cekpta_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function cekpta_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function cekpta_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function cekpta_delete()
     {
         parent::_authDelete(function () {
             // parent::_delete('ref_narasi_tiket', $this->request->getPost());
@@ -176,68 +114,6 @@ class EksekutifAction extends BaseController {
         });
     }
 
-    public function grafikkoridor_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function grafikkoridor_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function grafikkoridor_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function grafikkoridor_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function grafiktransaksimesinkartu_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function grafiktransaksimesinkartu_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function grafiktransaksimesinkartu_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function grafiktransaksimesinkartu_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
     public function lapdatakartubaru_load()
     {
         parent::_authLoad(function () {
@@ -263,68 +139,6 @@ class EksekutifAction extends BaseController {
     }
 
     public function lapdatakartubaru_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function lapkoridor_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function lapkoridor_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function lapkoridor_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function lapkoridor_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function lappenumpangjamkor_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function lappenumpangjamkor_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function lappenumpangjamkor_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function lappenumpangjamkor_delete()
     {
         parent::_authDelete(function () {
             // parent::_delete('ref_narasi_tiket', $this->request->getPost());
@@ -393,37 +207,6 @@ class EksekutifAction extends BaseController {
         });
     }
 
-    public function laptransaksimesinkartu_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function laptransaksimesinkartu_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function laptransaksimesinkartu_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function laptransaksimesinkartu_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
     public function logalataktif_load()
     {
         parent::_authLoad(function () {
@@ -480,37 +263,6 @@ class EksekutifAction extends BaseController {
     }
 
     public function pembaruankartu_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function rekapposharian_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function rekapposharian_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function rekapposharian_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function rekapposharian_delete()
     {
         parent::_authDelete(function () {
             // parent::_delete('ref_narasi_tiket', $this->request->getPost());

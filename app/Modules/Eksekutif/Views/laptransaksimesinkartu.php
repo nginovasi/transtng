@@ -1,14 +1,15 @@
+<!-- style internal -->
 <style>
     .select2-container {
         width: 100% !important;
     }
 
-    .ui-datepicker-calendar {
-        display: none;
-    }
 </style>
+
+<!-- content -->
 <div>
-    <div class="page-hero page-container " id="page-hero">
+    <!-- title -->
+    <div class="page-hero page-container" id="page-hero">
         <div class="padding d-flex">
             <div class="page-title">
                 <h2 class="text-md text-highlight"><?= $page_title ?></h2>
@@ -16,18 +17,20 @@
             <div class="flex"></div>
         </div>
     </div>
-    <div class="page-content page-container" id="page-content">
+
+    <!-- body -->
+    <div class="container page-content page-container" id="page-content">
         <div class="card">
             <div class="card-header">
-            <ul class="nav nav-pills card-header-pills no-border" id="tab">
+                <ul class="nav nav-pills card-header-pills no-border" id="tab">
                     <li class="nav-item">
                         <a class="nav-link active" data-toggle="tab" href="#tab-data-harian" role="tab" aria-controls="tab-data-harian" aria-selected="true"><i class="fa fa-calendar" aria-hidden="true"></i> Harian</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#tab-data-bulan" role="tab" aria-controls="tab-data-bulan" aria-selected="false"><i class="fa fa-calendar-o" aria-hidden="true"></i> Bulanan</a>
+                        <a class="nav-link" data-toggle="tab" href="#tab-data-bulan" role="tab" aria-controls="tab-data-bulan" aria-selected="false"><i class="fa fa-calendar" aria-hidden="true"></i> Bulanan</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#tab-data-tahun" role="tab" aria-controls="tab-data-tahun" aria-selected="false"><i class="fa fa-calendar-o" aria-hidden="true"></i> Tahunan</a>
+                        <a class="nav-link" data-toggle="tab" href="#tab-data-tahun" role="tab" aria-controls="tab-data-tahun" aria-selected="false"><i class="fa fa-calendar" aria-hidden="true"></i> Tahunan</a>
                     </li>
                 </ul>
             </div>
@@ -35,91 +38,102 @@
                 <div class="padding">
                     <div class="tab-content">
                         <div class="tab-pane fade active show" id="tab-data-harian" role="tabpanel" aria-labelledby="tab-data-harian">
-                            <form data-plugin="parsley" data-option="{}" id="form" method="post">
-                                <input type="hidden" class="form-control" id="id" name="id" value="" required>
-                                <?= csrf_field(); ?>
-                                <div class="form-group row d-flex">
-                                    <div class="col-md-4">
-                                        <div class="input-group mb-3">
-                                            <input type="text" class="form-control" id="pilihtanggal" name="pilihtanggal" placeholder="Pilih Tanggal" required>
-                                            <div class="input-group-append">
-                                                <span class="input-group-text"><i class="fa fa-calendar" aria-hidden="true"></i></span>
-                                            </div>
+                            <div class="form-group row">
+                                <div class="input-group mb-3 col-lg-4">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar mx-2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                            </span>
                                         </div>
+                                        <input type="text" class="form-control form-control-md date" name="date-harian" id="date-harian" placeholder="Masukkan Tanggal" required autocomplete="off">
                                     </div>
-                                    <div class="col-md-4"></div>
-                                    <div class="col-md-4">
-                                        <div class="form-group row ">
-                                            <label class="col-sm-10 col-form-label text-right">Tampilkan Transaksi Test</label>
-                                            <div class="col-sm-2">
-                                                <label class="ui-switch ui-switch-lg dark mt-1 mr-2">
-                                                    <input type="checkbox" id="isTestHarian" name="isTest" value="true">
-                                                    <i></i>
-                                                </label>
-                                            </div>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="btn-group-harian" style="display: none;">
+                                        <button class="btn btn-white">Export</button>
+                                        <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
+                                        <div class="dropdown-menu bg-dark" role="menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(93px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                            <a class="dropdown-item" id="download-harian-pdf">
+                                                PDF
+                                            </a>    
+                                            <!-- <a class="dropdown-item">
+                                                Excel
+                                            </a> -->
                                         </div>
                                     </div>
                                 </div>
-                            </form>
-                            <hr class="mt-3">
+                            </div>
+
+                            <hr>
+
+                            <div id="statistik-rekap-harian"></div>
                         </div>
                         <div class="tab-pane fade" id="tab-data-bulan" role="tabpanel" aria-labelledby="tab-data-bulan">
-                            <form data-plugin="parsley" data-option="{}" id="form" method="post">
-                                <input type="hidden" class="form-control" id="id" name="id" value="" required>
-                                <?= csrf_field(); ?>
-                                <div class="form-group row d-flex">
-                                    <div class="col-md-4">
-                                        <div class="input-group mb-3">
-                                        <input type="text" class="form-control" id="pilihbulan" name="pilihbulan" placeholder="Pilih bulan" required>
-                                            <div class="input-group-append">
-                                                <span class="input-group-text"><i class="fa fa-calendar" aria-hidden="true"></i></span>
-                                            </div>
+                            <div class="form-group row">
+                                <div class="input-group mb-3 col-lg-4">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar mx-2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                            </span>
                                         </div>
+                                        <input type="text" class="form-control form-control-md date" name="date-bulanan" id="date-bulanan" placeholder="Masukkan Bulan" required autocomplete="off">
                                     </div>
-                                    <div class="col-md-4"></div>
-                                    <div class="col-md-4">
-                                        <div class="form-group row ">
-                                            <label class="col-sm-10 col-form-label text-right">Tampilkan Transaksi Test</label>
-                                            <div class="col-sm-2">
-                                                <label class="ui-switch ui-switch-lg dark mt-1 mr-2">
-                                                    <input type="checkbox" id="isTestHarian" name="isTest" value="true">
-                                                    <i></i>
-                                                </label>
-                                            </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <div class="btn-group-bulanan" style="display: none;">
+                                        <button class="btn btn-white">Export</button>
+                                        <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
+                                        <div class="dropdown-menu bg-dark" role="menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(93px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                            <a class="dropdown-item" id="download-bulanan-pdf">
+                                                PDF
+                                            </a>    
+                                            <!-- <a class="dropdown-item">
+                                                Excel
+                                            </a> -->
                                         </div>
                                     </div>
                                 </div>
-                            </form>
-                            <hr class="mt-3">
+                            </div>
+
+                            <hr>
+
+                            <div id="statistik-rekap-bulanan"></div>
                         </div>
                         <div class="tab-pane fade" id="tab-data-tahun" role="tabpanel" aria-labelledby="tab-data-tahun">
-                            <form data-plugin="parsley" data-option="{}" id="form" method="post">
-                                <input type="hidden" class="form-control" id="id" name="id" value="" required>
-                                <?= csrf_field(); ?>
-                                <div class="form-group row d-flex">
-                                    <div class="col-md-4">
-                                        <div class="input-group mb-3">
-                                        <input type="text" class="form-control" id="pilihtahun" name="pilihtahun" placeholder="Pilih Tahun" required>
-                                            <div class="input-group-append">
-                                                <span class="input-group-text"><i class="fa fa-calendar" aria-hidden="true"></i></span>
-                                            </div>
+                            <div class="form-group row">
+                                <div class="input-group mb-3 col-lg-4">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar mx-2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                            </span>
                                         </div>
+                                        <input type="text" class="form-control form-control-md date" name="date-tahunan" id="date-tahunan" placeholder="Masukkan Tahun" required autocomplete="off">
                                     </div>
-                                    <div class="col-md-4"></div>
-                                    <div class="col-md-4">
-                                        <div class="form-group row ">
-                                            <label class="col-sm-10 col-form-label text-right">Tampilkan Transaksi Test</label>
-                                            <div class="col-sm-2">
-                                                <label class="ui-switch ui-switch-lg dark mt-1 mr-2">
-                                                    <input type="checkbox" id="isTestHarian" name="isTest" value="true">
-                                                    <i></i>
-                                                </label>
-                                            </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <div class="btn-group-tahunan" style="display: none;">
+                                        <button class="btn btn-white">Export</button>
+                                        <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
+                                        <div class="dropdown-menu bg-dark" role="menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(93px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                            <a class="dropdown-item" id="download-tahunan-pdf">
+                                                PDF
+                                            </a>    
+                                            <!-- <a class="dropdown-item">
+                                                Excel
+                                            </a> -->
                                         </div>
                                     </div>
                                 </div>
-                            </form>
-                            <hr class="mt-3">
+                            </div>
+
+                            <hr>
+
+                            <div id="statistik-rekap-tahunan"></div>
                         </div>
                     </div>
                 </div>
@@ -127,6 +141,8 @@
         </div>
     </div>
 </div>
+
+<!-- script internal -->
 <script type="text/javascript">
     const auth_insert = '<?= $rules->i ?>';
     const auth_edit = '<?= $rules->e ?>';
@@ -136,85 +152,376 @@
     const base_url = '<?= base_url() ?>';
     const url = '<?= base_url() . "/" . uri_segment(0) . "/action/" . uri_segment(1) ?>';
     const url_ajax = '<?= base_url() . "/" . uri_segment(0) . "/ajax" ?>';
-    const url_pdf_pnp = '<?= base_url() . "/" . uri_segment(0) . "/action/pdf/" . uri_segment(1) . "" ?>';
-    const url_excel_pnp = '<?= base_url() . "/" . uri_segment(0) . "/action/excel/" . uri_segment(1) . "" ?>';
+    const url_pdf_harian = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTransaksiPerJenisHarian" . "" ?>';
+    const url_pdf_bulanan = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTransaksiPerJenisBulanan" . "" ?>';
+    const url_pdf_tahunan = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTransaksiPerJenisTahunan" . "" ?>';
 
     var dataStart = 0;
     var coreEvents;
 
+    // init select2
+    const select2Array = [
+    ];
+
     $(document).ready(function() {
-        var now = new Date();
-        var day = ("0" + now.getDate()).slice(-2);
-        var month = ("0" + (now.getMonth() + 1)).slice(-2);
-        var today = now.getFullYear() + "-" + (month) + "-" + (day);
-        
-        $('#pilihtanggal').datepicker({
-            format: 'DD dd',
-            autoclose: true,
-            todayHighlight: true,
-            endDate: today,
-            minViewMode: 0,
-            orientation: "bottom auto",
-        }).on('changeDate', function(e) {
-            const tanggal = e.format('yyyy-mm-dd');
-            // your code here...
-        });
-
-        $('#pilihbulan').datepicker({
-            format: 'MM',
-            autoclose: true,
-            todayHighlight: true,
-            endDate: today,
-            minViewMode: 1,
-            orientation: "bottom auto",
-        }).on('changeDate', function(e) {
-            const bulan = e.format('mm');
-            // your code here...
-        });
-
-        $('#pilihtahun').datepicker({
-            format: 'yyyy',
-            autoclose: true,
-            todayHighlight: true,
-            endDate: today,
-            minViewMode: 2,
-            orientation: "bottom auto",
-        }).on('changeDate', function(e) {
-            const tahun = e.format('yyyy');
-            // your code here...
-        });
-
+        // init core event
         coreEvents = new CoreEvents();
         coreEvents.url = url;
         coreEvents.ajax = url_ajax;
         coreEvents.csrf = {
             "<?= csrf_token() ?>": "<?= csrf_hash() ?>"
         };
+
+        // datatable load
         // coreEvents.tableColumn = datatableColumn();
 
+        // insert
         coreEvents.insertHandler = {
-            placeholder: 'Data pegawai berhasil ditambahkan',
-            afterAction: function(result) {}
         }
 
+        // update
         coreEvents.editHandler = {
-            placeholder: 'Data pegawai berhasil diubah',
-            afterAction: function(result) {}
         }
 
+        // delete
         coreEvents.deleteHandler = {
-            placeholder: 'Data pegawai berhasil dihapus',
-            afterAction: function() {}
         }
 
+        // reset
         coreEvents.resetHandler = {
-            action: function() {
-                // reset form
-                $('#form')[0].reset();
-                $('#form').parsley().reset();
-            }
         }
 
-        coreEvents.load(null, [0, 'asc'], null);
+        select2Array.forEach(function(x) {
+            coreEvents.select2InitCtmListHalteBisPendapatan('#' + x.id, x.url, x.placeholder, x.params);
+        });
+        
+        // coreEvents.load(null, [0, 'asc'], null);
+
+        coreEvents.datepicker('#date-harian', 'yyyy-mm-dd')
+
+        $('#download-harian-pdf').on('click', function(e) {
+            let dateHarian = $('#date-harian').val()
+
+            $(this).attr("href", url_pdf_harian + '?date=' + dateHarian + '');
+            $(this).attr("target", "_blank");
+        });
+
+        coreEvents.datepickermonthly('#date-bulanan', 'yyyy-mm')
+
+        $('#download-bulanan-pdf').on('click', function(e) {
+            let dateBulanan = $('#date-bulanan').val()
+
+            $(this).attr("href", url_pdf_bulanan + '?date=' + dateBulanan + '');
+            $(this).attr("target", "_blank");
+        });
+
+        coreEvents.datepickeryears('#date-tahunan', 'yyyy')
+
+        $('#download-tahunan-pdf').on('click', function(e) {
+            let dateTahunan = $('#date-tahunan').val()
+
+            $(this).attr("href", url_pdf_tahunan + '?date=' + dateTahunan + '');
+            $(this).attr("target", "_blank");
+        });
+
     });
+
+    $('#date-harian').on('change', function() {
+        let date = $(this).val()
+
+        $.ajax({
+            method: "post",
+            dataType : "json",
+            url: url_ajax + "/getTransaksiPerjenisHarian",
+            data:{
+                <?= csrf_token() ?>: "<?= csrf_hash() ?>",
+                "date": date,
+                
+            },
+            success : function (rs) {
+
+                if(rs.success){
+                    $('#statistik-rekap-harian').html('')
+
+                    $('.btn-group-harian').css('display', 'block')
+
+                    let result = `
+                        <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover" id="">
+                            <thead>
+                                <tr class="border-dark" style="border:1px solid #555255">
+                                    <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Jenis Transaksi</th>
+                                    <th colspan="${rs.data.total_per_date.length}" class="text-center border-dark" style="border:1px solid #555255">Jam</th>
+                                    <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Total Trans</th>
+                                    <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Total Rupiah</th>
+                                </tr>
+                                <tr>
+                    `
+
+                    $.each(rs.data.total_per_date, function(i, val){
+                        result += `
+                            <th class="text-center border-dark" style="border:1px solid #555255">${i}</th>
+                        `
+                    })
+
+                    result += `
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `
+
+                    $.each(rs.data.jenis, function(i, val){
+                        result += `
+                                <tr class="border-dark" style="border:1px solid #555255">
+                                    <th class="text-center border-dark" style="border:1px solid #555255">${val.jenis}</th>
+                        `
+
+                        
+                        let ttl_trx = 0;
+                        let jml_trx = 0;
+                        for (let n = 0; n < rs.data.total_per_date.length; n++) {
+                            result += `
+                                <th class="text-center border-dark" style="border:1px solid #555255">${rs.data.result['ttl_trx'][val.jenis] ? (rs.data.result['ttl_trx'][val.jenis][n] ? rs.data.result['ttl_trx'][val.jenis][n] : 0) : 0 }</th>
+                            `
+
+                            ttl_trx += parseInt(rs.data.result['ttl_trx'][val.jenis] ? (rs.data.result['ttl_trx'][val.jenis][n] ? rs.data.result['ttl_trx'][val.jenis][n] : 0) : 0)
+                            jml_trx += parseInt(rs.data.result['jml_trx'][val.jenis] ? (rs.data.result['jml_trx'][val.jenis][n] ? rs.data.result['jml_trx'][val.jenis][n] : 0) : 0)
+                        }
+
+                        result += `
+                                    <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(ttl_trx)}</th>
+                                    <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(jml_trx)}</th>
+                                </tr>
+                            `
+                    })
+
+                    result += `
+                                    </tbody>
+                                <tfoot>
+                            <th class="text-center border-dark" style="border:1px solid #555255">Total</th>
+                    `
+
+                    for (let n = 0; n < rs.data.total_per_date.length; n++) {
+                        result += `
+                            <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(rs.data.total_per_date[n])}</th>
+                        `
+                    }
+
+                    result += `
+                                    <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(rs.data.ttl_trx)}</th>
+                                    <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(rs.data.jml_trx)}</th>
+                                </tfoot>
+                            </table>
+                        </div>
+                    `
+
+                    $('#statistik-rekap-harian').append(result)
+
+                }
+            }
+        })
+    })
+
+    $('#date-bulanan').on('change', function() {
+        let date = $(this).val()
+
+        $.ajax({
+            method: "post",
+            dataType : "json",
+            url: url_ajax + "/getTransaksiPerjenisBulan",
+            data:{
+                <?= csrf_token() ?>: "<?= csrf_hash() ?>",
+                "date": date,
+                
+            },
+            success : function (rs) {
+
+                console.info(rs)
+
+                if(rs.success){
+                    $('#statistik-rekap-bulanan').html('')
+
+                    $('.btn-group-bulanan').css('display', 'block')
+
+                    let result = `
+                        <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover" id="">
+                            <thead>
+                                <tr class="border-dark" style="border:1px solid #555255">
+                                    <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Jenis Transaksi</th>
+                                    <th colspan="${rs.data.total_per_date.length - 1}" class="text-center border-dark" style="border:1px solid #555255">Tanggal</th>
+                                    <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Total Trans</th>
+                                    <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Total Rupiah</th>
+                                </tr>
+                                <tr>
+                    `
+
+                    $.each(rs.data.total_per_date, function(i, val){
+                        if(i != 0) {
+                            result += `
+                                <th class="text-center border-dark" style="border:1px solid #555255">${i}</th>
+                            `
+                        }
+                    })
+
+                    result += `
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `
+
+                    $.each(rs.data.jenis, function(i, val){
+                        result += `
+                            <tr class="border-dark" style="border:1px solid #555255">
+                                <th class="text-center border-dark" style="border:1px solid #555255">${val.jenis}</th>
+                        `
+
+                        
+                        let ttl_trx = 0;
+                        let jml_trx = 0;
+                        for (let n = 1; n <= rs.data.total_per_date.length - 1; n++) {
+                            result += `
+                                <th class="text-center border-dark" style="border:1px solid #555255">${rs.data.result['ttl_trx'][val.jenis] ? (rs.data.result['ttl_trx'][val.jenis][n] ? rs.data.result['ttl_trx'][val.jenis][n] : 0) : 0 }</th>
+                            `
+
+                            ttl_trx += parseInt(rs.data.result['ttl_trx'][val.jenis] ? (rs.data.result['ttl_trx'][val.jenis][n] ? rs.data.result['ttl_trx'][val.jenis][n] : 0) : 0)
+                            jml_trx += parseInt(rs.data.result['jml_trx'][val.jenis] ? (rs.data.result['jml_trx'][val.jenis][n] ? rs.data.result['jml_trx'][val.jenis][n] : 0) : 0)
+                        }
+
+                        result += `
+                                    <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(ttl_trx)}</th>
+                                    <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(jml_trx)}</th>
+                                </tr>
+                            `
+                    })
+
+                    result += `
+                                    </tbody>
+                                <tfoot>
+                            <th class="text-center border-dark" style="border:1px solid #555255">Total</th>
+                    `
+
+                    for (let n = 1; n <= rs.data.total_per_date.length -1; n++) {
+                            result += `
+                                <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(rs.data.total_per_date[n])}</th>
+                            `
+                    }
+
+                    result += `
+                                    <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(rs.data.ttl_trx)}</th>
+                                    <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(rs.data.jml_trx)}</th>
+                                </tfoot>
+                            </table>
+                        </div>
+                    `
+
+                    $('#statistik-rekap-bulanan').append(result)
+
+                }
+            }
+        })
+    })
+
+    $('#date-tahunan').on('change', function() {
+        let date = $(this).val()
+
+        $.ajax({
+            method: "post",
+            dataType : "json",
+            url: url_ajax + "/getTransaksiPerjenisTahun",
+            data:{
+                <?= csrf_token() ?>: "<?= csrf_hash() ?>",
+                "date": date,
+                
+            },
+            success : function (rs) {
+
+                if(rs.success){
+                    $('#statistik-rekap-tahunan').html('')
+
+                    $('.btn-group-tahunan').css('display', 'block')
+
+                    let result = `
+                        <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover" id="">
+                            <thead>
+                                <tr class="border-dark" style="border:1px solid #555255">
+                                    <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Jenis Transaksi</th>
+                                    <th colspan="12" class="text-center border-dark" style="border:1px solid #555255">Bulan</th>
+                                    <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Total Trans</th>
+                                    <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Total Rupiah</th>
+                                </tr>
+                                <tr>
+                    `
+
+                    $.each(rs.data.total_per_date, function(i, val){
+                        if(i != 0) {
+                            result += `
+                                <th class="text-center border-dark" style="border:1px solid #555255">${i}</th>
+                            `
+                        }
+                    })
+
+                    result += `
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `
+
+                    $.each(rs.data.jenis, function(i, val) {
+                        result += `
+                            <tr class="border-dark" style="border:1px solid #555255">
+                                <th class="text-center border-dark" style="border:1px solid #555255">${val.jenis}</th>
+                        `
+
+                        
+                        let ttl_trx = 0;
+                        let jml_trx = 0;
+                        for (let n = 1; n <= rs.data.total_per_date.length - 1; n++) {
+                            result += `
+                                <th class="text-center border-dark" style="border:1px solid #555255">${rs.data.result['ttl_trx'][val.jenis] ? (rs.data.result['ttl_trx'][val.jenis][n] ? rs.data.result['ttl_trx'][val.jenis][n] : 0) : 0 }</th>
+                            `
+
+                            ttl_trx += parseInt(rs.data.result['ttl_trx'][val.jenis] ? (rs.data.result['ttl_trx'][val.jenis][n] ? rs.data.result['ttl_trx'][val.jenis][n] : 0) : 0)
+                            jml_trx += parseInt(rs.data.result['jml_trx'][val.jenis] ? (rs.data.result['jml_trx'][val.jenis][n] ? rs.data.result['jml_trx'][val.jenis][n] : 0) : 0)
+                        }
+
+                        result += `
+                                    <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(ttl_trx)}</th>
+                                    <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(jml_trx)}</th>
+                                </tr>
+                            `
+                    })
+
+                    result += `
+                                    </tbody>
+                                <tfoot>
+                            <th class="text-center border-dark" style="border:1px solid #555255">Total</th>
+                    `
+
+                    for (let n = 1; n <= rs.data.total_per_date.length -1; n++) {
+                        result += `
+                            <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(rs.data.total_per_date[n])}</th>
+                        `
+                    }
+
+                    result += `
+                                    <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(rs.data.ttl_trx)}</th>
+                                    <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(rs.data.jml_trx)}</th>
+                                </tfoot>
+                            </table>
+                        </div>
+                    `
+
+                    $('#statistik-rekap-tahunan').append(result)
+
+                }
+            }
+        })
+    })
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
 </script>

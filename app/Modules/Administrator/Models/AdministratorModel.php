@@ -75,6 +75,7 @@ class AdministratorModel extends BaseModel
 				"d = '" . $previlege["d"] . "'",
 				"e = '" . $previlege["e"] . "'",
 				"o = '" . $previlege["o"] . "'",
+				"dev = '" . $previlege["dev"] . "'",
 				"last_edited_by = '" . $this->session->get('id') . "'",
 				"last_edited_at = '" . date("Y-m-d H:i:s") . "'"
 			];

@@ -87,12 +87,12 @@
     // init select2
     const select2Array = [
         {
-        id: 'haltebis_id',
-        url: '/haltebis_id_per_pendapatan30d_select_get',
-        placeholder: 'Pilih Halte/Bis',
-        params: null
-    }
-];
+            id: 'haltebis_id',
+            url: '/haltebis_id_per_pendapatan30d_select_get',
+            placeholder: 'Pilih Halte/Bis',
+            params: null
+        }
+    ];
 
     $(document).ready(function() {
         // init core event

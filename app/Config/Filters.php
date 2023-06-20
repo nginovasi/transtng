@@ -25,7 +25,7 @@ class Filters extends BaseConfig
                 ]
 		],
 		'after'  => [
-			// 'toolbar',
+			'toolbar',
 			//'honeypot'
 		],
 	];

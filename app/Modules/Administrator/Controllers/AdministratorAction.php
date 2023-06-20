@@ -235,6 +235,7 @@ class AdministratorAction extends BaseController
                     "d" => unwrap_null(@$this->request->getPost('d')[$i], "0"),
                     "e" => unwrap_null(@$this->request->getPost('e')[$i], "0"),
                     "o" => unwrap_null(@$this->request->getPost('o')[$i], "0"),
+                    "dev" => unwrap_null(@$this->request->getPost('dev')[$i], "0"),
                     "user_web_role_id" => $this->request->getPost('iduser'),
                     "created_by" => $this->session->get('id'),
                     "created_at" => date("Y-m-d H:i:s"),

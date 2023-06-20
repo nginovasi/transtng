@@ -1,14 +1,15 @@
+<!-- style internal -->
 <style>
     .select2-container {
-        /* width: 100% !important; */
+        width: 100% !important;
     }
 
-    .ui-datepicker-calendar {
-        display: none;
-    }
 </style>
+
+<!-- content -->
 <div>
-    <div class="page-hero page-container " id="page-hero">
+    <!-- title -->
+    <div class="page-hero page-container" id="page-hero">
         <div class="padding d-flex">
             <div class="page-title">
                 <h2 class="text-md text-highlight"><?= $page_title ?></h2>
@@ -16,41 +17,64 @@
             <div class="flex"></div>
         </div>
     </div>
-    <div class="page-content page-container" id="page-content">
+
+    <!-- body -->
+    <div class="container page-content page-container" id="page-content">
         <div class="card">
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills no-border" id="tab">
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="true"><i class="fa fa-road" aria-hidden="true"></i> Transaksi Perkoridor</a>
+                        <a class="nav-link active" data-toggle="tab" href="#tab-data-jalur" role="tab" aria-controls="tab-data-jalur" aria-selected="true"><i class="fa fa-calendar" aria-hidden="true"></i> Data</a>
                     </li>
                 </ul>
             </div>
             <div class="card-body">
                 <div class="padding">
                     <div class="tab-content">
-                        <div class="tab-pane fade active show" id="tab-data" role="tabpanel" aria-labelledby="tab-data">
-                            <form data-plugin="parsley" data-option="{}" id="form" method="post">
-                                <input type="hidden" class="form-control" id="id" name="id" value="" required>
-                                <?= csrf_field(); ?>
-                                <div class="form-group row">
-                                    <div class="input-group input-daterange mb-3 col-md-5">
-                                        <input type="text" class="form-control" name="start" id="startDate" placeholder="Pilih Tanggal Awal" required>
+                        <div class="tab-pane fade active show" id="tab-data-jalur" role="tabpanel" aria-labelledby="tab-data-jalur">
+                            <div class="form-group row">
+                                <div class="input-group mb-3 col-md-3">
+                                    <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                                            <span class="input-group-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar mx-2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                            </span>
                                         </div>
-                                        <input type="text" class="form-control" name="end" id="endDate" placeholder="Pilih Tanggal Akhir" required>
-                                    </div>
-                                    <div class="input-group mb-3 col-md-5">
-                                        <select class="custom-select select2" name="cekpta" id="cekpta" required></select>
-                                        <span class="mx-2"></span>
-                                        <select class="custom-select select2" name="cekpos" id="cekpos" required></select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="submit" class="btn btn-primary w-sm" id="simpan"><i class="fa fa-search" aria-hidden="true"></i> Cari</button>
+                                        <input type="text" class="form-control form-control-md date" name="date-jalur" id="date-jalur" placeholder="Masukkan Tanggal" required autocomplete="off">
                                     </div>
                                 </div>
-                            </form>
-                            <hr class="mt-3">
+                                <div class="input-group mb-3 col-md-3">
+                                    <select class="custom-select select2" name="jalur_id" id="jalur_id" required></select>
+                                </div>
+                                <div class="input-group mb-3 col-md-2">
+                                    <select class="custom-select select2" name="jenpos_id" id="jenpos_id" required>
+                                        <option value="">Bus dan Halte</option>
+                                        <option value="0">Bus</option>
+                                        <option value="1">Halte</option>
+                                    </select>
+                                </div>
+                                <div class="form-control-sm mt-n1 col-md-2">
+                                    <button class="btn btn-success btn-transaction" id="btn-transaction">Lihat Transaksi</button>
+                                </div>
+                                <div class="mb-2 col-md-2">
+                                    <div class="btn-group-jalur" style="display: none;">
+                                        <button class="btn btn-white">Export</button>
+                                        <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
+                                        <div class="dropdown-menu bg-dark" role="menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(93px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                            <a class="dropdown-item" id="download-jalur-pdf">
+                                                PDF
+                                            </a>    
+                                            <!-- <a class="dropdown-item">
+                                                Excel
+                                            </a> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div id="statistik-rekap-jalur"></div>
                         </div>
                     </div>
                 </div>
@@ -58,6 +82,8 @@
         </div>
     </div>
 </div>
+
+<!-- script internal -->
 <script type="text/javascript">
     const auth_insert = '<?= $rules->i ?>';
     const auth_edit = '<?= $rules->e ?>';
@@ -67,103 +93,144 @@
     const base_url = '<?= base_url() ?>';
     const url = '<?= base_url() . "/" . uri_segment(0) . "/action/" . uri_segment(1) ?>';
     const url_ajax = '<?= base_url() . "/" . uri_segment(0) . "/ajax" ?>';
-    const url_pdf_pnp = '<?= base_url() . "/" . uri_segment(0) . "/action/pdf/" . uri_segment(1) . "" ?>';
-    const url_excel_pnp = '<?= base_url() . "/" . uri_segment(0) . "/action/excel/" . uri_segment(1) . "" ?>';
+    const url_pdf_jalur = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTransaksiPerJalurDateRangeJalurHalteBis" . "" ?>';
 
     var dataStart = 0;
     var coreEvents;
 
-    const select2Array = [{
-            id: 'cekpta',
-            url: '/findpetugas',
-            placeholder: 'Pilih Petugas',
-            params: null
-        },
+    // init select2
+    const select2Array = [
         {
-            id: 'cekpos',
-            url: '/findpos',
-            placeholder: 'Pilih Pos',
+            id: 'jalur_id',
+            url: '/jalur_id_select_get',
+            placeholder: 'Pilih Jalur',
             params: null
         }
     ];
 
     $(document).ready(function() {
-        var now = new Date();
-        var day = ("0" + now.getDate()).slice(-2);
-        var month = ("0" + (now.getMonth() + 1)).slice(-2);
-        var today = now.getFullYear() + "-" + (month) + "-" + (day);
-        $('#startDate').val(today);
-        $('#endDate').val(today);
-
-        $('#input-daterange').each(function() {
-            $(this).datepicker('clearDates');
-        });
-
-        $('#startDate').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            startView: 0,
-            endDate: today,
-            orientation: "bottom auto",
-        }).on('changeDate', function(e) {
-            const tanggal = e.format('yyyy-mm-dd');
-            console.log(tanggal);
-            $('span.input-group-text').html('<i class="fa fa-arrows-h" aria-hidden="true"></i>');
-            // your code here...
-        }).on('click', function(e) {
-            $('span.input-group-text').html('<i class="fa fa-long-arrow-left" aria-hidden="true"></i>');
-        })
-
-        $('#endDate').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            startView: 0,
-            endDate: today,
-            orientation: "bottom auto",
-        }).on('changeDate', function(e) {
-            const tanggal = e.format('yyyy-mm-dd');
-            console.log(tanggal);
-            $('span.input-group-text').html('<i class="fa fa-arrows-h" aria-hidden="true"></i>');
-            // your code here...
-        }).on('click', function(e) {
-            $('span.input-group-text').html('<i class="fa fa-long-arrow-right" aria-hidden="true"></i>');
-        })
-
+        // init core event
         coreEvents = new CoreEvents();
         coreEvents.url = url;
         coreEvents.ajax = url_ajax;
         coreEvents.csrf = {
             "<?= csrf_token() ?>": "<?= csrf_hash() ?>"
         };
+
+        // datatable load
         // coreEvents.tableColumn = datatableColumn();
 
+        // insert
         coreEvents.insertHandler = {
-            placeholder: 'Data pegawai berhasil ditambahkan',
-            afterAction: function(result) {}
         }
 
+        // update
         coreEvents.editHandler = {
-            placeholder: 'Data pegawai berhasil diubah',
-            afterAction: function(result) {}
         }
 
+        // delete
         coreEvents.deleteHandler = {
-            placeholder: 'Data pegawai berhasil dihapus',
-            afterAction: function() {}
         }
 
+        // reset
         coreEvents.resetHandler = {
-            action: function() {
-                // reset form
-                $('#form')[0].reset();
-                $('#form').parsley().reset();
-            }
         }
 
         select2Array.forEach(function(x) {
             coreEvents.select2Init('#' + x.id, x.url, x.placeholder, x.params);
         });
+        
+        // coreEvents.load(null, [0, 'asc'], null);
 
-        coreEvents.load(null, [0, 'asc'], null);
+        coreEvents.daterangepicker('#date-jalur', 'yyyy-mm-dd')
+
+        $('#download-jalur-pdf').on('click', function(e) {
+            let date = $('#date-jalur').val()
+            let jalur = $('#jalur_id').val()
+            let jenpos = $('#jenpos_id').val()
+
+            $(this).attr("href", url_pdf_jalur + '?date=' + date + '&jalur_id=' + jalur + '&jenpos_id=' + jenpos);
+            $(this).attr("target", "_blank");
+        });
+
+        $('#jenpos_id').select2()
+
     });
+
+    $('#btn-transaction').on('click', function() {
+        let date = $('#date-jalur').val()
+        let jalur = $('#jalur_id').val()
+        let jenpos = $('#jenpos_id').val()
+
+        $.ajax({
+            method: "post",
+            dataType : "json",
+            url: url_ajax + "/getTransaksiPerJalurDateRangeJalurHalteBis",
+            data:{
+                <?= csrf_token() ?>: "<?= csrf_hash() ?>",
+                "date": date,
+                "jalur_id": jalur,
+                "jenpos_id": jenpos
+                
+            },
+            success : function (rs) {
+
+                if(rs.success){
+                    $('#statistik-rekap-jalur').html('')
+
+                    $('.btn-group-jalur').css('display', 'block')
+
+                    let result = `
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover" id="">
+                                <thead>
+                                    <tr class="border-dark" style="border:1px solid #555255">
+                                        <th class="text-center border-dark" style="border:1px solid #555255">No</th>
+                                        <th class="text-center border-dark" style="border:1px solid #555255">Jenis Transaksi</th>
+                                        <th class="text-center border-dark" style="border:1px solid #555255">Total</th>
+                                        <th class="text-center border-dark" style="border:1px solid #555255">Jumlah</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `
+
+                    let ttlTrx = 0
+                    let jmlTrx = 0
+                    $.each(rs.data.result, function(i, val) {
+                        result += `
+                            <tr class="border-dark" style="border:1px solid #555255">
+                                <td class="text-center border-dark" style="border:1px solid #555255">${i + 1}</td>
+                                <td class="text-center border-dark" style="border:1px solid #555255">${val.jenis}</td>
+                                <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(val.ttl_trx)}</td>
+                                <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(val.jml_trx)}</td>
+                            </tr>
+                        `
+
+                        ttlTrx += parseInt(val.ttl_trx)
+                        jmlTrx += parseInt(val.jml_trx)
+                    })
+
+                    result += `</tbody>
+                                <tfoot>
+                                    <td colspan="2" class="text-right font-weight-bold border-dark" style="border:1px solid #555255">Total</td>
+                                    <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(ttlTrx)}</td>
+                                    <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(jmlTrx)}</td>
+                                </tfoot>
+                            </table>
+                        </div>
+                    `
+
+                    $('#statistik-rekap-jalur').append(result)
+
+                }
+
+            }
+        })
+    })
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
 </script>

@@ -20,31 +20,11 @@ class Eksekutif extends BaseController {
         return parent::_authView();
     }
 
-    // public function cekmutasikartu() {
-    //     return parent::_authView();
-    // }
+    public function laptransaksimesinkartu() {
+        return parent::_authView();
+    }
 
     public function cekpta() {
-        return parent::_authView();
-    }
-
-    public function dataalat() {
-        return parent::_authView();
-    }
-
-    public function grafikbulanan() {
-        return parent::_authView();
-    }
-
-    public function grafikkoridor() {
-        return parent::_authView();
-    }
-
-    public function grafiktransaksimesinkartu() {
-        return parent::_authView();
-    }
-
-    public function lapdatakartubaru() {
         return parent::_authView();
     }
 
@@ -56,6 +36,34 @@ class Eksekutif extends BaseController {
         return parent::_authView();
     }
 
+    public function rekapposharian() {
+        return parent::_authView();
+    }
+
+    public function grafiktransaksimesinkartu() {
+        return parent::_authView();
+    }
+
+    public function grafikkoridor() {
+        return parent::_authView();
+    }
+
+    // public function cekmutasikartu() {
+    //     return parent::_authView();
+    // }
+
+    public function dataalat() {
+        return parent::_authView();
+    }
+
+    public function grafikbulanan() {
+        return parent::_authView();
+    }
+
+    public function lapdatakartubaru() {
+        return parent::_authView();
+    }
+
     public function lappesantiket() {
         return parent::_authView();
     }
@@ -64,19 +72,11 @@ class Eksekutif extends BaseController {
         return parent::_authView();
     }
 
-    public function laptransaksimesinkartu() {
-        return parent::_authView();
-    }
-
     public function logalataktif() {
         return parent::_authView();
     }
 
     public function pembaruankartu() {
-        return parent::_authView();
-    }
-
-    public function rekapposharian() {
         return parent::_authView();
     }
 
