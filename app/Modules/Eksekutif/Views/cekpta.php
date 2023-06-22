@@ -43,9 +43,6 @@
                                         <input type="text" class="form-control form-control-md date" name="date-haltebis" id="date-haltebis" placeholder="Masukkan Tanggal" required autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="input-group mb-3 col-md-3">
-                                    <select class="custom-select select2" name="jalur" id="jalur" required></select>
-                                </div>
                                 <div class="mb-2">
                                     <div class="btn-group-haltebis" style="display: none;">
                                         <button class="btn btn-white">Export</button>
@@ -184,7 +181,7 @@
                                 <td class="text-center border-dark" style="border:1px solid #555255">${i + 1}</td>
                                 <td class="text-center border-dark" style="border:1px solid #555255">${val.haltebis}</td>
                                 <td class="text-center border-dark" style="border:1px solid #555255">${val.shift}</td>
-                                <td class="text-center border-dark" style="border:1px solid #555255">${val.imei}</td>
+                                <td class="text-center border-dark" style="border:1px solid #555255">${val.device_id}</td>
                                 <td class="text-center border-dark" style="border:1px solid #555255">${val.jalur}</td>
                                 <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(val.cash)}</td>
                                 <td class="text-right border-dark" style="border:1px solid #555255">${numberWithCommas(val.is_cashless)}</td>
