@@ -6,6 +6,7 @@ use CodeIgniter\HTTP\RequestInterface;
 
 class BaseModel extends Model
 {
+
 	protected $db;
 
 	protected $session;
@@ -71,13 +72,6 @@ class BaseModel extends Model
 		$builder = $this->db->table($table);
 
 		$builder->insertBatch($data);
-		return $this->db->insertID();
-	}
-
-	function base_insertUpdateBatch($data, $table){
-		$builder = $this->db->table($table);
-
-		$builder->upsertBatch($data);
 		return $this->db->insertID();
 	}
 

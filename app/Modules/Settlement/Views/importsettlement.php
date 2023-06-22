@@ -27,7 +27,7 @@
                         <a class="nav-link active" data-toggle="tab" href="#tab-form" role="tab" aria-controls="tab-form" aria-selected="true"><i class="fa fa-calendar" aria-hidden="true"></i> Import</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#tab-log" role="tab" aria-controls="tab-log" aria-selected="true"><i class="fa fa-calendar" aria-hidden="true"></i> Log</a>
+                        <a class="nav-link" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="true"><i class="fa fa-calendar" aria-hidden="true"></i> Data</a>
                     </li>
                 </ul>
             </div>
@@ -62,40 +62,26 @@
                             <div class="tab-content-body" style="display: block;">        
                             </div>
 
-                            <button type="button" class="btn btn-success ml-auto" id="save-excel" style="display: none;">Simpan File</button>
-
+                            <button type="button" class="btn btn-success ml-auto mt-2" id="save-excel" style="display: none;">Simpan File</button>
                         </div>
-                        <div class="tab-pane fade" id="tab-log" role="tabpanel" aria-labelledby="tab-log">
-                            <div class="form-group row">
-                                <div class="input-group mb-3 col-lg-4">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar mx-2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                            </span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-md date" name="date-haltebis" id="date-haltebis" placeholder="Masukkan Tanggal" required autocomplete="off">
-                                    </div>
-                                </div>
-                                <div class="mb-2">
-                                    <div class="btn-group-haltebis" style="display: none;">
-                                        <button class="btn btn-white">Export</button>
-                                        <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
-                                        <div class="dropdown-menu bg-dark" role="menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(93px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                            <a class="dropdown-item" id="download-haltebis-pdf">
-                                                PDF
-                                            </a>    
-                                            <!-- <a class="dropdown-item">
-                                                Excel
-                                            </a> -->
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="tab-pane fade" id="tab-data" role="tabpanel" aria-labelledby="tab-data">
+                            <div class="table-responsive">
+                                <table id="datatable" class="table table-theme table-row v-middle">
+                                    <thead>
+                                        <tr>
+                                            <th><span>#</span></th>
+                                            <th><span>Bank</span></th>
+                                            <th><span>Filename</span></th>
+                                            <th><span>Jumlah Settlement</span></th>
+                                            <th><span>Tanggal Settlement</span></th>
+                                            <th><span>Tanggal Impor</span></th>
+                                            <th><span>User</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
-
-                            <hr>
-
-                            <div id="statistik-rekap-haltebis"></div>
                         </div>
                     </div>
                 </div>
@@ -139,7 +125,7 @@
         };
 
         // datatable load
-        // coreEvents.tableColumn = datatableColumn();
+        coreEvents.tableColumn = datatableColumn();
 
         // insert
         coreEvents.insertHandler = {
@@ -161,9 +147,47 @@
             coreEvents.select2Init('#' + x.id, x.url, x.placeholder, x.params);
         });
         
-        // coreEvents.load(null, [0, 'asc'], null);
+        coreEvents.load(null, [0, 'asc'], null);
 
     });
+
+    // datatable column
+    function datatableColumn() {
+        let columns = [{
+                data: "id",
+                orderable: false,
+                width: 100,
+                render: function(a, type, data, index) {
+                    return dataStart + index.row + 1
+                }
+            },
+            {
+                data: "bank",
+                orderable: true
+            },
+            {
+                data: "filename",
+                orderable: true
+            },
+            {
+                data: "ttl_sttl",
+                orderable: true
+            },
+            {
+                data: "date_sttl",
+                orderable: true
+            },
+            {
+                data: "created_at",
+                orderable: true
+            },
+            {
+                data: "user_web_username",
+                orderable: true
+            }
+        ];
+        return columns;
+    }
 
     $('#bank_id').on('change', function() {
         $('.btn-group-download-template').css('display', 'block')
@@ -238,13 +262,13 @@
                         loadCSVBCA(fileInput, "BCA")
                         break;
                     case "BNI":
-                        loadCSVBNI(fileInput)
+                        loadCSVBNI(fileInput, "BNI")
                         break;
                     case "BRI":
-                        loadCSVBRI(fileInput)
+                        loadCSVBRI(fileInput, "BRI")
                         break;
                     case "Mandiri":
-                        loadCSVMandiri(fileInput)
+                        loadCSVMandiri(fileInput, "Mandiri")
                         break;
                     default:
                     Swal.fire({
@@ -262,20 +286,7 @@
     let DataBCA
     function loadCSVBCA(fileInput, bank){
         readFile = function () {
-            let result = `<div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Tanggal Transaksi</th>
-                                        <th scope="col">Keterangan</th>
-                                        <th scope="col">Cabang</th>
-                                        <th scope="col">Jumlah</th>
-                                        <th scope="col">Saldo</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="tbody">
-                        `
+            loaderStart()
 
             let reader = new FileReader();
 
@@ -319,52 +330,77 @@
                     n[4] = n[4].replace('"', '')
                 })
 
-                $.each(resultCSV, function(i, val) {
-                    result += `
-                            <tr>
-                                <th scope="row">${i + 1}</th>
-                                <td>${val[0]}</td>
-                                <td>${val[1]}</td>
-                                <td>${val[2]}</td>
-                                <td>${val[3]}</td>
-                                <td>${val[4]}</td>
-                            </tr>
-                    `
-                })             
-
-                result += `
-                                </tbody>
-                            </table>
-                        </div>
-                `
-
-                $(".tab-content-body").append(result)
-
-                DataBCA = resultCSV
-
-                console.info("cek result csv")
-                console.info(resultCSV)
-
                 $.ajax({
                     url : url + "_load_" + bank + "Paid",
                     method: 'post',
                     dataType : 'json',
                     data : {
                         "<?= csrf_token() ?>": "<?= csrf_hash() ?>",
-                        data: JSON.stringify(data)
+                        data: JSON.stringify(resultCSV)
                     },
                     success : function (rs) {
-                        // table.ajax.reload();
-                        console.log(rs);
-
                         if(rs.success == true) {
+                            loaderEnd()
+
+                            let result = `<div class="table-responsive">
+                                                <table class="table" id="exceltable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">Transaction Date</th>
+                                                            <th scope="col">Paid Date</th>
+                                                            <th scope="col">Settlement Date</th>
+                                                            <th scope="col">Description</th>
+                                                            <th scope="col">MID</th>
+                                                            <th scope="col">Merchant</th>
+                                                            <th scope="col">TID</th>
+                                                            <th scope="col">Trans. Type</th>
+                                                            <th scope="col">Amount</th>
+                                                            <th scope="col">No Ref</th>
+                                                            <th scope="col">Sttl Number</th>
+                                                            <th scope="col">Branch</th>
+                                                            <th scope="col">Last Balance</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="tbody">`
+
+                            $.each(rs.data, function(i, val) {
+                                result += `
+                                        <tr>
+                                            <th scope="row" class="text-center">${i + 1}</th>
+                                            <td>${val['date_trx']}</td>
+                                            <td>${val['date_paid']}</td>
+                                            <td>${val['date_sttl']}</td>
+                                            <td class="text-right">${val['description']}</td>
+                                            <td class="text-right">${val['mid']}</td>
+                                            <td class="text-right">${val['merchant']}</td>
+                                            <td class="text-right">${val['tid']}</td>
+                                            <td class="text-right">${val['type_trx']}</td>
+                                            <td class="text-right">${val['amount']}</td>
+                                            <td class="text-right">${val['no_reff']}</td>
+                                            <td class="text-right">${val['sttl_num']}</td>
+                                            <td class="text-right">${val['branch']}</td>
+                                            <td class="text-right">${val['last_balance']}</td>
+                                        </tr>`
+                            })             
+
+                            result += `
+                                    </tbody>
+                                </table>
+                            </div>`
+
+                            $(".tab-content-body").append(result)
+
+                            $('#exceltable').DataTable({
+                                "scrollX": true
+                            });
+
+                            DataBCA = rs.data
 
                         } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: rs.message,
-                            })
+                            swal.close();
+
+                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
                         }
                     }
                 })
@@ -377,228 +413,20 @@
     }
 
     let DataBNI
-    function loadCSVBNI(fileInput){
+    function loadCSVBNI(fileInput, bank){
         readFile = function () {
+            loaderStart()
 
-        let result = `<div class="table-responsive">
-                        <table class="table ttable">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Post Date</th>
-                                    <th scope="col">Branch</th>
-                                    <th scope="col">Journal No</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Amount</th>
-                                    <th scope="col">Db/Cr</th>
-                                    <th scope="col">Balance</th>
-                                </tr>
-                            </thead>
-                            <tbody class="tbody">
-                    `
+            let reader = new FileReader();
 
-        let reader = new FileReader();
+            reader.onload = function () {
+                let readerResult = reader.result.split(/\r\n|\n|\r/);
 
-        reader.onload = function () {
-            let readerResult = reader.result.split(/\r\n|\n|\r/);
-
-            let resultCSV = [];
-            let blackListWord =  ["No."];
-            for (let i = 0; i < readerResult.length; i++) {
-                if(i != 0) {
-                    csvLineSplit =  readerResult[i].split(';');
-
-                    if(csvLineSplit != "") {
-                        resultCSV.push(csvLineSplit);
-                        if(readerResult[i][0] == 0){
-                            resultCSV.pop()
-                        }
-                    }
-                }
-            }
-
-            let getIndexBlackList = []
-            $.each(resultCSV, function(i, n) {
-                $.each(blackListWord, function(i2, n2) {
-                    if(n[0].includes(n2)) {
-                        getIndexBlackList.push(i);
-                        return true;
-                    } 
-                })
-            })
-
-            $.each(getIndexBlackList, function(i, n) {
-                resultCSV.splice(n - i, 1);
-            })
-
-            $.each(resultCSV, function(i, n) {
-                n[0] = n[0].replace('"', '')
-                n[1] = n[1].replace('"', '')
-                n[2] = n[2].replace('"', '')
-                n[3] = n[3].replace('"', '')
-                n[4] = n[4].replace('"', '')
-                n[5] = n[5].replace('"', '')
-                n[6] = n[6].replace('"', '')
-                n[7] = n[7].replace('"', '')
-            })
-
-            $.each(resultCSV, function(i, val) {
-                result += `
-                        <tr>
-                            <th scope="row">${val[0]}</th>
-                            <td>${val[1]}</td>
-                            <td>${val[2]}</td>
-                            <td>${val[3]}</td>
-                            <td>${val[4]}</td>
-                            <td>${val[5]}</td>
-                            <td>${val[6]}</td>
-                            <td>${val[7]}</td>
-                        </tr>
-                `
-            })             
-
-            result += `
-                        </tbody>
-                    </table>
-                </div>
-            `
-
-            $(".tab-content-body").append(result)
-
-            DataBNI = resultCSV
-        };
-
-        reader.readAsBinaryString(fileInput.files[0]);
-        };
-
-        readFile()
-    }
-
-    let DataBRI
-    function loadCSVBRI(fileInput){
-        readFile = function () {
-
-        let result = `<div class="table-responsive">
-                        <table class="table ttable">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Tanggal</th>
-                                    <th scope="col">Transaksi</th>
-                                    <th scope="col">Debet</th>
-                                    <th scope="col">Kredit</th>
-                                    <th scope="col">Saldo</th>
-                                </tr>
-                            </thead>
-                            <tbody class="tbody">
-                    `
-
-        let reader = new FileReader();
-
-        reader.onload = function () {
-            let readerResult = reader.result.split(/\r\n|\n|\r/);
-
-            let resultCSV = [];
-            let blackListWord =  ["tanggal"];
-            for (let i = 0; i < readerResult.length; i++) {
-                if(i != 0) {
-                    csvLineSplit =  readerResult[i].split(';');
-
-                    if(csvLineSplit != "") {
-                        resultCSV.push(csvLineSplit);
-                        if(readerResult[i][0] == 0){
-                            resultCSV.pop()
-                        }
-                    }
-                }
-            }
-
-            let getIndexBlackList = []
-            $.each(resultCSV, function(i, n) {
-                $.each(blackListWord, function(i2, n2) {
-                    if(n[0].includes(n2)) {
-                        getIndexBlackList.push(i);
-                        return true;
-                    } 
-                })
-            })
-
-            $.each(getIndexBlackList, function(i, n) {
-                resultCSV.splice(n - i, 1);
-            })
-
-            $.each(resultCSV, function(i, n) {
-                n[0] = n[0].replace('"', '')
-                n[1] = n[1].replace('"', '')
-                n[2] = n[2].replace('"', '')
-                n[3] = n[3].replace('"', '')
-                n[4] = n[4].replace('"', '')
-            })
-
-            $.each(resultCSV, function(i, val) {
-                result += `
-                        <tr>
-                            <th scope="row">${i + 1}</th>
-                            <td>${val[0]}</td>
-                            <td>${val[1]}</td>
-                            <td>${val[2]}</td>
-                            <td>${val[3]}</td>
-                            <td>${val[4]}</td>
-                        </tr>
-                `
-            })             
-
-            result += `
-                        </tbody>
-                    </table>
-                </div>
-            `
-
-            $(".tab-content-body").append(result)
-
-            DataBRI = resultCSV
-        };
-
-        reader.readAsBinaryString(fileInput.files[0]);
-        };
-
-        readFile()
-    }
-
-    let DataMandiri
-    function loadCSVMandiri(fileInput){
-        readFile = function () {
-
-        let result = `<div class="table-responsive">
-                        <table class="table ttable">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Account No</th>
-                                    <th scope="col">Date & Time</th>
-                                    <th scope="col">Value Date</th>
-                                    <th scope="col">Account No Alias</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Reference No</th>
-                                    <th scope="col">Debit</th>
-                                    <th scope="col">Kredit</th>
-                                    <th scope="col">Balance</th>
-                                </tr>
-                            </thead>
-                            <tbody class="tbody">
-                    `
-
-        let reader = new FileReader();
-
-        reader.onload = function () {
-            let readerResult = reader.result.split(/\r\n|\n|\r/);
-
-            let resultCSV = [];
-            let blackListWord =  ["Account No."];
-            for (let i = 0; i < readerResult.length; i++) {
-                if(i != 0) {
-                    if(i % 2 == 1) {
-                        csvLineSplit = $.merge(readerResult[i].split(';'), readerResult[i + 1].split(';'))
+                let resultCSV = [];
+                let blackListWord =  ["No."];
+                for (let i = 0; i < readerResult.length; i++) {
+                    if(i != 0) {
+                        csvLineSplit =  readerResult[i].split(';');
 
                         if(csvLineSplit != "") {
                             resultCSV.push(csvLineSplit);
@@ -608,70 +436,343 @@
                         }
                     }
                 }
-            }
 
-            let getIndexBlackList = []
-            $.each(resultCSV, function(i, n) {
-                $.each(blackListWord, function(i2, n2) {
-                    if(n[0].includes(n2)) {
-                        getIndexBlackList.push(i);
-                        return true;
-                    } 
+                let getIndexBlackList = []
+                $.each(resultCSV, function(i, n) {
+                    $.each(blackListWord, function(i2, n2) {
+                        if(n[0].includes(n2)) {
+                            getIndexBlackList.push(i);
+                            return true;
+                        } 
+                    })
                 })
-            })
 
-            $.each(getIndexBlackList, function(i, n) {
-                resultCSV.splice(n - i, 1);
-            })
+                $.each(getIndexBlackList, function(i, n) {
+                    resultCSV.splice(n - i, 1);
+                })
 
-            $.each(resultCSV, function(i, n) {
-                n[0] = n[0].replace('"', '')
-                n[1] = n[1].replace('"', '')
-                n[2] = n[2].replace('"', '')
-                n[3] = n[3].replace('"', '')
-                n[4] = n[4].replace('"', '')
-                n[5] = n[5].replace('"', '')
-                n[6] = n[6].replace('"', '')
-                n[7] = n[7].replace('"', '')
-                n[8] = n[8].replace('"', '')
-            })
+                $.each(resultCSV, function(i, n) {
+                    n[0] = n[0].replace('"', '')
+                    n[1] = n[1].replace('"', '')
+                    n[2] = n[2].replace('"', '')
+                    n[3] = n[3].replace('"', '')
+                    n[4] = n[4].replace('"', '')
+                    n[5] = n[5].replace('"', '')
+                    n[6] = n[6].replace('"', '')
+                    n[7] = n[7].replace('"', '')
+                })
 
-            $.each(resultCSV, function(i, val) {
-                result += `
-                        <tr>
-                            <th scope="row">${i + 1}</th>
-                            <td>${val[0]}</td>
-                            <td>${val[1]}</td>
-                            <td>${val[2]}</td>
-                            <td>${val[3]}</td>
-                            <td>${val[4]}</td>
-                            <td>${val[5]}</td>
-                            <td>${val[6]}</td>
-                            <td>${val[7]}</td>
-                            <td>${val[8]}</td>
-                        </tr>
-                `
-            })             
+                $.ajax({
+                    url : url + "_load_" + bank + "Paid",
+                    method: 'post',
+                    dataType : 'json',
+                    data : {
+                        "<?= csrf_token() ?>": "<?= csrf_hash() ?>",
+                        data: JSON.stringify(resultCSV)
+                    },
+                    success : function (rs) {
+                        if(rs.success == true) {
+                            loaderEnd()
 
-            result += `
-                            </tbody>
-                        </table>
-                    </div>
-            `
+                            let result = `<div class="table-responsive">
+                                                <table class="table" id="exceltable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">Paid Date</th>
+                                                            <th scope="col">Trx Date</th>
+                                                            <th scope="col">Branch</th>
+                                                            <th scope="col">Journal Number</th>
+                                                            <th scope="col">Description</th>
+                                                            <th scope="col">Amount</th>
+                                                            <th scope="col">Debit/Credit</th>
+                                                            <th scope="col">Balance</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="tbody">`
 
-            $(".tab-content-body").append(result)
+                            $.each(rs.data, function(i, val) {
+                                result += `
+                                        <tr>
+                                            <th scope="row" class="text-center">${i + 1}</th>
+                                            <td>${val['date_paid']}</td>
+                                            <td>${val['date_trx']}</td>
+                                            <td>${val['branch']}</td>
+                                            <td>${val['no_journal']}</td>
+                                            <td>${val['description']}</td>
+                                            <td class="text-right">${val['amount']}</td>
+                                            <td class="text-right">${val['dc']}</td>
+                                            <td class="text-right">${val['balance']}</td>
+                                        </tr>`
+                            })             
 
-            DataMandiri = resultCSV
-        };
+                            result += `
+                                    </tbody>
+                                </table>
+                            </div>`
 
-        reader.readAsBinaryString(fileInput.files[0]);
+                            $(".tab-content-body").append(result)
+
+                            $('#exceltable').DataTable({
+                                "scrollX": true
+                            });
+
+                            DataBNI = rs.data
+
+                        } else {
+                            swal.close();
+
+                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                        }
+                    }
+                })
+            };
+
+            reader.readAsBinaryString(fileInput.files[0]);
         };
 
         readFile()
     }
 
-    function numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    let DataBRI
+    function loadCSVBRI(fileInput, bank){
+        readFile = function () {
+            loaderStart()
+
+            let reader = new FileReader();
+
+            reader.onload = function () {
+                let readerResult = reader.result.split(/\r\n|\n|\r/);
+
+                let resultCSV = [];
+                let blackListWord =  ["tanggal"];
+                for (let i = 0; i < readerResult.length; i++) {
+                    if(i != 0) {
+                        csvLineSplit =  readerResult[i].split(';');
+
+                        if(csvLineSplit != "") {
+                            resultCSV.push(csvLineSplit);
+                            if(readerResult[i][0] == 0){
+                                resultCSV.pop()
+                            }
+                        }
+                    }
+                }
+
+                let getIndexBlackList = []
+                $.each(resultCSV, function(i, n) {
+                    $.each(blackListWord, function(i2, n2) {
+                        if(n[0].includes(n2)) {
+                            getIndexBlackList.push(i);
+                            return true;
+                        } 
+                    })
+                })
+
+                $.each(getIndexBlackList, function(i, n) {
+                    resultCSV.splice(n - i, 1);
+                })
+
+                $.each(resultCSV, function(i, n) {
+                    n[0] = n[0].replace('"', '')
+                    n[1] = n[1].replace('"', '')
+                    n[2] = n[2].replace('"', '')
+                    n[3] = n[3].replace('"', '')
+                    n[4] = n[4].replace('"', '')
+                })
+
+                $.ajax({
+                    url : url + "_load_" + bank + "Paid",
+                    method: 'post',
+                    dataType : 'json',
+                    data : {
+                        "<?= csrf_token() ?>": "<?= csrf_hash() ?>",
+                        data: JSON.stringify(resultCSV)
+                    },
+                    success : function (rs) {
+
+                        if(rs.success == true) {
+                            loaderEnd()
+
+                            let result = `<div class="table-responsive">
+                                                <table class="table" id="exceltable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">DATE PAID</th>
+                                                            <th scope="col">TRANSACTION REF</th>
+                                                            <th scope="col">FILE 1</th>
+                                                            <th scope="col">BODY</th>
+                                                            <th scope="col">FILE 2</th>
+                                                            <th scope="col">SHIFT</th>
+                                                            <th scope="col">COUNT</th>
+                                                            <th scope="col">AMOUNT</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="tbody">`
+
+                            $.each(rs.data, function(i, val) {
+                                result += `
+                                        <tr>
+                                            <th scope="row" class="text-center">${i + 1}</th>
+                                            <td>${val['date_paid']}</td>
+                                            <td>${val['ref_trx']}</td>
+                                            <td>${val['file_1']}</td>
+                                            <td>${val['body']}</td>
+                                            <td>${val['file_2']}</td>
+                                            <td>${val['shift']}</td>
+                                            <td>${val['count']}</td>
+                                            <td class="text-right">${val['kredit']}</td>
+                                        </tr>`
+                            })             
+
+                            result += `
+                                    </tbody>
+                                </table>
+                            </div>`
+
+                            $(".tab-content-body").append(result)
+
+                            $('#exceltable').DataTable({
+                                "scrollX": true
+                            });
+
+                            DataBRI = rs.data
+                        } else {
+                            loaderEnd()
+
+                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                        }
+                    }
+                })
+            };
+
+            reader.readAsBinaryString(fileInput.files[0]);
+        };
+
+        readFile()
+    }
+
+    let DataMandiri
+    function loadCSVMandiri(fileInput, bank){
+        readFile = function () {
+
+        loaderStart()
+
+            let reader = new FileReader();
+
+            reader.onload = function () {
+                let readerResult = reader.result.split(/\r\n|\n|\r/);
+
+                let resultCSV = [];
+                let blackListWord =  ["Account No."];
+                for (let i = 0; i < readerResult.length; i++) {
+                    if(i != 0) {
+                        if(i % 2 == 1) {
+                            csvLineSplit = $.merge(readerResult[i].split(';'), readerResult[i + 1].split(';'))
+
+                            if(csvLineSplit != "") {
+                                resultCSV.push(csvLineSplit);
+                                if(readerResult[i][0] == 0){
+                                    resultCSV.pop()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                let getIndexBlackList = []
+                $.each(resultCSV, function(i, n) {
+                    $.each(blackListWord, function(i2, n2) {
+                        if(n[0].includes(n2)) {
+                            getIndexBlackList.push(i);
+                            return true;
+                        } 
+                    })
+                })
+
+                $.each(getIndexBlackList, function(i, n) {
+                    resultCSV.splice(n - i, 1);
+                })
+
+                $.each(resultCSV, function(i, n) {
+                    n[0] = n[0].replace('"', '')
+                    n[1] = n[1].replace('"', '')
+                    n[2] = n[2].replace('"', '')
+                    n[3] = n[3].replace('"', '')
+                    n[4] = n[4].replace('"', '')
+                    n[5] = n[5].replace('"', '')
+                    n[6] = n[6].replace('"', '')
+                    n[7] = n[7].replace('"', '')
+                    n[8] = n[8].replace('"', '')
+                })
+
+                $.ajax({
+                    url : url + "_load_" + bank + "Paid",
+                    method: 'post',
+                    dataType : 'json',
+                    data : {
+                        "<?= csrf_token() ?>": "<?= csrf_hash() ?>",
+                        data: JSON.stringify(resultCSV)
+                    },
+                    success : function (rs) {
+
+                        if(rs.success == true) {
+                            loaderEnd()
+
+                            let result = `<div class="table-responsive">
+                                                <table class="table" id="exceltable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">DATE TRX</th>
+                                                            <th scope="col">DATE PAID</th>
+                                                            <th scope="col">DESCRIPTION</th>
+                                                            <th scope="col">FILENAME</th>
+                                                            <th scope="col">NO REFERENSI</th>
+                                                            <th scope="col">AMOUNT</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="tbody">`
+
+                            $.each(rs.data, function(i, val) {
+                                result += `
+                                        <tr>
+                                            <th scope="row" class="text-center">${i + 1}</th>
+                                            <td>${val['date_trx']}</td>
+                                            <td>${val['date_paid']}</td>
+                                            <td>${val['description']}</td>
+                                            <td>${val['sttl_file_name']}</td>
+                                            <td>${val['no_ref']}</td>
+                                            <td class="text-right">${val['amount']}</td>
+                                        </tr>`
+                            })             
+
+                            result += `
+                                    </tbody>
+                                </table>
+                            </div>`
+
+                            $(".tab-content-body").append(result)
+
+                            $('#exceltable').DataTable({
+                                "scrollX": true
+                            });
+
+                            DataMandiri = rs.data
+                        } else {
+                            loaderEnd()
+
+                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                        }
+                    }
+                })
+            };
+
+            reader.readAsBinaryString(fileInput.files[0]);
+        };
+
+        readFile()
     }
 
     $(document).on('click', '#save-excel',function(e){
@@ -700,20 +801,41 @@
     })
 
     function saveExcel(bank, data){
+        Swal.fire({
+            title: "",
+            icon: "info",
+            text: "Proses menampilkan data, mohon ditunggu...",
+            didOpen: function() {
+                Swal.showLoading()
+            }
+        });
+
         $.ajax({
             url : url + "_save_" + bank + "Paid",
             method: 'post',
             dataType : 'json',
             data : {
                 "<?= csrf_token() ?>": "<?= csrf_hash() ?>",
-                data: JSON.stringify(data)
+                data: JSON.stringify(data),
+                name_file: $('#filename').text()
             },
             success : function (rs) {
-                // table.ajax.reload();
-                console.log(rs);
+                $('#datatable').DataTable().ajax.reload();
 
                 if(rs.success == true) {
+                    swal.close()
 
+                    $('#formexcel')[0].reset()
+                    $('#bank_id').val(null).trigger('change')
+                    $('#filename').text("");
+
+                    $('.btn-group-download-template').css('display', 'none')
+                    $('.btn-group-process-file').css('display', 'none')
+                    $('#save-excel').css('display', "none")
+
+                    $(".tab-content-body").html('')
+
+                    Swal.fire('Sukses','Berhasil menambahkan sttl ' + bank, 'success')
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -723,6 +845,25 @@
                 }
             }
         })
+    }
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function loaderStart() {
+        Swal.fire({
+            title: "",
+            icon: "info",
+            text: "Proses menampilkan data, mohon ditunggu...",
+            didOpen: function() {
+                Swal.showLoading()
+            }
+        });
+    }
+
+    function loaderEnd() {
+        swal.close();
     }
 
 </script>
