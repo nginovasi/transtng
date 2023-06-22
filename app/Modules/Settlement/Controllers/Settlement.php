@@ -12,6 +12,10 @@ class Settlement extends BaseController {
         $this->settlementModel = new SettlementModel();
     }
 
+    public function importsettlement() {
+        return parent::_authView();
+    }
+
     public function index() {
         return redirect()->to(base_url());
     }
@@ -37,9 +41,6 @@ class Settlement extends BaseController {
     }
 
     public function importrsf() {
-        return parent::_authView();
-    }
-    public function importsettlement() {
         return parent::_authView();
     }
 

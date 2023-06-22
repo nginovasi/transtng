@@ -52,6 +52,67 @@ class SettlementAction extends BaseController {
         echo view("Settlement/Views/$url", $data);
     }
 
+    public function importsettlement_load__BCAPaid() {
+
+    }
+
+    public function importsettlement_save_BCAPaid()
+    {
+        parent::_authInsert(function () {
+            // $number_menu = count($this->request->getPost('idmenu'));
+            // $deleted = explode(",", $this->request->getPost('delete'));
+
+            // $previlagesData = [];
+            // for ($i = 0; $i < $number_menu; $i++) {
+            //     $previlagesData[] = [
+            //         "id" => $this->request->getPost('id')[$i],
+            //         "menu_id" => $this->request->getPost('idmenu')[$i],
+            //         "v" => unwrap_null(@$this->request->getPost('v')[$i], "0"),
+            //         "i" => unwrap_null(@$this->request->getPost('i')[$i], "0"),
+            //         "d" => unwrap_null(@$this->request->getPost('d')[$i], "0"),
+            //         "e" => unwrap_null(@$this->request->getPost('e')[$i], "0"),
+            //         "o" => unwrap_null(@$this->request->getPost('o')[$i], "0"),
+            //         "user_web_role_id" => $this->request->getPost('iduser'),
+            //         "created_by" => $this->session->get('id'),
+            //         "created_at" => date("Y-m-d H:i:s"),
+            //     ];
+            // }
+
+            $data = $this->request->getPost();
+
+            $dataDecode = json_decode($data['data']);
+
+            if ($this->settlementModel->insertBatchSttlBCA('sttl_bca_paid', $dataDecode)) {
+                echo json_encode(array('success' => true, 'message' => 'Berhasil simpan rekening koran'));
+            } else {
+                echo json_encode(array('success' => false, 'message' => $this->settlementModel->db->error()));
+            }
+        });
+    }
+
+    public function importsettlement_save_BNIPaid()
+    {
+        parent::_authInsert(function () {
+            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function importsettlement_save_BRIPaid()
+    {
+        parent::_authInsert(function () {
+            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    public function importsettlement_save_MandiriPaid()
+    {
+        parent::_authInsert(function () {
+            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+        });
+    }
+
+    // not use
+
     public function ceksettlement_load()
     {
         parent::_authLoad(function () {
@@ -170,37 +231,6 @@ class SettlementAction extends BaseController {
     }
 
     public function laporanpendapatan_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function importsettlement_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function importsettlement_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function importsettlement_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function importsettlement_delete()
     {
         parent::_authDelete(function () {
             // parent::_delete('ref_narasi_tiket', $this->request->getPost());
