@@ -28,7 +28,7 @@ class BaseController extends Controller
      *
      * @var array
      */
-    protected $helpers = ['extension', 'apires'];
+    protected $helpers = ['extension', 'apires', 'date_format'];
 
     protected $session;
 
@@ -241,6 +241,19 @@ class BaseController extends Controller
             } else {
                 echo json_encode(array('success' => false, 'message' => $this->baseModel->db->error()));
             }
+        }
+    }
+
+    protected function _insertBatchv2($tableName, $data, callable $callback = NULL)
+    {
+        if ($this->baseModel->base_insertBatch($data, $tableName)) {
+            if ($callback != NULL) {
+                $callback();
+            }
+
+            echo json_encode(array("success" => true, "message" => "insert data success", "data" => $data));
+        } else {
+            echo json_encode(array("success" => false, "message" => $this->baseModel->db->error(), "data" => null));
         }
     }
 

@@ -16,98 +16,142 @@ class SettlementAction extends BaseController {
         return redirect()->to(base_url());
     }
 
-    public function pdf() {
-        $url = uri_segment("3");
-        $url_export = $url . "_export";
-        $filter = $_GET['search'];
-        $data['data_url'] = uri_segment("2");
-        $data['data_excel'] = $this->settlementModel->export_view($url_export, $filter);
+    public function importsettlement_load()
+    {
+        parent::_authLoad(function () {
+            $query = "SELECT a.*, b.user_web_username
+                        FROM log_import_sttl a
+                        LEFT JOIN m_user_web b
+                            ON a.created_by = b.id
+                        WHERE filename IS NOT NULL";
 
-        $html = view("Settlement/Views/$url", $data);
-        $mpdf = new \Mpdf\Mpdf();
-        if (isset($_GET['o'])) {
-            if ($_GET['o'] == 'l') {
-                $mpdf->AddPage('L');
-            }
-        }
+            $where = ["a.filename", "a.bank", "b.user_web_username"];
 
-        $mpdf->WriteHTML($html);
-        $this->response->setHeader('Content-Type', 'application/pdf');
-        $mpdf->Output($url.'_'.date('YmdHis').'.pdf', 'I');
+            parent::_loadDatatable($query, $where, $this->request->getPost());
+        });
     }
 
-    public function excel() {
-        $url = uri_segment("3");
-        header("Content-type: application/vnd-ms-excel; charset=utf-8;");
-        header("Content-Disposition: attachment; filename=".$url."_".date('YmdHis').".xls");
-        header("Pragma: no-cache; Expires: 0");
-        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-        header("Cache-Control: private", false);
+    public function importsettlement_load_BCAPaid() {
+        $data = $this->request->getPost();
 
-        $url_export = $url . "_export";
-        $filter = $_GET['search'];
-        $data['data_url'] = uri_segment("2");
-        $data['data_excel'] = $this->settlementModel->export_view($url_export, $filter);
+        $dataDecode = json_decode($data['data']);
 
-        echo view("Settlement/Views/$url", $data);
-    }
+        $user_id = $this->session->get('id');
 
-    public function importsettlement_load__BCAPaid() {
+        $result = $this->settlementModel->loadBatchSttlBCA($dataDecode, $user_id);
 
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
     public function importsettlement_save_BCAPaid()
     {
         parent::_authInsert(function () {
-            // $number_menu = count($this->request->getPost('idmenu'));
-            // $deleted = explode(",", $this->request->getPost('delete'));
-
-            // $previlagesData = [];
-            // for ($i = 0; $i < $number_menu; $i++) {
-            //     $previlagesData[] = [
-            //         "id" => $this->request->getPost('id')[$i],
-            //         "menu_id" => $this->request->getPost('idmenu')[$i],
-            //         "v" => unwrap_null(@$this->request->getPost('v')[$i], "0"),
-            //         "i" => unwrap_null(@$this->request->getPost('i')[$i], "0"),
-            //         "d" => unwrap_null(@$this->request->getPost('d')[$i], "0"),
-            //         "e" => unwrap_null(@$this->request->getPost('e')[$i], "0"),
-            //         "o" => unwrap_null(@$this->request->getPost('o')[$i], "0"),
-            //         "user_web_role_id" => $this->request->getPost('iduser'),
-            //         "created_by" => $this->session->get('id'),
-            //         "created_at" => date("Y-m-d H:i:s"),
-            //     ];
-            // }
-
             $data = $this->request->getPost();
 
             $dataDecode = json_decode($data['data']);
 
-            if ($this->settlementModel->insertBatchSttlBCA('sttl_bca_paid', $dataDecode)) {
-                echo json_encode(array('success' => true, 'message' => 'Berhasil simpan rekening koran'));
+            $user_id = $this->session->get('id');
+
+            $this->settlementModel->insertLogSttl("BCA", $data['name_file'], $dataDecode, $user_id);
+
+            if($dataDecode) {
+                parent::_insertBatchv2('sttl_bca_paid', $dataDecode);
             } else {
-                echo json_encode(array('success' => false, 'message' => $this->settlementModel->db->error()));
-            }
+                echo json_encode(array("success" => false, "message" => "Data tidak ada", "data" => null));
+            }            
         });
+    }
+
+    public function importsettlement_load_BNIPaid() {
+        $data = $this->request->getPost();
+
+        $dataDecode = json_decode($data['data']);
+
+        $user_id = $this->session->get('id');
+
+        $result = $this->settlementModel->loadBatchSttlBNI($dataDecode, $user_id);
+
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
     public function importsettlement_save_BNIPaid()
     {
         parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+            $data = $this->request->getPost();
+
+            $dataDecode = json_decode($data['data']);
+
+            $user_id = $this->session->get('id');
+
+            $this->settlementModel->insertLogSttl("BNI", $data['name_file'], $dataDecode, $user_id);
+
+            if($dataDecode) {
+                parent::_insertBatchv2('sttl_bni_paid', $dataDecode);
+            } else {
+                echo json_encode(array("success" => false, "message" => "Data tidak ada", "data" => null));
+            }            
         });
+    }
+
+    public function importsettlement_load_BRIPaid() {
+        $data = $this->request->getPost();
+
+        $dataDecode = json_decode($data['data']);
+
+        $user_id = $this->session->get('id');
+
+        $result = $this->settlementModel->loadBatchSttlBRI($dataDecode, $user_id);
+
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
     public function importsettlement_save_BRIPaid()
     {
         parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+            $data = $this->request->getPost();
+
+            $dataDecode = json_decode($data['data']);
+
+            $user_id = $this->session->get('id');
+
+            $this->settlementModel->insertLogSttl("BRI", $data['name_file'], $dataDecode, $user_id);
+
+            if($dataDecode) {
+                parent::_insertBatchv2('sttl_bri_paid', $dataDecode);
+            } else {
+                echo json_encode(array("success" => false, "message" => "Data tidak ada", "data" => null));
+            }            
         });
+    }
+
+    public function importsettlement_load_MandiriPaid() {
+        $data = $this->request->getPost();
+
+        $dataDecode = json_decode($data['data']);
+
+        $user_id = $this->session->get('id');
+
+        $result = $this->settlementModel->loadBatchSttlMandiri($dataDecode, $user_id);
+
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
     public function importsettlement_save_MandiriPaid()
     {
         parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+            $data = $this->request->getPost();
+
+            $dataDecode = json_decode($data['data']);
+
+            $user_id = $this->session->get('id');
+
+            $this->settlementModel->insertLogSttl("Mandiri", $data['name_file'], $dataDecode, $user_id);
+
+            if($dataDecode) {
+                parent::_insertBatchv2('sttl_mandiri_paid', $dataDecode);
+            } else {
+                echo json_encode(array("success" => false, "message" => "Data tidak ada", "data" => null));
+            }            
         });
     }
 
