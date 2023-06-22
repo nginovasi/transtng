@@ -280,7 +280,7 @@ class EksekutifAjax extends BaseController {
         $result = $this->db->query("SELECT a.id, 
                                         CONCAT(b.name, ' - ', b.kode_haltebis) as haltebis, 
                                         a.shift, 
-                                        a.imei,
+                                        a.device_id,
                                         d.jalur,
                                         SUM(CASE WHEN c.is_cashless = 0 THEN a.kredit ELSE 0 END) AS is_cashless,
                                         SUM(CASE WHEN c.is_cashless = 1 THEN a.kredit ELSE 0 END) AS cash,

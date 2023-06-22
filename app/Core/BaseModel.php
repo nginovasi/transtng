@@ -74,6 +74,13 @@ class BaseModel extends Model
 		return $this->db->insertID();
 	}
 
+	function base_insertUpdateBatch($data, $table){
+		$builder = $this->db->table($table);
+
+		$builder->upsertBatch($data);
+		return $this->db->insertID();
+	}
+
 	function string_insert($data, $table){
 		$builder = $this->db->table($table);
 
