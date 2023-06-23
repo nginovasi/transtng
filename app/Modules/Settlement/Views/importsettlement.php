@@ -1,10 +1,15 @@
+<!-- style internal -->
 <style>
     .select2-container {
         width: 100% !important;
     }
+
 </style>
+
+<!-- content -->
 <div>
-    <div class="page-hero page-container " id="page-hero">
+    <!-- title -->
+    <div class="page-hero page-container" id="page-hero">
         <div class="padding d-flex">
             <div class="page-title">
                 <h2 class="text-md text-highlight"><?= $page_title ?></h2>
@@ -12,113 +17,71 @@
             <div class="flex"></div>
         </div>
     </div>
-    <div class="page-content page-container" id="page-content">
+
+    <!-- body -->
+    <div class="container page-content page-container" id="page-content">
         <div class="card">
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills no-border" id="tab">
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="false">Import File Rekonsiliasi</a>
+                        <a class="nav-link active" data-toggle="tab" href="#tab-form" role="tab" aria-controls="tab-form" aria-selected="true"><i class="fa fa-calendar" aria-hidden="true"></i> Import</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#tab-form" role="tab" aria-controls="tab-form" aria-selected="false">Log Import Rekonsiliasi</a>
+                        <a class="nav-link" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="true"><i class="fa fa-calendar" aria-hidden="true"></i> Data</a>
                     </li>
                 </ul>
             </div>
             <div class="card-body">
                 <div class="padding">
                     <div class="tab-content">
-                        <div class="tab-pane fade active show" id="tab-data" role="tabpanel" aria-labelledby="tab-data">
-                            <div class="table-responsive">
-                                <div class="row">
-                                    <div class="card-body">
-                                        <div class="col-lg-12 col-md-12 col-sm-12">
-                                            <div class="row">
-                                                <div class="col-md-3">
-                                                    <div class="col-md-12">
-                                                        <label>Pilih Bank</label>
-                                                        <select class=" custom-select select2" id="import-settlement" name="import-settlement" required></select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                <label>Import CSV</label></label>
-                                                    <form action="<?php echo base_url('StudentController/importCsvToDb'); ?>" method="post" enctype="multipart/form-data">
-                                                        <div class="form-group mb-3">
-                                                            <div class="mb-3">
-                                                                <input type="file" name="file" class="form-control" id="file">
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                                <div class="col-md-3s">
-                                                    <div class="form-group">
-                                                        <label>Contoh CSV BRI</label>
-                                                        <div class="input-group">
-                                                            <a href="#" id="cetaklaporan" class="btn btn-primary">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-printer mx-2">
-                                                                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                                                                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                                                                    <rect x="6" y="14" width="12" height="8"></rect>
-                                                                </svg>
-                                                                Download Contoh
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                        <div class="tab-pane fade active show" id="tab-form" role="tabpanel" aria-labelledby="tab-form">
+                            <form method="post" enctype="multipart/form-data" name="formexcel" id="formexcel">
+                                <?= csrf_field(); ?>
+                                <div class="form-group row">
+                                    <div class="input-group mb-3 col-md-4">
+                                        <select class="custom-select select2" name="bank_id" id="bank_id" required></select>
+                                    </div>
+                                    <div class="input-group mb-3 col-md-4">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" name="excelfile" id="excelfile" onchange="FileSelected()" accept=".csv,.bri,.txt" required >
+                                            <label class="custom-file-label" for="excelfile" id="filename" >Pilih file</label>
                                         </div>
                                     </div>
+                                    <div class="input-group btn-group-download-template mb-3 col-md-2" style="display: none">
+                                        <button class="btn btn-success" id="download-template">Download Template</button>
+                                        <a href="" id="download-template-final"></a>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="tab-form" role="tabpanel" aria-labelledby="tab-form">
-                            <form data-plugin="parsley" data-option="{}" id="form">
-                                <input type="hidden" class="form-control" id="id" name="id" value="" required>
-                                <?= csrf_field() ?>
-                                <div class="table-responsive">
-                                    <div class="row">
-                                        <div class="card-body">
-                                            <div class="padding">
-                                                <div class="tab-content">
-                                                    <div class="tab-pane fade active show" id="tab-data" role="tabpanel" aria-labelledby="tab-data">
-                                                        <div class="table-responsive">
-                                                            <table id="datatable" class="table table-theme table-row v-middle">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th><span>#</span></th>
-                                                                        <th><span>BANK</span></th>
-                                                                        <th><span>File Name</span></th>
-                                                                        <th><span>Jumlah Settlement</span></th>
-                                                                        <th><span>Tanggal Settlement</span></th>
-                                                                        <th><span>Tanggal Import</span></th>
-                                                                        <th><span>User</span></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <div class="tab-pane fade" id="tab-form" role="tabpanel" aria-labelledby="tab-form">
-                                                        <form data-plugin="parsley" data-option="{}" id="form">
-                                                            <input type="hidden" class="form-control" id="id" name="id" value="" required>
-                                                            <?= csrf_field(); ?>
-                                                            <div class="form-group row">
-                                                                <div class="col-md-12">
-                                                                    <label for="imei" class="col-form-label">IMEI Number</label>
-                                                                    <input class="form-control" type="text" placeholder="Device IMEI Number " id="imei" name="imei" required />
-                                                                </div>
-                                                            </div>
-                                                            <div class="text-right">
-                                                                <button type="submit" class="btn btn-primary">Simpan</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class="form-group row">
+                                    <div class="input-group btn-group-process-file mb-3 col-md-2" style="display: none">
+                                        <button type="submit" class="btn btn-success" id="process-excel">Proses File</button>
                                     </div>
                                 </div>
                             </form>
+
+                            <div class="tab-content-body" style="display: block;">        
+                            </div>
+
+                            <button type="button" class="btn btn-success ml-auto mt-2" id="save-excel" style="display: none;">Simpan File</button>
+                        </div>
+                        <div class="tab-pane fade" id="tab-data" role="tabpanel" aria-labelledby="tab-data">
+                            <div class="table-responsive">
+                                <table id="datatable" class="table table-theme table-row v-middle">
+                                    <thead>
+                                        <tr>
+                                            <th><span>#</span></th>
+                                            <th><span>Bank</span></th>
+                                            <th><span>Filename</span></th>
+                                            <th><span>Jumlah Settlement</span></th>
+                                            <th><span>Tanggal Settlement</span></th>
+                                            <th><span>Tanggal Impor</span></th>
+                                            <th><span>User</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -126,180 +89,781 @@
         </div>
     </div>
 </div>
+
+<!-- script internal -->
 <script type="text/javascript">
     const auth_insert = '<?= $rules->i ?>';
     const auth_edit = '<?= $rules->e ?>';
     const auth_delete = '<?= $rules->d ?>';
     const auth_otorisasi = '<?= $rules->o ?>';
 
+    const base_url = '<?= base_url() ?>';
     const url = '<?= base_url() . "/" . uri_segment(0) . "/action/" . uri_segment(1) ?>';
     const url_ajax = '<?= base_url() . "/" . uri_segment(0) . "/ajax" ?>';
+    const url_pdf = '<?= base_url() . "/assets/csv/" ?>';
 
-    var dataStart = 0;
-    var coreEvents;
+    let dataStart = 0;
+    let coreEvents;
 
-    const select2Array = [{
-        id: 'import-settlement',
-        url: '/importsettlement',
-        placeholder: 'Pilih Bank',
-        params: null
-    }];
+    // init select2
+    const select2Array = [
+        {
+            id: 'bank_id',
+            url: '/bank_id_select_get',
+            placeholder: 'Pilih Bank',
+            params: null
+        }
+    ];
 
     $(document).ready(function() {
+        // init core event
         coreEvents = new CoreEvents();
         coreEvents.url = url;
         coreEvents.ajax = url_ajax;
         coreEvents.csrf = {
             "<?= csrf_token() ?>": "<?= csrf_hash() ?>"
         };
-        // coreEvents.tableColumn = datatableColumn();
 
+        // datatable load
+        coreEvents.tableColumn = datatableColumn();
+
+        // insert
         coreEvents.insertHandler = {
-            placeholder: 'Berhasil menyimpan jenis user',
-            afterAction: function(result) {
-                $('#tab-data').addClass('active show');
-                $('#tab-form').removeClass('active show');
-                coreEvents.table.ajax.reload();
-            }
         }
 
+        // update
         coreEvents.editHandler = {
-            placeholder: '',
-            afterAction: function(result) {}
         }
 
+        // delete
         coreEvents.deleteHandler = {
-            placeholder: 'Berhasil menghapus jenis user',
-            afterAction: function() {}
         }
 
+        // reset
         coreEvents.resetHandler = {
-            action: function() {
-                // reset form
-                $('#form')[0].reset();
-                $('#form').parsley().reset();
-            }
         }
 
         select2Array.forEach(function(x) {
             coreEvents.select2Init('#' + x.id, x.url, x.placeholder, x.params);
         });
+        
+        coreEvents.load(null, [0, 'asc'], null);
 
-        $('#date-start').each(function() {}).on('changeDate', function() {
-            dateParamStart = $(this).val();
-            console.log(dateParamStart);
-            coreEvents.filter = [$('#date-start').val()];
-            // $('#cetaklaporan').attr('href', url_pdf_cetak + '/p?o=p&search=' + btoa(dateParam));
-
-            $(this).datepicker('hide');
-        });
-
-        $('#rekap-date-start').each(function() {}).on('changeDate', function() {
-            dateParamStart = $(this).val();
-            console.log(dateParamStart);
-            coreEvents.filter = [$('#rekap-date-start').val()];
-            // $('#cetaklaporan').attr('href', url_pdf_cetak + '/p?o=p&search=' + btoa(dateParam));
-
-            $(this).datepicker('hide');
-        });
-
-        coreEvents.datepicker('#date-start', 'yyyy-mm-dd')
-        coreEvents.datepicker('#rekap-date-start', 'yyyy-mm-dd')
-
-
-        coreEvents.load();
     });
 
-    function select2Init(id, url, placeholder, parameter) {
-        $(id).select2({
-            id: function(e) {
-                return e.id
+    // datatable column
+    function datatableColumn() {
+        let columns = [{
+                data: "id",
+                orderable: false,
+                width: 100,
+                render: function(a, type, data, index) {
+                    return dataStart + index.row + 1
+                }
             },
-            placeholder: placeholder,
-            multiple: false,
-            ajax: {
-                url: url_ajax + url,
-                dataType: 'json',
-                quietMillis: 500,
-                delay: 500,
-                data: function(param) {
-                    var def_param = {
-                        keyword: param.term, //search term
-                        perpage: 5, // page size
-                        page: param.page || 0, // page number
-                    };
+            {
+                data: "bank",
+                orderable: true
+            },
+            {
+                data: "filename",
+                orderable: true
+            },
+            {
+                data: "ttl_sttl",
+                orderable: true
+            },
+            {
+                data: "date_sttl",
+                orderable: true
+            },
+            {
+                data: "created_at",
+                orderable: true
+            },
+            {
+                data: "user_web_username",
+                orderable: true
+            }
+        ];
+        return columns;
+    }
 
-                    return Object.assign({}, def_param, parameter);
-                },
-                processResults: function(data, params) {
-                    params.page = params.page || 0
+    $('#bank_id').on('change', function() {
+        $('.btn-group-download-template').css('display', 'block')
 
-                    return {
-                        results: data.rows,
-                        pagination: {
-                            more: false
+        if($('#excelfile').val() !== ""){
+
+            $('.btn-group-process-file').css('display', 'block')
+            // $('#simpanexcel').css('display','none');
+        }
+    })
+    
+    $('#download-template').on('click', function() {
+        let bank = $('#bank_id').select2('data');
+
+        Swal.fire({
+            title: "Unduh Template CSV " + bank[0].text + "?",
+            icon: 'info',
+            showDenyButton: true,
+            confirmButtonText: 'Ok',
+            denyButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let filename = bank[0].text+"SttlTemplate.csv";
+
+                    if(bank[0].text === "BNI"){
+                        filename = bank[0].text + "RekKoranTemplate.csv";
+                    }else{
+                        filename = bank[0].text + "SttlTemplate.csv";
+                    }
+
+                    window.location = url_pdf + filename
+                }
+            }
+        )
+    })
+
+    function FileSelected(e)
+    {
+        $('#simpanexcel').css('display','none');
+
+        let file = document.getElementById('excelfile').files[document.getElementById('excelfile').files.length - 1];
+        document.getElementById('filename').innerHtml= file.name;
+        $('#filename').text(file.name);
+        // $('#divexceltable').html('');
+
+        if($('#bank_id').val() !== "" && $('#bank_id').val() !== null){
+
+            $('.btn-group-process-file').css('display', 'block')
+            // $('#simpanexcel').css('display','none');
+        }
+
+    }
+
+    $(document).on('submit', 'form[name="formexcel"]',function(e){
+        e.preventDefault()
+
+        let bank = $('#bank_id').find(":selected").text()
+        let fileInput = document.getElementById('excelfile')
+
+        $('.tab-content-body').css('display', "block")
+        $('.tab-content-body').html("")
+
+        Swal.fire({
+            title: "Proses file excel terpilih?",
+            icon : "warning",
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                switch(bank) {
+                    case "BCA":
+                        loadCSVBCA(fileInput, "BCA")
+                        break;
+                    case "BNI":
+                        loadCSVBNI(fileInput, "BNI")
+                        break;
+                    case "BRI":
+                        loadCSVBRI(fileInput, "BRI")
+                        break;
+                    case "Mandiri":
+                        loadCSVMandiri(fileInput, "Mandiri")
+                        break;
+                    default:
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Kesalahan template',
+                        text: 'Silahkan hub team!'
+                    })
+                }
+
+                $('#save-excel').css('display', "block")
+            }
+        })
+    })
+
+    let DataBCA
+    function loadCSVBCA(fileInput, bank){
+        readFile = function () {
+            loaderStart()
+
+            let reader = new FileReader();
+
+            reader.onload = function () {
+                let readerResult = reader.result.split(/\r\n|\n|\r/);
+
+                let resultCSV = [];
+                let blackListWord =  ["Saldo Awal", "Mutasi Debet", "Mutasi Kredit", "Saldo Akhir"];
+                for (let i = 0; i < readerResult.length; i++) {
+                    if(i != 0) {
+                        csvLineSplit =  readerResult[i].split('","');
+
+                        if(csvLineSplit != "") {
+                            resultCSV.push(csvLineSplit);
+                            if(readerResult[i][0] == 0){
+                                resultCSV.pop()
+                            }
                         }
                     }
                 }
-            },
-            templateResult: function(data) {
-                return data.text;
-            },
-            templateSelection: function(data) {
-                if (data.id === '') {
-                    return placeholder;
+
+                let getIndexBlackList = []
+                $.each(resultCSV, function(i, n) {
+                    $.each(blackListWord, function(i2, n2) {
+                        if(n[0].includes(n2)) {
+                            getIndexBlackList.push(i);
+                            return true;
+                        } 
+                    })
+                })
+
+                $.each(getIndexBlackList, function(i, n) {
+                    resultCSV.splice(n - i, 1);
+                })
+
+                $.each(resultCSV, function(i, n) {
+                    n[0] = n[0].replace('"', '')
+                    n[1] = n[1].replace('"', '')
+                    n[2] = n[2].replace('"', '')
+                    n[3] = n[3].replace('"', '')
+                    n[4] = n[4].replace('"', '')
+                })
+
+                $.ajax({
+                    url : url + "_load_" + bank + "Paid",
+                    method: 'post',
+                    dataType : 'json',
+                    data : {
+                        "<?= csrf_token() ?>": "<?= csrf_hash() ?>",
+                        data: JSON.stringify(resultCSV)
+                    },
+                    success : function (rs) {
+                        if(rs.success == true) {
+                            loaderEnd()
+
+                            let result = `<div class="table-responsive">
+                                                <table class="table" id="exceltable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">Transaction Date</th>
+                                                            <th scope="col">Paid Date</th>
+                                                            <th scope="col">Settlement Date</th>
+                                                            <th scope="col">Description</th>
+                                                            <th scope="col">MID</th>
+                                                            <th scope="col">Merchant</th>
+                                                            <th scope="col">TID</th>
+                                                            <th scope="col">Trans. Type</th>
+                                                            <th scope="col">Amount</th>
+                                                            <th scope="col">No Ref</th>
+                                                            <th scope="col">Sttl Number</th>
+                                                            <th scope="col">Branch</th>
+                                                            <th scope="col">Last Balance</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="tbody">`
+
+                            $.each(rs.data, function(i, val) {
+                                result += `
+                                        <tr>
+                                            <th scope="row" class="text-center">${i + 1}</th>
+                                            <td>${val['date_trx']}</td>
+                                            <td>${val['date_paid']}</td>
+                                            <td>${val['date_sttl']}</td>
+                                            <td class="text-right">${val['description']}</td>
+                                            <td class="text-right">${val['mid']}</td>
+                                            <td class="text-right">${val['merchant']}</td>
+                                            <td class="text-right">${val['tid']}</td>
+                                            <td class="text-right">${val['type_trx']}</td>
+                                            <td class="text-right">${val['amount']}</td>
+                                            <td class="text-right">${val['no_reff']}</td>
+                                            <td class="text-right">${val['sttl_num']}</td>
+                                            <td class="text-right">${val['branch']}</td>
+                                            <td class="text-right">${val['last_balance']}</td>
+                                        </tr>`
+                            })             
+
+                            result += `
+                                    </tbody>
+                                </table>
+                            </div>`
+
+                            $(".tab-content-body").append(result)
+
+                            $('#exceltable').DataTable({
+                                "scrollX": true
+                            });
+
+                            DataBCA = rs.data
+
+                        } else {
+                            swal.close();
+
+                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                        }
+                    }
+                })
+            };
+
+            reader.readAsBinaryString(fileInput.files[0]);
+        };
+
+        readFile()
+    }
+
+    let DataBNI
+    function loadCSVBNI(fileInput, bank){
+        readFile = function () {
+            loaderStart()
+
+            let reader = new FileReader();
+
+            reader.onload = function () {
+                let readerResult = reader.result.split(/\r\n|\n|\r/);
+
+                let resultCSV = [];
+                let blackListWord =  ["No."];
+                for (let i = 0; i < readerResult.length; i++) {
+                    if(i != 0) {
+                        csvLineSplit =  readerResult[i].split(';');
+
+                        if(csvLineSplit != "") {
+                            resultCSV.push(csvLineSplit);
+                            if(readerResult[i][0] == 0){
+                                resultCSV.pop()
+                            }
+                        }
+                    }
                 }
 
-                return data.text;
+                let getIndexBlackList = []
+                $.each(resultCSV, function(i, n) {
+                    $.each(blackListWord, function(i2, n2) {
+                        if(n[0].includes(n2)) {
+                            getIndexBlackList.push(i);
+                            return true;
+                        } 
+                    })
+                })
+
+                $.each(getIndexBlackList, function(i, n) {
+                    resultCSV.splice(n - i, 1);
+                })
+
+                $.each(resultCSV, function(i, n) {
+                    n[0] = n[0].replace('"', '')
+                    n[1] = n[1].replace('"', '')
+                    n[2] = n[2].replace('"', '')
+                    n[3] = n[3].replace('"', '')
+                    n[4] = n[4].replace('"', '')
+                    n[5] = n[5].replace('"', '')
+                    n[6] = n[6].replace('"', '')
+                    n[7] = n[7].replace('"', '')
+                })
+
+                $.ajax({
+                    url : url + "_load_" + bank + "Paid",
+                    method: 'post',
+                    dataType : 'json',
+                    data : {
+                        "<?= csrf_token() ?>": "<?= csrf_hash() ?>",
+                        data: JSON.stringify(resultCSV)
+                    },
+                    success : function (rs) {
+                        if(rs.success == true) {
+                            loaderEnd()
+
+                            let result = `<div class="table-responsive">
+                                                <table class="table" id="exceltable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">Paid Date</th>
+                                                            <th scope="col">Trx Date</th>
+                                                            <th scope="col">Branch</th>
+                                                            <th scope="col">Journal Number</th>
+                                                            <th scope="col">Description</th>
+                                                            <th scope="col">Amount</th>
+                                                            <th scope="col">Debit/Credit</th>
+                                                            <th scope="col">Balance</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="tbody">`
+
+                            $.each(rs.data, function(i, val) {
+                                result += `
+                                        <tr>
+                                            <th scope="row" class="text-center">${i + 1}</th>
+                                            <td>${val['date_paid']}</td>
+                                            <td>${val['date_trx']}</td>
+                                            <td>${val['branch']}</td>
+                                            <td>${val['no_journal']}</td>
+                                            <td>${val['description']}</td>
+                                            <td class="text-right">${val['amount']}</td>
+                                            <td class="text-right">${val['dc']}</td>
+                                            <td class="text-right">${val['balance']}</td>
+                                        </tr>`
+                            })             
+
+                            result += `
+                                    </tbody>
+                                </table>
+                            </div>`
+
+                            $(".tab-content-body").append(result)
+
+                            $('#exceltable').DataTable({
+                                "scrollX": true
+                            });
+
+                            DataBNI = rs.data
+
+                        } else {
+                            swal.close();
+
+                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                        }
+                    }
+                })
+            };
+
+            reader.readAsBinaryString(fileInput.files[0]);
+        };
+
+        readFile()
+    }
+
+    let DataBRI
+    function loadCSVBRI(fileInput, bank){
+        readFile = function () {
+            loaderStart()
+
+            let reader = new FileReader();
+
+            reader.onload = function () {
+                let readerResult = reader.result.split(/\r\n|\n|\r/);
+
+                let resultCSV = [];
+                let blackListWord =  ["tanggal"];
+                for (let i = 0; i < readerResult.length; i++) {
+                    if(i != 0) {
+                        csvLineSplit =  readerResult[i].split(';');
+
+                        if(csvLineSplit != "") {
+                            resultCSV.push(csvLineSplit);
+                            if(readerResult[i][0] == 0){
+                                resultCSV.pop()
+                            }
+                        }
+                    }
+                }
+
+                let getIndexBlackList = []
+                $.each(resultCSV, function(i, n) {
+                    $.each(blackListWord, function(i2, n2) {
+                        if(n[0].includes(n2)) {
+                            getIndexBlackList.push(i);
+                            return true;
+                        } 
+                    })
+                })
+
+                $.each(getIndexBlackList, function(i, n) {
+                    resultCSV.splice(n - i, 1);
+                })
+
+                $.each(resultCSV, function(i, n) {
+                    n[0] = n[0].replace('"', '')
+                    n[1] = n[1].replace('"', '')
+                    n[2] = n[2].replace('"', '')
+                    n[3] = n[3].replace('"', '')
+                    n[4] = n[4].replace('"', '')
+                })
+
+                $.ajax({
+                    url : url + "_load_" + bank + "Paid",
+                    method: 'post',
+                    dataType : 'json',
+                    data : {
+                        "<?= csrf_token() ?>": "<?= csrf_hash() ?>",
+                        data: JSON.stringify(resultCSV)
+                    },
+                    success : function (rs) {
+
+                        if(rs.success == true) {
+                            loaderEnd()
+
+                            let result = `<div class="table-responsive">
+                                                <table class="table" id="exceltable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">DATE PAID</th>
+                                                            <th scope="col">TRANSACTION REF</th>
+                                                            <th scope="col">FILE 1</th>
+                                                            <th scope="col">BODY</th>
+                                                            <th scope="col">FILE 2</th>
+                                                            <th scope="col">SHIFT</th>
+                                                            <th scope="col">COUNT</th>
+                                                            <th scope="col">AMOUNT</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="tbody">`
+
+                            $.each(rs.data, function(i, val) {
+                                result += `
+                                        <tr>
+                                            <th scope="row" class="text-center">${i + 1}</th>
+                                            <td>${val['date_paid']}</td>
+                                            <td>${val['ref_trx']}</td>
+                                            <td>${val['file_1']}</td>
+                                            <td>${val['body']}</td>
+                                            <td>${val['file_2']}</td>
+                                            <td>${val['shift']}</td>
+                                            <td>${val['count']}</td>
+                                            <td class="text-right">${val['kredit']}</td>
+                                        </tr>`
+                            })             
+
+                            result += `
+                                    </tbody>
+                                </table>
+                            </div>`
+
+                            $(".tab-content-body").append(result)
+
+                            $('#exceltable').DataTable({
+                                "scrollX": true
+                            });
+
+                            DataBRI = rs.data
+                        } else {
+                            loaderEnd()
+
+                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                        }
+                    }
+                })
+            };
+
+            reader.readAsBinaryString(fileInput.files[0]);
+        };
+
+        readFile()
+    }
+
+    let DataMandiri
+    function loadCSVMandiri(fileInput, bank){
+        readFile = function () {
+
+        loaderStart()
+
+            let reader = new FileReader();
+
+            reader.onload = function () {
+                let readerResult = reader.result.split(/\r\n|\n|\r/);
+
+                let resultCSV = [];
+                let blackListWord =  ["Account No."];
+                for (let i = 0; i < readerResult.length; i++) {
+                    if(i != 0) {
+                        if(i % 2 == 1) {
+                            csvLineSplit = $.merge(readerResult[i].split(';'), readerResult[i + 1].split(';'))
+
+                            if(csvLineSplit != "") {
+                                resultCSV.push(csvLineSplit);
+                                if(readerResult[i][0] == 0){
+                                    resultCSV.pop()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                let getIndexBlackList = []
+                $.each(resultCSV, function(i, n) {
+                    $.each(blackListWord, function(i2, n2) {
+                        if(n[0].includes(n2)) {
+                            getIndexBlackList.push(i);
+                            return true;
+                        } 
+                    })
+                })
+
+                $.each(getIndexBlackList, function(i, n) {
+                    resultCSV.splice(n - i, 1);
+                })
+
+                $.each(resultCSV, function(i, n) {
+                    n[0] = n[0].replace('"', '')
+                    n[1] = n[1].replace('"', '')
+                    n[2] = n[2].replace('"', '')
+                    n[3] = n[3].replace('"', '')
+                    n[4] = n[4].replace('"', '')
+                    n[5] = n[5].replace('"', '')
+                    n[6] = n[6].replace('"', '')
+                    n[7] = n[7].replace('"', '')
+                    n[8] = n[8].replace('"', '')
+                })
+
+                $.ajax({
+                    url : url + "_load_" + bank + "Paid",
+                    method: 'post',
+                    dataType : 'json',
+                    data : {
+                        "<?= csrf_token() ?>": "<?= csrf_hash() ?>",
+                        data: JSON.stringify(resultCSV)
+                    },
+                    success : function (rs) {
+
+                        if(rs.success == true) {
+                            loaderEnd()
+
+                            let result = `<div class="table-responsive">
+                                                <table class="table" id="exceltable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">DATE TRX</th>
+                                                            <th scope="col">DATE PAID</th>
+                                                            <th scope="col">DESCRIPTION</th>
+                                                            <th scope="col">FILENAME</th>
+                                                            <th scope="col">NO REFERENSI</th>
+                                                            <th scope="col">AMOUNT</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="tbody">`
+
+                            $.each(rs.data, function(i, val) {
+                                result += `
+                                        <tr>
+                                            <th scope="row" class="text-center">${i + 1}</th>
+                                            <td>${val['date_trx']}</td>
+                                            <td>${val['date_paid']}</td>
+                                            <td>${val['description']}</td>
+                                            <td>${val['sttl_file_name']}</td>
+                                            <td>${val['no_ref']}</td>
+                                            <td class="text-right">${val['amount']}</td>
+                                        </tr>`
+                            })             
+
+                            result += `
+                                    </tbody>
+                                </table>
+                            </div>`
+
+                            $(".tab-content-body").append(result)
+
+                            $('#exceltable').DataTable({
+                                "scrollX": true
+                            });
+
+                            DataMandiri = rs.data
+                        } else {
+                            loaderEnd()
+
+                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                        }
+                    }
+                })
+            };
+
+            reader.readAsBinaryString(fileInput.files[0]);
+        };
+
+        readFile()
+    }
+
+    $(document).on('click', '#save-excel',function(e){
+        let bank = $('#bank_id').find(":selected").text()
+
+        switch(bank) {
+            case "BCA":
+                saveExcel("BCA", DataBCA)
+                break;
+            case "BNI":
+                saveExcel("BNI", DataBNI)
+                break;
+            case "BRI":
+                saveExcel("BRI", DataBRI)
+                break;
+            case "Mandiri":
+                saveExcel("Mandiri", DataMandiri)
+                break;
+            default:
+            Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan template',
+                text: 'Silahkan hub team!'
+            })
+        }
+    })
+
+    function saveExcel(bank, data){
+        Swal.fire({
+            title: "",
+            icon: "info",
+            text: "Proses menampilkan data, mohon ditunggu...",
+            didOpen: function() {
+                Swal.showLoading()
+            }
+        });
+
+        $.ajax({
+            url : url + "_save_" + bank + "Paid",
+            method: 'post',
+            dataType : 'json',
+            data : {
+                "<?= csrf_token() ?>": "<?= csrf_hash() ?>",
+                data: JSON.stringify(data),
+                name_file: $('#filename').text()
             },
-            escapeMarkup: function(m) {
-                return m;
+            success : function (rs) {
+                $('#datatable').DataTable().ajax.reload();
+
+                if(rs.success == true) {
+                    swal.close()
+
+                    $('#formexcel')[0].reset()
+                    $('#bank_id').val(null).trigger('change')
+                    $('#filename').text("");
+
+                    $('.btn-group-download-template').css('display', 'none')
+                    $('.btn-group-process-file').css('display', 'none')
+                    $('#save-excel').css('display', "none")
+
+                    $(".tab-content-body").html('')
+
+                    Swal.fire('Sukses','Berhasil menambahkan sttl ' + bank, 'success')
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: rs.message,
+                    })
+                }
+            }
+        })
+    }
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function loaderStart() {
+        Swal.fire({
+            title: "",
+            icon: "info",
+            text: "Proses menampilkan data, mohon ditunggu...",
+            didOpen: function() {
+                Swal.showLoading()
             }
         });
     }
 
+    function loaderEnd() {
+        swal.close();
+    }
 
-    // function datatableColumn() {
-    //     let columns = [{
-    //             data: "id",
-    //             orderable: false,
-    //             width: 100,
-    //             render: function(a, type, data, index) {
-    //                 return dataStart + index.row + 1
-    //             }
-    //         },
-    //         {
-    //             data: "jenis",
-    //             orderable: true
-    //         },
-    //         {
-    //             data: "tarif",
-    //             orderable: true
-    //         },
-    //         {
-    //             data: "id",
-    //             orderable: false,
-    //             width: 100,
-    //             render: function(a, type, data, index) {
-    //                 let button = ''
-
-    //                 if (auth_edit == "1") {
-    //                     button += '<button class="btn btn-sm btn-outline-primary edit" data-id="' + data.id + '" title="Edit">\
-    //                                 <i class="fa fa-edit"></i></button>';
-    //                 }
-
-    //                 if (auth_delete == "1") {
-    //                     button += '<button class="btn btn-sm btn-outline-danger delete" data-id="' + data.id + '" title="Delete">\
-    //                                     <i class="fa fa-trash-o"></i></button></div>';
-    //                 }
-
-    //                 button += (button == '') ? "<b>Tidak ada aksi</b>" : ""
-
-    //                 return button;
-    //             }
-    //         }
-    //     ];
-
-    //     return columns;
-    // }
 </script>
