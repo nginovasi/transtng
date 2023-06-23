@@ -7,7 +7,7 @@
     <meta name="description" content="Trans Kota Tangerang adalah sistem transportasi Bus Rapid Transit yang mulai beroperasi pada tanggal 1 Desember 2016 di Kota Tangerang, Banten. Layanan BRT ini diciptakan untuk mengurangi kemacetan dan menyediakan kendaraan massal yang nyaman, aman, bersih, dan cepat. Pada masa perkenalan, layanan BRT ini dibebaskan dari tarif selama 2 minggu." />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <!-- style -->
-    <link rel="shortcut icon" href="<?= base_url(); ?>/assets/img/icon.png" type="image/png">
+    <link rel="shortcut icon" href="<?= base_url(); ?>/assets/img/TNGLogo-TNGIcon.svg" type="image/png">
     <link rel="stylesheet" href="<?= base_url() ?>/assets/css/bootstrap.css" type="text/css" />
     <link rel="stylesheet" href="<?= base_url() ?>/assets/css/theme.css" type="text/css" />
 
