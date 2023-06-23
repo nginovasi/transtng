@@ -49,38 +49,42 @@ $session = \Config\Services::session();
 						<div class="col-xl-4 col-lg-12 col-md-12">
 							<div class="card flex" data-sr-id="9" style="visibility: visible; transform: none; opacity: 1; transition: none 0s ease 0s;">
 								<div class="card-body">
-									<div class="px-4">
+									<div class="">
 										<div class="text-center mb-3 bg-primary">
 											<small class="font-weight-bold">Aktivitas</small>
 										</div>
-										<div class="row text-center mb-5">
+										<div class="row text-center">
+											<div class="col">
+												<h3 id="clock"></h3>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="card flex" data-sr-id="9" style="visibility: visible; transform: none; opacity: 1; transition: none 0s ease 0s;">
+								<div class="card-body">
+									<div class="all-aktivitas">
+										<div class="text-center mb-3 bg-primary">
+											<small class="font-weight-bold">Aktivitas</small>
+										</div>
+										<div class="row text-center mb-3">
 											<div class="col">
 												<span class="text-sm">Penumpang Hari Ini</span>
-												<div class="text-muted text-md">0</div>
+												<div class="text-sm font-weight-bold text-primary" id="ttl_penumpang_now">0</div>
 											</div>
 											<div class="col">
 												<span class="text-sm">Pendapatan Hari Ini</span>
-												<div class="text-muted text-md">Rp. 0</div>
+												<div class="text-sm font-weight-bold text-primary" id="ttl_kredit_now">Rp. 0</div>
 											</div>
 										</div>
-										<div class="row text-center mb-5">
-											<div class="col">
-												<span class="text-sm">Jumlah Pegawai</span>
-												<div class="text-muted text-md">0</div>
-											</div>
+										<div class="row text-center mb-3">
 											<div class="col">
 												<span class="text-sm">Jumlah Jalur</span>
-												<div class="text-muted text-md">0</div>
-											</div>
-										</div>
-										<div class="row text-center mb-5">
-											<div class="col">
-												<span class="text-sm">POS On Bus</span>
-												<div class="text-muted text-md">0</div>
+												<div class="text-sm font-weight-bold text-primary" id="ttl_jalur">0</div>
 											</div>
 											<div class="col">
-												<span class="text-sm">POS On Halte</span>
-												<div class="text-muted text-md">0</div>
+												<span class="text-sm">Jumlah TOB</span>
+												<div class="text-sm font-weight-bold text-primary" id="ttl_tob">0 <small class="text-muted" id="ttl_tob_offline">(0)</small></div>
 											</div>
 										</div>
 									</div>
@@ -90,260 +94,7 @@ $session = \Config\Services::session();
 					</div>
 				</div>
 				<div class="card-footer">
-					<div class="row">
-						<div class="col-md-3" style="border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;">
-							<!-- <div class=" p-3">.col-md-3</div> -->
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h5 class="text-left">AstraPay</h5>
-									<h6 class="text-sm-left text-muted">Penumpang Hari Ini</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-							<br>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">(0)</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center"><i class="fa fa-arrow-down" aria-hidden="true"></i></h5>
-								</div>
-							</div>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">Penumpang kemarin</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-3" style="border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;">
-							<!-- <div class=" p-3">.col-md-3</div> -->
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h5 class="text-left">AstraPay</h5>
-									<h6 class="text-sm-left text-muted">Penumpang Hari Ini</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-							<br>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">(0)</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center"><i class="fa fa-arrow-down" aria-hidden="true"></i></h5>
-								</div>
-							</div>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">Penumpang kemarin</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-3" style="border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;">
-							<!-- <div class=" p-3">.col-md-3</div> -->
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h5 class="text-left">AstraPay</h5>
-									<h6 class="text-sm-left text-muted">Penumpang Hari Ini</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-							<br>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">(0)</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center"><i class="fa fa-arrow-down" aria-hidden="true"></i></h5>
-								</div>
-							</div>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">Penumpang kemarin</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-3" style="border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;">
-							<!-- <div class=" p-3">.col-md-3</div> -->
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h5 class="text-left">AstraPay</h5>
-									<h6 class="text-sm-left text-muted">Penumpang Hari Ini</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-							<br>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">(0)</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center"><i class="fa fa-arrow-down" aria-hidden="true"></i></h5>
-								</div>
-							</div>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">Penumpang kemarin</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-3" style="border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;">
-							<!-- <div class=" p-3">.col-md-3</div> -->
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h5 class="text-left">AstraPay</h5>
-									<h6 class="text-sm-left text-muted">Penumpang Hari Ini</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-							<br>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">(0)</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center"><i class="fa fa-arrow-down" aria-hidden="true"></i></h5>
-								</div>
-							</div>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">Penumpang kemarin</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-3" style="border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;">
-							<!-- <div class=" p-3">.col-md-3</div> -->
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h5 class="text-left">AstraPay</h5>
-									<h6 class="text-sm-left text-muted">Penumpang Hari Ini</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-							<br>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">(0)</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center"><i class="fa fa-arrow-down" aria-hidden="true"></i></h5>
-								</div>
-							</div>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">Penumpang kemarin</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-3" style="border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;">
-							<!-- <div class=" p-3">.col-md-3</div> -->
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h5 class="text-left">AstraPay</h5>
-									<h6 class="text-sm-left text-muted">Penumpang Hari Ini</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-							<br>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">(0)</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center"><i class="fa fa-arrow-down" aria-hidden="true"></i></h5>
-								</div>
-							</div>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">Penumpang kemarin</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-3" style="border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;">
-							<!-- <div class=" p-3">.col-md-3</div> -->
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h5 class="text-left">AstraPay</h5>
-									<h6 class="text-sm-left text-muted">Penumpang Hari Ini</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-							<br>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">(0)</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center"><i class="fa fa-arrow-down" aria-hidden="true"></i></h5>
-								</div>
-							</div>
-							<div class="row d-flex">
-								<div class="col-md-9">
-									<h6 class="text-sm-left text-muted">Penumpang kemarin</h6>
-								</div>
-								<div class="col-md-3">
-									<h5 class="text-primary text-md-center">0</h5>
-								</div>
-							</div>
-						</div>
-						<!-- <div class="col-md-3" style="border-right: 1px solid #e0e0e0;">
-							<div class=" p-3">.col-md-3</div>
-						</div>
-						<div class="col-md-3" style="border-right: 1px solid #e0e0e0;">
-							<div class=" p-3">.col-md-3</div>
-						</div>
-						<div class="col-md-3" style="border-right: 1px solid #e0e0e0;">
-							<div class=" p-3">.col-md-3</div>
-						</div>
-						<div class="col-md-3" style="border-right: 1px solid #e0e0e0;">
-							<div class=" p-3">.col-md-3</div>
-						</div>
-						<div class="col-md-3" style="border-right: 1px solid #e0e0e0;">
-							<div class=" p-3">.col-md-3</div>
-						</div>
-						<div class="col-md-3" style="border-right: 1px solid #e0e0e0;">
-							<div class=" p-3">.col-md-3</div>
-						</div>
-						<div class="col-md-3" style="border-right: 1px solid #e0e0e0;">
-							<div class=" p-3">.col-md-3</div>
-						</div> -->
+					<div class="row" id="jenis-transaksi">
 					</div>
 				</div>
 			</div>
@@ -409,10 +160,173 @@ $session = \Config\Services::session();
 			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">TNG</a> contributors',
 			subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
 		}).addTo(map);
+
+		loadAllAjax();
+		setInterval(updateClock, 1000);
 	});
+
+	function loadAllAjax() {
+		var ajaxPromises = [];
+		var getAllTransaksi = 
+		$.ajax({
+			url: url_ajax + '/getAllTransaksi',
+			type: 'GET',
+			dataType: 'json',
+			beforeSend: function() {
+				$('#ttl_penumpang_now').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>');
+				$('#ttl_kredit_now').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>');
+			},
+			success: function(res) {
+				if (res) {
+					$('#ttl_penumpang_now').html(numberWithCommas(res.data.total_penumpang));
+					$('#ttl_kredit_now').html('Rp. ' + numberWithCommas(res.data.total_kredit));
+				} else {
+					$('#all-aktivitas').html('<div class="col-md-12 text-center">Data tidak ditemukan</div>');
+				}
+			},
+			error: function(err) {
+				console.log(err);
+			}
+		});
+		ajaxPromises.push(getAllTransaksi);
+
+		var getAllDevice = 
+			$.ajax({
+				url: url_ajax + '/getAllDevice',
+				type: 'GET',
+				dataType: 'json',
+				beforeSend: function() {
+					$('#ttl_tob').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>');
+				},
+				success: function(res) {
+					data = res.data;
+					if (res) {
+						$('#ttl_tob').html(data.ttl_tob + ' <small class="text-muted" id="ttl_tob_offline">(' + data.ttl_tob_offline + ')</small>');
+
+					} else {
+						$('#all-aktivitas').html('<div class="col-md-12 text-center">Data tidak ditemukan</div>');
+					}
+				},
+				error: function(err) {
+					console.log(err);
+				}
+			});
+		ajaxPromises.push(getAllDevice);
+
+		var getAllJalur = 
+			$.ajax({
+				url: url_ajax + '/getAllJalur',
+				type: 'GET',
+				dataType: 'json',
+				beforeSend: function() {
+					$('#ttl_jalur').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>');
+				},
+				success: function(res) {
+					data = res.data;
+					if (res) {
+						$('#ttl_jalur').html(data.ttl_jalur);
+					} else {
+						$('#all-aktivitas').html('<div class="col-md-12 text-center">Data tidak ditemukan</div>');
+					}
+				},
+				error: function(err) {
+					console.log(err);
+				}
+			});
+		ajaxPromises.push(getAllJalur);
+		
+		var getJenisTransaksi =
+			$.ajax({
+				url: url_ajax + '/getJenisTransaksi',
+				type: 'GET',
+				dataType: 'json',
+				beforeSend: function() {
+					$('#jenis-transaksi').html('<div class="col-md-12 text-center"><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>');
+				},
+				success: function(res) {
+					if (res) {
+						var data = res.data;
+						var html = '';
+						data.forEach(function(x) {
+							if (x.selisih_penumpang == '0') {
+								$color = 'color: grey !important';
+								$icon = '<i class="fa fa-exchange" aria-hidden="true" style="' + $color + '"></i>';
+							} else if (x.selisih_penumpang > 0) {
+								$color = 'color: green !important';
+								$icon = '<i class="fa fa-arrow-up" aria-hidden="true" style="' + $color + '"></i>';
+							} else {
+								$color = 'color: red !important';
+								$icon = '<i class="fa fa-arrow-down" aria-hidden="true" style="' + $color + '"></i>';
+							}
+
+							html += `
+						<div class="col-md-3 py-3" style="border-right: 1px solid #e0e0e0;">
+							<div class="row d-flex">
+								<div class="col-md-9">
+									<h5 class="text-left">` + x.jenis_transaksi + `</h5>
+									<h6 class="text-sm-left text-muted">Penumpang Hari Ini</h6>
+								</div>
+								<div class="col-md-3">
+									<h5 class="text-primary text-md-center">` + numberWithCommas(x.total_penumpang) + `</h5>
+								</div>
+							</div>
+							<br>
+							<div class="row d-flex">
+								<div class="col-md-9">
+									<h6 class="text-sm-left text-muted">(` + numberWithCommas(x.selisih_penumpang) + `)</h6>
+								</div>
+								<div class="col-md-3">
+									<h5 class="text-primary text-md-center">` + $icon + `</h5>
+								</div>
+							</div>
+							<div class="row d-flex">
+								<div class="col-md-9">
+									<h6 class="text-sm-left text-muted">Penumpang kemarin</h6>
+								</div>
+								<div class="col-md-3">
+									<h5 class="text-primary text-md-center">` + numberWithCommas(x.penumpang_kemarin) + `</h5>
+								</div>
+							</div>
+						</div>`;
+						});
+						$('#jenis-transaksi').html(html);
+					} else {
+						$('#jenis-transaksi').html('<div class="col-md-12 text-center">Data tidak ditemukan</div>');
+					}
+				},
+				error: function(err) {
+					console.log(err);
+				}
+			});
+		ajaxPromises.push(getJenisTransaksi);
+
+		$.when.apply($, ajaxPromises).then(function() {
+			console.log('done');
+		});
+	}
 
 	function numberWithCommas(x) {
 		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
+
+	function updateClock() {
+		var now = new Date();
+		var hours = now.getHours();
+		var minutes = now.getMinutes();
+		var seconds = now.getSeconds();
+
+		// Add leading zeros to hours, minutes, and seconds
+		hours = addLeadingZero(hours);
+		minutes = addLeadingZero(minutes);
+		seconds = addLeadingZero(seconds);
+
+		// Display the time in the "clock" element
+		var clockElement = document.getElementById("clock");
+		clockElement.textContent = hours + ":" + minutes + ":" + seconds;
+	}
+
+	function addLeadingZero(value) {
+		return value < 10 ? "0" + value : value;
 	}
 
 	function get_random_color() {

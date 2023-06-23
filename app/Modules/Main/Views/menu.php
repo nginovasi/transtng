@@ -58,7 +58,7 @@ $module_active = $uri->getSegment(1);
 
 				<!-- <img src="<?= base_url(); ?>/assets/img/TNGLogo-WebPurpose-v1.png" alt="..."> -->
 				<!-- <img src="<?= base_url(); ?>/assets/img/TNGLogo-WebPurpose-v2.png" alt="..."> -->
-				<img src="<?= base_url(); ?>/assets/img/TNGLogo-WebPurpose(optional).png" alt="...">
+				<img src="<?= base_url(); ?>/assets/img/TNGLogo-WebPurpose(optional).svg" alt="...">
 				<!-- <span class="hidden-folded d-inline l-s-n-1x ">Mitra Darat</span> -->
 			</a>
 			<!-- / brand -->
