@@ -1,10 +1,15 @@
+<!-- style internal -->
 <style>
     .select2-container {
         width: 100% !important;
     }
+
 </style>
+
+<!-- content -->
 <div>
-    <div class="page-hero page-container " id="page-hero">
+    <!-- title -->
+    <div class="page-hero page-container" id="page-hero">
         <div class="padding d-flex">
             <div class="page-title">
                 <h2 class="text-md text-highlight"><?= $page_title ?></h2>
@@ -12,126 +17,60 @@
             <div class="flex"></div>
         </div>
     </div>
-    <div class="page-content page-container" id="page-content">
+
+    <!-- body -->
+    <div class="container page-content page-container" id="page-content">
         <div class="card">
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills no-border" id="tab">
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="false">Laporan Rekonsiliasi</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#tab-form" role="tab" aria-controls="tab-form" aria-selected="false">Rekap Rekonsiliasi</a>
+                        <a class="nav-link active" data-toggle="tab" href="#tab-laprekon" role="tab" aria-controls="tab-laprekon" aria-selected="true"><i class="fa fa-calendar" aria-hidden="true"></i> Laporan Rekonsiliasi</a>
                     </li>
                 </ul>
             </div>
             <div class="card-body">
                 <div class="padding">
                     <div class="tab-content">
-                        <div class="tab-pane fade active show" id="tab-data" role="tabpanel" aria-labelledby="tab-data">
-                            <div class="table-responsive">
-                                <div class="row">
-                                    <div class="card-body">
-                                        <div class="col-lg-12 col-md-12 col-sm-12">
-                                            <div class="row">
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <!-- <label>Cek File Settlement Dari</label> -->
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar mx-2">
-                                                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                                                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                                                                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                                                                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                                                                    </svg>
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control form-control-md date" name="date-start" id="date-start" placeholder="Pilih Tanggal Awal" required autocomplete="off">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="col-md-12">
-                                                        <!-- <label>Pilih Bank</label> -->
-                                                        <select class=" custom-select select2" id="laprekon" name="laprekon" required></select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <div class="form-group">
-                                                        <!-- <label>&nbsp;</label> -->
-                                                        <div class="input-group">
-                                                            <a href="#" id="cetaklaporan" class="btn btn-primary">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-printer mx-2">
-                                                                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                                                                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                                                                    <rect x="6" y="14" width="12" height="8"></rect>
-                                                                </svg>
-                                                                Lihat Summary
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                        <div class="tab-pane fade active show" id="tab-laprekon" role="tabpanel" aria-labelledby="tab-laprekon">
+                            <div class="form-group row">
+                                <div class="input-group mb-3 col-md-4">
+                                    <select class="custom-select select2" name="bank_id" id="bank_id" required></select>
+                                </div>
+                                <div class="input-group mb-3 col-lg-4">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar mx-2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                            </span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-md date" name="date" id="date" placeholder="Masukkan Bulan" required autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3 col-md-2">
+                                    <button type="submit" class="btn btn-success" id="process" style="display: none">Lihat Transaksi</button>
+                                </div>
+                                <div class="mb-2 col-md-2">
+                                    <div class="btn-group-export" style="display: none;">
+                                        <button class="btn btn-white">Export</button>
+                                        <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
+                                        <div class="dropdown-menu bg-dark" role="menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(93px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                            <a class="dropdown-item" id="download-data-pdf">
+                                                PDF
+                                            </a>    
+                                            <!-- <a class="dropdown-item">
+                                                Excel
+                                            </a> -->
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="tab-pane fade" id="tab-form" role="tabpanel" aria-labelledby="tab-form">
-                            <form data-plugin="parsley" data-option="{}" id="form">
-                                <input type="hidden" class="form-control" id="id" name="id" value="" required>
-                                <?= csrf_field() ?>
-                                <div class="table-responsive">
-                                <div class="row">
-                                    <div class="card-body">
-                                        <div class="col-lg-12 col-md-12 col-sm-12">
-                                            <div class="row">
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <!-- <label>Cek File Settlement Dari</label> -->
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar mx-2">
-                                                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                                                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                                                                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                                                                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                                                                    </svg>
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control form-control-md date" name="rekap-date-start" id="rekap-date-start" placeholder="Pilih Tanggal Awal" required autocomplete="off">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="col-md-12">
-                                                        <!-- <label>Pilih Bank</label> -->
-                                                        <select class=" custom-select select2" id="rekaprekon" name="rekaprekon" required></select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <div class="form-group">
-                                                        <!-- <label>&nbsp;</label> -->
-                                                        <div class="input-group">
-                                                            <a href="#" id="cetaklaporan" class="btn btn-primary">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-printer mx-2">
-                                                                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                                                                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                                                                    <rect x="6" y="14" width="12" height="8"></rect>
-                                                                </svg>
-                                                                Lihat Rekap
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
+                            <div class="tab-content-header my-3" style="display: block;">    
+                                <h6 class="tab-content-title text-center font-weight-bold"></h6>
                             </div>
-                            </form>
+
+                            <div class="tab-content-body" style="display: block;">        
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -139,184 +78,265 @@
         </div>
     </div>
 </div>
+
+<!-- script internal -->
 <script type="text/javascript">
     const auth_insert = '<?= $rules->i ?>';
     const auth_edit = '<?= $rules->e ?>';
     const auth_delete = '<?= $rules->d ?>';
     const auth_otorisasi = '<?= $rules->o ?>';
 
-    const url = '<?=base_url() . "/" . uri_segment(0) . "/action/" . uri_segment(1)?>';
-    const url_ajax = '<?=base_url() . "/" . uri_segment(0) . "/ajax"?>';
+    const base_url = '<?= base_url() ?>';
+    const url = '<?= base_url() . "/" . uri_segment(0) . "/action/" . uri_segment(1) ?>';
+    const url_ajax = '<?= base_url() . "/" . uri_segment(0) . "/ajax" ?>';
+    const url_pdf = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportLapRekon" . "" ?>';
 
-    var dataStart = 0;
-    var coreEvents;
+    let dataStart = 0;
+    let coreEvents;
 
-    const select2Array = [{
-        id: 'laprekon',
-        url: '/laprekon',
-        placeholder: 'Pilih Bank',
-        params: null
-    },{
-        id: 'rekaprekon',
-        url: '/rekaprekon',
-        placeholder: 'Pilih Bank',
-        params: null
-    }];
+    // init select2
+    const select2Array = [
+        {
+            id: 'bank_id',
+            url: '/bank_id_select_get',
+            placeholder: 'Pilih Bank',
+            params: null
+        },
+        {
+            id: 'bank_id_rekaprekon',
+            url: '/bank_id_select_get',
+            placeholder: 'Pilih Bank',
+            params: null
+        }
+    ];
 
     $(document).ready(function() {
+        // init core event
         coreEvents = new CoreEvents();
         coreEvents.url = url;
         coreEvents.ajax = url_ajax;
         coreEvents.csrf = {
             "<?= csrf_token() ?>": "<?= csrf_hash() ?>"
         };
+
+        // datatable load
         // coreEvents.tableColumn = datatableColumn();
 
+        // insert
         coreEvents.insertHandler = {
-            placeholder: 'Berhasil menyimpan jenis user',
-            afterAction: function(result) {
-                $('#tab-data').addClass('active show');
-                $('#tab-form').removeClass('active show');
-                coreEvents.table.ajax.reload();
-            }
         }
 
+        // update
         coreEvents.editHandler = {
-            placeholder: '',
-            afterAction: function(result) {}
         }
 
+        // delete
         coreEvents.deleteHandler = {
-            placeholder: 'Berhasil menghapus jenis user',
-            afterAction: function() {}
         }
 
+        // reset
         coreEvents.resetHandler = {
-            action: function() {
-                // reset form
-                $('#form')[0].reset();
-                $('#form').parsley().reset();
-            }
         }
 
         select2Array.forEach(function(x) {
             coreEvents.select2Init('#' + x.id, x.url, x.placeholder, x.params);
         });
 
-        $('#date-start').each(function() {}).on('changeDate', function() {
-            dateParamStart = $(this).val();
-            console.log(dateParamStart);
-            coreEvents.filter = [$('#date-start').val()];
-            // $('#cetaklaporan').attr('href', url_pdf_cetak + '/p?o=p&search=' + btoa(dateParam));
-           
-            $(this).datepicker('hide');
+        coreEvents.datepickermonthly('#date', 'yyyy-mm')
+
+        coreEvents.datepickermonthly('#date_rekaprekon', 'yyyy-mm')
+
+        $('#download-data-pdf').on('click', function(e) {
+            let date = $('#date').val()
+            let bank = $('#bank_id').find(":selected").text()
+
+            $(this).attr("href", url_pdf + bank + '?date=' + date + '-01' + '&bank=' + bank);
+            $(this).attr("target", "_blank");
         });
 
-        $('#rekap-date-start').each(function() {}).on('changeDate', function() {
-            dateParamStart = $(this).val();
-            console.log(dateParamStart);
-            coreEvents.filter = [$('#rekap-date-start').val()];
-            // $('#cetaklaporan').attr('href', url_pdf_cetak + '/p?o=p&search=' + btoa(dateParam));
-           
-            $(this).datepicker('hide');
-        });
+        // coreEvents.load(null, [0, 'asc'], null);
 
-        coreEvents.datepicker('#date-start', 'yyyy-mm-dd')
-        coreEvents.datepicker('#rekap-date-start', 'yyyy-mm-dd')
-
-
-        coreEvents.load();
     });
 
-    function select2Init(id, url, placeholder, parameter) {
-        $(id).select2({
-            id: function(e) {
-                return e.id
+    $(document)
+    .on("change", "#bank_id", function() {
+        if($("#date-laprekon").val()) {
+            $("#process").css("display", "block")
+        }
+    })
+    .on("change", "#date", function() {
+        if($("#bank_id").val()) {
+            $("#process").css("display", "block")
+        }
+    })
+    .on("click", "#process", function() {
+        if($("#bank_id").val() && $("#date").val()) {
+            let bank = $('#bank_id').find(":selected").text()
+            let date = $("#date").val() + '-' + "01"
+
+            loadLapRekon(date, bank)
+        }
+    })
+
+    function loadLapRekon(date, bank){
+        loaderStart()
+
+        let dateExplode = date.split('-')
+
+        let bankAlias
+        switch(bank) {
+            case "BCA":
+                bankAlias = "FLAZZ"
+                break;
+            case "BNI":
+                bankAlias = "TAPCASH"
+                break;
+            case "BRI":
+                bankAlias = "BRIZZI"
+                break;
+            case "Mandiri":
+                bankAlias = "E-MONEY"
+                break;
+            default:
+                bankAlias = "SERVER ERROR"
+        }
+
+        $.ajax({
+            url : url + "_load_" + bank + "LapRekon",
+            method: 'post',
+            dataType : 'json',
+            data : {
+                "<?= csrf_token() ?>": "<?= csrf_hash() ?>",
+                date: date
             },
-            placeholder: placeholder,
-            multiple: false,
-            ajax: {
-                url: url_ajax + url,
-                dataType: 'json',
-                quietMillis: 500,
-                delay: 500,
-                data: function(param) {
-                    var def_param = {
-                        keyword: param.term, //search term
-                        perpage: 5, // page size
-                        page: param.page || 0, // page number
-                    };
+            success : function (rs) {
+                if(rs.success == true) {
+                    loaderEnd()
 
-                    return Object.assign({}, def_param, parameter);
-                },
-                processResults: function(data, params) {
-                    params.page = params.page || 0
+                    $('.btn-group-export').css('display', 'block')
 
-                    return {
-                        results: data.rows,
-                        pagination: {
-                            more: false
+                    $(".tab-content-body").html("")
+                    $(".tab-content-title").text("")
+
+                    $(".tab-content-title").text(`REKAP LAPORAN TRANSAKSI ${bankAlias} PERIODE ${getMonth(dateExplode[1])} ${dateExplode[0]}`)
+
+                    let result = `<div class="table-responsive">
+                                        <table class="table" id="exceltable">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Tanggal Transaksi</th>
+                                                    <th scope="col">Tanggal Pembayaran</th>
+                                                    <th scope="col">Jumlah Transaksi</th>
+                                                    <th scope="col">Nominal Transaksi</th>
+                                                    <th scope="col">Nominal Dibayarkan</th>
+                                                    <th scope="col">Selisih</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="tbody">`
+
+                    $.each(rs.data.result, function(i, val) {
+                        result += `
+                                <tr>
+                                    <th scope="row" class="text-center">${i + 1}</th>
+                                    <td class="text-center">${val['date_trx']}</td>
+                                    <td class="text-center">${val['date_paid'] ? val['date_paid'] : '-'}</td>
+                                    <td class="text-right">${val['ttl_trx'] ?  numberWithCommas(val['ttl_trx']) : numberWithCommas(0) }</td>
+                                    <td class="text-right">${val['jml_trx'] ? numberWithCommas(val['jml_trx']) : numberWithCommas(0)}</td>
+                                    <td class="text-right">${val['jml_trx_paid'] ? numberWithCommas(val['jml_trx_paid']) : numberWithCommas(0)}</td>
+                                `
+
+                        if(val['difference_trx'] > 0) {
+                            result += `<td class="text-right text-success">${val['difference_trx'] ? '+' + numberWithCommas(val['difference_trx']) : numberWithCommas(0)}</td>`
+                        } else if(val['difference_trx'] < 0) {
+                            result += `<td class="text-right text-danger">${val['difference_trx'] ? '-' + numberWithCommas(val['difference_trx']) : numberWithCommas(0)}</td>`
+                        } else {
+                            result += `<td class="text-right">${val['difference_trx'] ? numberWithCommas(val['difference_trx']) : numberWithCommas(0)}</td>`
                         }
-                    }
-                }
-            },
-            templateResult: function(data) {
-                return data.text;
-            },
-            templateSelection: function(data) {
-                if (data.id === '') {
-                    return placeholder;
-                }
 
-                return data.text;
-            },
-            escapeMarkup: function(m) {
-                return m;
+                        result += `</tr>`
+                    })             
+
+                    result += `
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-right font-weight-bold">Total</td>
+                                    <td class="text-right font-weight-bold">${numberWithCommas(rs.data.ttl_trx)}</td>
+                                    <td class="text-right font-weight-bold">${numberWithCommas(rs.data.jml_trx)}</td>
+                                    <td class="text-right font-weight-bold">${numberWithCommas(rs.data.jml_trx_paid)}</td>
+                                    <td class="text-right font-weight-bold">${numberWithCommas(rs.data.difference_trx)}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>`
+
+                    $(".tab-content-body").append(result)
+                } else {
+                    swal.close();
+
+                    Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                }
+            }
+        })
+    }
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function loaderStart() {
+        Swal.fire({
+            title: "",
+            icon: "info",
+            text: "Proses menampilkan data, mohon ditunggu...",
+            didOpen: function() {
+                Swal.showLoading()
             }
         });
     }
 
-    // function datatableColumn() {
-    //     let columns = [{
-    //             data: "id",
-    //             orderable: false,
-    //             width: 100,
-    //             render: function(a, type, data, index) {
-    //                 return dataStart + index.row + 1
-    //             }
-    //         },
-    //         {
-    //             data: "jenis",
-    //             orderable: true
-    //         },
-    //         {
-    //             data: "tarif",
-    //             orderable: true
-    //         },
-    //         {
-    //             data: "id",
-    //             orderable: false,
-    //             width: 100,
-    //             render: function(a, type, data, index) {
-    //                 let button = ''
+    function loaderEnd() {
+        swal.close();
+    }
 
-    //                 if (auth_edit == "1") {
-    //                     button += '<button class="btn btn-sm btn-outline-primary edit" data-id="' + data.id + '" title="Edit">\
-    //                                 <i class="fa fa-edit"></i></button>';
-    //                 }
+    function errorServer() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan template',
+            text: 'Silahkan hub customer service!'
+        })
+    }
 
-    //                 if (auth_delete == "1") {
-    //                     button += '<button class="btn btn-sm btn-outline-danger delete" data-id="' + data.id + '" title="Delete">\
-    //                                     <i class="fa fa-trash-o"></i></button></div>';
-    //                 }
+    function getMonth(month) { 
+        let result
+        if(month == 01) {
+            result = "JANUARI"
+        } else if(month == 02) {
+            result = "FEBRUARI"
+        } else if(month == 03) {
+            result = "MARET"
+        } else if(month == 04) {
+            result = "APRIL"
+        } else if(month == 05) {
+            result = "MEI"
+        } else if(month == 06) {
+            result = "JUNI"
+        } else if(month == 07) {
+            result = "JULI"
+        } else if(month == 08) {
+            result = "AGUSTUS"
+        } else if(month == 09) {
+            result = "SEPTEMBER"
+        } else if(month == 10) {
+            result = "OKTOBER"
+        } else if(month == 11) {
+            result = "NOVEMBER"
+        } else {
+            result = "DESEMBER"
+        }
 
-    //                 button += (button == '') ? "<b>Tidak ada aksi</b>" : ""
+        return result
+    }
 
-    //                 return button;
-    //             }
-    //         }
-    //     ];
-
-    //     return columns;
-    // }
 </script>
