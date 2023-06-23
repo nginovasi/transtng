@@ -155,35 +155,36 @@ class SettlementAction extends BaseController {
         });
     }
 
-    public function laprekon_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
+    public function laprekon_load_BCALapRekon() {
+        $data = $this->request->getPost();
 
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
+        $result = $this->settlementModel->loadLapRekonBCA($data['date']);
+
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
-    public function laprekon_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
+    public function laprekon_load_BRILapRekon() {
+        $data = $this->request->getPost();
+
+        $result = $this->settlementModel->loadLapRekonBRI($data['date']);
+
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
-    public function laprekon_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
+    public function laprekon_load_BNILapRekon() {
+        $data = $this->request->getPost();
+
+        $result = $this->settlementModel->loadLapRekonBNI($data['date']);
+
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
-    public function laprekon_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
+    public function laprekon_load_MandiriLapRekon() {
+        $data = $this->request->getPost();
+
+        $result = $this->settlementModel->loadLapRekonMandiri($data['date']);
+
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
 }
