@@ -1707,7 +1707,7 @@ Colors
 .nav-active-text-primary .nav-item.active > a,
 .nav-active-text-primary .nav > li.active > a,
 .nav-active-text-primary .nav-sub > li.active > a {
-  color: #448bff !important; }
+  color: #3062d4 !important; }
 
 .nav-active-primary .nav-link.active,
 .nav-active-primary .nav-item.active > a,
@@ -4113,7 +4113,7 @@ a.text-primary:hover {
 .text-primary,
 .text-hover-primary a:hover,
 .text-hover-primary .active > a {
-  color: #448bff !important; }
+  color: #3062d4 !important; }
 
 a.success:hover {
   background-color: #2fc26d; }
