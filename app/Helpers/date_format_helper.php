@@ -1,5 +1,25 @@
 <?php
 
+function dateFormatSlashReverseFromddmmyyyyToyyyymmdd($date) {
+    return date_format(date_create(implode("-", array_reverse(explode("/", $date)))), "Y-m-d");
+}
+
+function dateFormatSlashReverseFromddmmyyyyToyyyymmddhis($date, $hour) {
+    return date_format(date_create(implode("-", array_reverse(explode("/", $date))) . " " . $hour), "Y-m-d H:i:s");
+}
+
+function dateFormatStringNoSpaceFromyyyymmddToyyymmdd($date) {
+    return date_format(date_create($date), "Y-m-d");
+}
+
+function dateFormatStringNoSpaceToyyymmdd($date) {
+    $day = substr($date, 0, 2);
+    $month = substr($date, 2, 2);
+    $year = substr($date, 4, 4);
+
+    return $year . "-" . $month . "-" . $day; 
+}
+
 function dateFormatNonSpaceyyyymmddhhmmss($date) {
     $day = substr($date, 6, 2);
     $month = substr($date, 4, 2);
