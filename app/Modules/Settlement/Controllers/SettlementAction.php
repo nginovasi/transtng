@@ -38,9 +38,7 @@ class SettlementAction extends BaseController {
 
         $user_id = $this->session->get('id');
 
-        $result = $this->settlementModel->loadBatchSttlBCA($dataDecode, $user_id);
-
-        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
+        $this->settlementModel->loadBatchSttlBCA($dataDecode, $user_id);
     }
 
     public function importsettlement_save_BCAPaid()
