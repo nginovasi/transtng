@@ -116,8 +116,8 @@ class SettlementModel extends BaseModel
 
         foreach($data as $key => $val) {
             if(strlen($val[1]) == 40) {
-                $datePaid = dateFormatYYSlash($val[0]);
-                $dateSttl = dateFormatYY(substr($val[1], 25, 6));
+                $datePaid = dateFormatSlashFromddmmyyyyToyyyymmdd($val[0]);
+                $dateSttl = dateFormatStringNoSpaceFromddmmyyyyToyyyymmdd(substr($val[1], 25, 6));
 
                 $existingData = $this->db->query("SELECT *
                                                     FROM sttl_bri_paid
@@ -139,10 +139,13 @@ class SettlementModel extends BaseModel
                         "created_by" => $user_id
                     ];
                 }
+            } else {
+                echo json_encode(array("success" => false, "message" => "Format transaksi salah", "data" => $result));
+                return;
             }
         }
 
-        return $result;
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
     public function loadBatchSttlMandiri($data, $user_id) {

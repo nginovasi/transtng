@@ -24,6 +24,19 @@ function dateFormatSlashFromyyyymmddhisToyyymmdd($date) {
     return date_format(date_create($date), "Y-m-d");
 }
 
+function dateFormatSlashFromddmmyyyyToyyyymmdd($date) {
+    $explode = explode("/", $date);
+    return date_format(date_create("20" . $explode[2] . "-" . $explode[1] . "-" . $explode[0]), "Y-m-d");
+}
+
+function dateFormatStringNoSpaceFromddmmyyyyToyyyymmdd($date) {
+    $day = substr($date, 0, 2);
+    $month = substr($date, 2, 2);
+    $year = substr($date, 4, 2);
+
+    return date_format(date_create("20" . $year . "-" . $month . "-" . $day), "Y-m-d");
+}
+
 function dateFormatStringNoSpaceToyyymmdd($date) {
     $day = substr($date, 0, 2);
     $month = substr($date, 2, 2);
@@ -41,20 +54,6 @@ function dateFormatNonSpaceyyyymmddhhmmss($date) {
     $second = substr($date, 12, 2);
 
     return $year . "-" . $month . "-" . $day . " " . $hour . ":" . $minute . ":" . $second;
-}
-
-function dateFormatYY($date) {
-    $day = substr($date, 0, 2);
-    $month = substr($date, 2, 2);
-    $year = substr($date, 4, 2);
-
-    return "20" . $year . "-" . $month . "-" . $day;
-}
-
-function dateFormatYYSlash($date) {
-    $explode = explode("/", $date);
-
-    return "20" . $explode[2] . "-" . $explode[1] . "-" . $explode[0];
 }
 
 function dateFormat00($date) {

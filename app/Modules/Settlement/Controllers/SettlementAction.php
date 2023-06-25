@@ -97,8 +97,6 @@ class SettlementAction extends BaseController {
         $user_id = $this->session->get('id');
 
         $result = $this->settlementModel->loadBatchSttlBRI($dataDecode, $user_id);
-
-        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
     public function importsettlement_save_BRIPaid()
