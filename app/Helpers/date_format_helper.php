@@ -12,6 +12,18 @@ function dateFormatStringNoSpaceFromyyyymmddToyyymmdd($date) {
     return date_format(date_create($date), "Y-m-d");
 }
 
+function dateFormatStringNoSpaceFromddmmyyyToyyymmdd($date) {
+    $day = substr($date, 0, 2);
+    $month = substr($date, 2, 2);
+    $year = substr($date, 4, 4);
+
+    return  date_format(date_create($year . "-" . $month . "-" . $day), "Y-m-d"); 
+}
+
+function dateFormatSlashFromyyyymmddhisToyyymmdd($date) {
+    return date_format(date_create($date), "Y-m-d");
+}
+
 function dateFormatStringNoSpaceToyyymmdd($date) {
     $day = substr($date, 0, 2);
     $month = substr($date, 2, 2);

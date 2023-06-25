@@ -67,10 +67,10 @@ class SettlementModel extends BaseModel
 
         foreach($data as $key => $val) {
             if($val[0] != "") {
-                $datePaid = date_format(date_create($val[1]), "Y-m-d");
+                $datePaid = dateFormatSlashFromyyyymmddhisToyyymmdd($val[1]); 
 
                 if(strlen($val[4]) == 110) {
-                    $dateTrx = date_format(date_create(substr($val[4], 84, 4) . substr($val[4], 82, 2) . substr($val[4], 80, 2)), "Y-m-d");
+                    $dateTrx = dateFormatStringNoSpaceFromddmmyyyToyyymmdd(substr($val[4], 80, 8));
                 } else if(strlen($val[4]) >= 110 && $val[6] == "D") {
                     $dateTrx = null;
                 } else {
@@ -78,9 +78,9 @@ class SettlementModel extends BaseModel
                 }
 
                 if(strpos($val[5], ',')) {
-                    $amount = intval(doubleval(str_replace(",", "", $val[5])));
+                    $kredit = intval(doubleval(str_replace(",", "", $val[5])));
                 } else {
-                    $amount = intval(doubleval($val[5]));
+                    $kredit = intval(doubleval($val[5]));
                 }
 
                 $existingData = $this->db->query("SELECT *
@@ -96,16 +96,19 @@ class SettlementModel extends BaseModel
                         "no_journal" => $val[3],
                         "description" => $val[4],
                         "date_trx" => $dateTrx,
-                        "kredit" => $amount,
+                        "kredit" => $kredit,
                         "dc" => $val[6],
                         "balance" => $val[7],
                         "created_by" => $user_id
                     ];
                 }
+            } else {
+                echo json_encode(array("success" => false, "message" => "Format no salah", "data" => $result));
+                return;
             }
         }
 
-        return $result;
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
     public function loadBatchSttlBRI($data, $user_id) {
