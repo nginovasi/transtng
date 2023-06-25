@@ -152,21 +152,20 @@ class SettlementModel extends BaseModel
         $result = [];
 
         foreach($data as $key => $val) {
-
             $description = trim($val[4]) . " " . trim($val[5]);
 
             if(strlen($val[0]) == 13 && strlen($description) >= 79) {
-                $dateTrx = dateFormatStringNoSpaceToyyymmdd(substr($val[4], 18, 12));
+                $dateTrx = dateFormatStringNoSpaceFromddmmyyyyToyyyymmddFull(substr($val[4], 18, 8));
 
                 if(strlen($val[1]) == 19) {
-                    $datePaidCol = dateFormatSlashAndDot($val[1]);
+                    $datePaidCol = dateFormatSlashAndDotFromddmmyyyyhisToyyyymmdd($val[1]);
                 } else {
-                    $datePaidCol = dateFormat00SlashAndDot($val[1]);
+                    $datePaidCol = dateFormatSlashAndDotFromddmmyyhiToyyyymmdd($val[1]);
                 }
 
                 if(strpos(strtolower($description), strtolower("MANDIRIA")) || strpos(strtolower($description), strtolower("MANDIRIR"))) {
                     $noReff = substr($description, 49, 30);
-                    $datePaid = dateFormatNonSpaceyyyymmddhhmmss(substr($description, 21, 14));
+                    $datePaid = dateFormatStringNoSpaceFromyyyymmddhisToyyymmddhis(substr($description, 21, 14));
                 };
 
                 if(strpos(strtolower($description), strtolower("BTNA"))) {
@@ -208,14 +207,18 @@ class SettlementModel extends BaseModel
                         "sttl_file_name" => $val[0],
                         "no_ref" => $noReff,
                         "date_paid" => $datePaid,
-                        "amount" => intval(doubleval(str_replace(",", "", $val[8]))),
-                        "brance_code" => "99105"
+                        "kredit" => intval(doubleval(str_replace(",", "", $val[8]))),
+                        "brance_code" => "99105",
+                        "created_by" => $user_id
                     ];
                 }
+            } else {
+                echo json_encode(array("success" => false, "message" => "Format account no & description salah pada baris " . ($key + 1), "data" => $result));
+                return;          
             }
         }
 
-        return $result;
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
     public function insertLogSttl($bank, $nameFile, $data, $user_id) {

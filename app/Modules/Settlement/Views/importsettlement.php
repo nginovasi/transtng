@@ -527,7 +527,7 @@
                         } else {
                             swal.close();
 
-                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                            Swal.fire('Error', rs.message, 'error');
                         }
                     }
                 })
@@ -651,7 +651,7 @@
                         } else {
                             loaderEnd()
 
-                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                            Swal.fire('Error', rs.message, 'error');
                         }
                     }
                 })
@@ -780,7 +780,7 @@
                         } else {
                             loaderEnd()
 
-                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                            Swal.fire('Error', rs.message, 'error');
                         }
                     }
                 })
