@@ -213,8 +213,10 @@ class EksekutifPdf extends BaseController {
         $this->export('Laporan transaksi per jenis tahun ' . $data['date'], $data['date'], $result, '\exportTrxPerJenisTahunan_pdf');
 	}
 
-    function exportTransaksiPerHalteBisHarian(){
+    function exportTrxPerHalteBisHarian(){
         $data = $this->request->getGet();
+
+        $explodeDate = explode("-", $data['date']);
 
         $ttlTunai = 0;
         $ttlIsCashless = 0;
@@ -223,7 +225,7 @@ class EksekutifPdf extends BaseController {
         $result = $this->db->query("SELECT a.id, 
                                         CONCAT(b.name, ' - ', b.kode_haltebis) as haltebis, 
                                         a.shift, 
-                                        a.imei,
+                                        a.device_id,
                                         d.jalur,
                                         SUM(CASE WHEN c.is_cashless = 0 THEN a.kredit ELSE 0 END) AS is_cashless,
                                         SUM(CASE WHEN c.is_cashless = 1 THEN a.kredit ELSE 0 END) AS cash,
@@ -247,6 +249,7 @@ class EksekutifPdf extends BaseController {
         }
 
         $result = [
+                    "title" => "REKAP LAPORAN TRANSAKSI PER HALTE / BIS PERIODE " . $explodeDate[2] . ' ' . $this->getMonth($explodeDate[1]) . ' ' . $explodeDate[0],
                     "date" => $data['date'],
                     "result" => $result,
                     "ttl_tunai" => $ttlTunai,
@@ -254,7 +257,7 @@ class EksekutifPdf extends BaseController {
                     "ttl" => $ttl
                 ];
 
-        $this->export('Laporan transaksi per halte/bis ' . $data['date'], $data['date'], $result, '\exportTransaksiPerHalteBisHarian_pdf');
+        $this->export('Laporan transaksi per halte/bis ' . $data['date'], $data['date'], $result, '\exportTrxPerHalteBisHarian_pdf');
 	}
 
     function exportTransaksiPerJalurDateRangeJalurHalteBis(){
