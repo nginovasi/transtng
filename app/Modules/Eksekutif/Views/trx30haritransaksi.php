@@ -36,6 +36,10 @@
                                 <select class="custom-select select2" name="haltebis_id" id="haltebis_id" required></select>
                             </div>
                         </div>
+
+                        <div class="tab-content-header my-3" style="display: block;">    
+                            <h6 class="tab-content-title-harian text-center font-weight-bold">REKAP LAPORAN TRANSAKSI 30 Hari Terakhir</h6>
+                        </div>
                         
                         <div class="tab-pane fade active show" id="tab-data" role="tabpanel" aria-labelledby="tab-data">
 
