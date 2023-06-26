@@ -19,39 +19,7 @@ class EksekutifAjax extends BaseController
         return redirect()->to(base_url());
     }
 
-    public function findkartu()
-    {
-        $data = $this->request->getGet();
-        $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL"; //QUERY belum fix
-        $where = ["a.nama"];
-        parent::_loadSelect2($data, $query, $where);
-    }
-
-    public function loadtransaksipta()
-    {
-        $tanggal = $this->request->getPost('tanggal');
-        $result = $this->db->query("SELECT * FROM ref_narasi_tiket WHERE tanggal = '$tanggal'")->getResultArray();
-        $data = [];
-        foreach ($result as $key => $value) {
-            $data[] = [
-                'id' => $value['id'],
-                'tanggal' => $value['tanggal'],
-                'header' => $value['header'],
-                'footer' => $value['footer'],
-            ];
-        }
-        echo json_encode($data);
-    }
-
-    public function findpetugas()
-    {
-        $data = $this->request->getGet();
-        $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL"; //QUERY belum fix
-        $where = ["a.nama"];
-        parent::_loadSelect2($data, $query, $where);
-    }
-
-    public function haltebis_id_per_pendapatan30d_select_get()
+    public function haltebis_id_per_trx30d_select_get()
     {
         $data = $this->request->getGet();
 
@@ -77,21 +45,7 @@ class EksekutifAjax extends BaseController
         parent::_loadSelect2($data, $query, $where);
     }
 
-    public function jalur_id_select_get()
-    {
-        $data = $this->request->getGet();
-
-        $query = "SELECT id, CONCAT(jalur, ' (', rute, ')') as text
-                    FROM ref_jalur 
-                    WHERE is_deleted = 0
-                    AND is_dev = 0";
-
-        $where = ["jalur", "rute"];
-
-        parent::_loadSelect2($data, $query, $where);
-    }
-
-    public function chartinfo30hari()
+    public function chart_trx_30d()
     {
         $data = $this->request->getPost();
 
@@ -101,6 +55,7 @@ class EksekutifAjax extends BaseController
                         SUM(1) AS trx 
                     FROM transaksi_bis a
                     where a.tanggal between date_add(curdate(),interval -30 day) and curdate() ";
+                    
         if ($data['haltebis_id'] != "") {
             $query .= "and a.kode_bis = " . "'" . $data["haltebis_id"] . "' ";
         }
@@ -110,14 +65,10 @@ class EksekutifAjax extends BaseController
 
         $result = $this->db->query($query)->getResult();
 
-        echo json_encode([
-            "success" => true,
-            "message" => "get data success",
-            "data" => $result
-        ]);
+        echo json_encode(array("success" => true, "message" => "get data success", "data" => $result));
     }
 
-    public function getTransaksiPerjenisHarian()
+    public function getTrxPerJenisHarian()
     {
         $data = $this->request->getPost();
 
@@ -129,14 +80,14 @@ class EksekutifAjax extends BaseController
 
         $nonManual = $this->db->query("SELECT jenis,
                                             tanggal, 
-                                            HOUR(created_at) AS jam, 
+                                            HOUR(jam) AS jam, 
                                             COUNT(id) AS ttl_trx, 
                                             SUM(kredit) AS jml_trx
                                         FROM transaksi_bis a
                                         WHERE is_dev = 0
-                                        AND date(tanggal) = " . "'" . $data['date'] . "'" . "
-                                        GROUP BY jenis, DATE(created_at), HOUR(created_at)
-                                        ORDER BY HOUR(created_at), jenis, DATE(created_at)
+                                        AND tanggal = " . "'" . $data['date'] . "'" . "
+                                        GROUP BY jenis, DATE(tanggal), HOUR(jam)
+                                        ORDER BY HOUR(jam), jenis, DATE(tanggal)
                                         ")->getResult();
 
         $listTarif = $this->db->query("SELECT * 
@@ -170,7 +121,7 @@ class EksekutifAjax extends BaseController
         ]);
     }
 
-    public function getTransaksiPerjenisBulan()
+    public function getTrxPerjenisBulan()
     {
         $data = $this->request->getPost();
         $date = $data['date'];
@@ -201,14 +152,14 @@ class EksekutifAjax extends BaseController
 
         $countDate = cal_days_in_month(CAL_GREGORIAN, $monthOnly, $yearOnly);
 
-        for ($i = 0; $i <= $countDate; $i++) {
+        for ($i = 01; $i <= $countDate; $i++) {
             $totalPerDate[$i] = 0;
         }
 
         foreach ($nonManual as $key => $val) {
             $result['ttl_trx'][$val->jenis][$val->tanggal] = $val->ttl_trx;
             $result['jml_trx'][$val->jenis][$val->tanggal] = $val->jml_trx;
-            $totalPerDate[$val->tanggal] += $val->ttl_trx;
+            $totalPerDate[intval($val->tanggal)] += $val->ttl_trx;
 
             $ttlTrx += $val->ttl_trx;
             $jmlTrx += $val->jml_trx;
@@ -227,7 +178,7 @@ class EksekutifAjax extends BaseController
         ]);
     }
 
-    public function getTransaksiPerjenisTahun()
+    public function getTrxPerjenisTahun()
     {
         $data = $this->request->getPost();
         $date = $data['date'];
@@ -280,6 +231,104 @@ class EksekutifAjax extends BaseController
         ]);
     }
 
+    public function jalur_id_select_get()
+    {
+        $data = $this->request->getGet();
+
+        $query = "SELECT id, CONCAT(jalur, ' (', rute, ')') as text
+                    FROM ref_jalur 
+                    WHERE is_deleted = 0
+                    AND is_dev = 0";
+
+        $where = ["jalur", "rute"];
+
+        parent::_loadSelect2($data, $query, $where);
+    }
+
+    public function getTrxPerJalurDateRangeJalurHalteBis()
+    {
+        $data = $this->request->getPost();
+
+        $query = "SELECT a.jenis, 
+                        CASE WHEN ttl_trx THEN ttl_trx ELSE 0 END AS ttl_trx,
+                        CASE WHEN jml_trx THEN jml_trx ELSE 0 END AS jml_trx
+                    FROM ref_tarif a
+                    LEFT JOIN (
+                        SELECT a.jenis,
+                            count(a.id) as ttl_trx, 
+                            SUM(a.kredit) AS jml_trx 
+                            FROM transaksi_bis a
+                            LEFT JOIN ref_haltebis b
+	                            ON a.kode_bis = b.kode_haltebis
+                            WHERE a.is_dev = 0 ";
+
+        if ($data['date']) {
+            $dateStart = explode(" - ", $data['date'])[0];
+            $dateEnd = explode(" - ", $data['date'])[1];
+            
+            $query .= "AND a.tanggal BETWEEN " . "'" . $dateStart . "'" . " AND " . "'" . $dateEnd . "'" . " ";
+        }
+
+        if ($data['jalur_id']) {
+            $query .= "AND a.jalur = " . $data['jalur_id'] . " ";
+        }
+
+        if ($data['jenpos_id'] != "") {
+            $query .= "AND b.jen_pos= " . $data['jenpos_id'] . " ";
+        }
+
+        $query .= "GROUP BY jenis
+                    ) b
+                    ON a.jenis = b.jenis
+                    WHERE is_deleted = 0";
+
+        $result = $this->db->query($query)->getResult();
+
+        echo json_encode([
+            "success" => true,
+            "message" => "get data success",
+            "data" => [
+                "result" => $result
+            ]
+        ]);
+    }
+
+    public function getTrxPenumpangPerJamJalur()
+    {
+        $data = $this->request->getPost();
+
+        $query = "SELECT tanggal, 
+                    HOUR(jam) AS jam, 
+                    COUNT(id) AS ttl_trx, 
+                    SUM(kredit) AS jml_trx
+                FROM transaksi_bis a
+                WHERE is_dev = 0 ";
+
+        if ($data['date']) {
+            $dateStart = explode(" - ", $data['date'])[0];
+            $dateEnd = explode(" - ", $data['date'])[1];
+
+            $query .= "AND tanggal BETWEEN " . "'" . $dateStart . "'" . " AND " . "'" . $dateEnd . "'" . " ";
+        }
+
+        if ($data['jalur_id']) {
+            $query .= "AND jalur = " . $data['jalur_id'] . " ";
+        }
+
+        $query .= "GROUP BY tanggal, HOUR(jam)
+                    ORDER BY tanggal, HOUR(jam)";
+
+        $result = $this->db->query($query)->getResult();
+
+        echo json_encode([
+            "success" => true,
+            "message" => "get data success",
+            "data" => [
+                "result" => $result
+            ]
+        ]);
+    }
+
     public function getTransaksiPerHalteBisHarian()
     {
         $data = $this->request->getPost();
@@ -303,88 +352,6 @@ class EksekutifAjax extends BaseController
                                     AND tanggal = " . "'" . $data['date'] . "'" . "
                                     GROUP BY CONCAT(b.kode_haltebis, ' - ', b.name), a.shift, a.jenis, a.jalur
                                     ")->getResult();
-
-        echo json_encode([
-            "success" => true,
-            "message" => "get data success",
-            "data" => [
-                "result" => $result
-            ]
-        ]);
-    }
-
-    public function getTransaksiPerJalurDateRangeJalurHalteBis()
-    {
-        $data = $this->request->getPost();
-
-        $dateStart = explode(" - ", $data['date'])[0];
-        $dateEnd = explode(" - ", $data['date'])[1];
-
-        $query = "SELECT a.jenis, 
-                        CASE WHEN ttl_trx THEN ttl_trx ELSE 0 END AS ttl_trx,
-                        CASE WHEN jml_trx THEN jml_trx ELSE 0 END AS jml_trx
-                    FROM ref_tarif a
-                    LEFT JOIN (
-                        SELECT jenis,
-                            count(id) as ttl_trx, 
-                            SUM(kredit) AS jml_trx 
-                            FROM transaksi_bis a
-                            WHERE is_dev = 0 ";
-
-        if ($data['date']) {
-            $query .= "AND tanggal BETWEEN " . "'" . $dateStart . "'" . " AND " . "'" . $dateEnd . "'" . " ";
-        }
-
-        if ($data['jalur_id']) {
-            $query .= "AND jalur = " . $data['jalur_id'] . " ";
-        }
-
-        if ($data['jenpos_id']) {
-            $query .= "AND jenpos= " . $data['jenpos_id'] . " ";
-        }
-
-        $query .= "GROUP BY jenis
-                    ) b
-                    ON a.jenis = b.jenis
-                    WHERE is_deleted = 0";
-
-        $result = $this->db->query($query)->getResult();
-
-        echo json_encode([
-            "success" => true,
-            "message" => "get data success",
-            "data" => [
-                "result" => $result
-            ]
-        ]);
-    }
-
-    public function getTrxPenumpangPerJamJalur()
-    {
-        $data = $this->request->getPost();
-
-        $dateStart = explode(" - ", $data['date'])[0];
-        $dateEnd = explode(" - ", $data['date'])[1];
-
-        $query = "SELECT tanggal, 
-                    HOUR(jam) AS jam, 
-                    COUNT(id) AS ttl_trx, 
-                    SUM(kredit) AS jml_trx
-                FROM transaksi_bis a
-                WHERE is_dev = 0 ";
-
-        if ($data['date']) {
-            $query .= "AND tanggal BETWEEN " . "'" . $dateStart . "'" . " AND " . "'" . $dateEnd . "'" . " ";
-        }
-
-        if ($data['jalur_id']) {
-            $query .= "AND jalur = " . $data['jalur_id'] . " ";
-        }
-
-        $query .= "GROUP BY tanggal, HOUR(jam)
-                    ORDER BY tanggal, HOUR(jam)";
-
-        $result = $this->db->query($query)->getResult();
 
         echo json_encode([
             "success" => true,

@@ -24,14 +24,14 @@
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills no-border" id="tab">
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#tab-data-haltebis" role="tab" aria-controls="tab-data-haltebis" aria-selected="true"><i class="fa fa-calendar" aria-hidden="true"></i> Data</a>
+                        <a class="nav-link active" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="true"><i class="fa fa-calendar" aria-hidden="true"></i> Data</a>
                     </li>
                 </ul>
             </div>
             <div class="card-body">
                 <div class="padding">
                     <div class="tab-content">
-                        <div class="tab-pane fade active show" id="tab-data-haltebis" role="tabpanel" aria-labelledby="tab-data-haltebis">
+                        <div class="tab-pane fade active show" id="tab-data" role="tabpanel" aria-labelledby="tab-data">
                             <div class="form-group row">
                                 <div class="input-group mb-3 col-lg-4">
                                     <div class="input-group">
@@ -40,15 +40,15 @@
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar mx-2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                                             </span>
                                         </div>
-                                        <input type="text" class="form-control form-control-md date" name="date-haltebis" id="date-haltebis" placeholder="Masukkan Tanggal" required autocomplete="off">
+                                        <input type="text" class="form-control form-control-md date" name="date" id="date" placeholder="Masukkan Tanggal" required autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="mb-2">
-                                    <div class="btn-group-haltebis" style="display: none;">
+                                    <div class="btn-group" style="display: none;">
                                         <button class="btn btn-white">Export</button>
                                         <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
                                         <div class="dropdown-menu bg-dark" role="menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(93px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                            <a class="dropdown-item" id="download-haltebis-pdf">
+                                            <a class="dropdown-item" id="download-pdf">
                                                 PDF
                                             </a>    
                                             <!-- <a class="dropdown-item">
@@ -61,7 +61,11 @@
 
                             <hr>
 
-                            <div id="statistik-rekap-haltebis"></div>
+                            <div class="tab-content-header my-3" style="display: block;">    
+                                <h6 class="tab-content-title text-center font-weight-bold"></h6>
+                            </div>
+
+                            <div id="statistik-rekap"></div>
                         </div>
                     </div>
                 </div>
@@ -80,7 +84,7 @@
     const base_url = '<?= base_url() ?>';
     const url = '<?= base_url() . "/" . uri_segment(0) . "/action/" . uri_segment(1) ?>';
     const url_ajax = '<?= base_url() . "/" . uri_segment(0) . "/ajax" ?>';
-    const url_pdf_haltebis = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTransaksiPerHalteBisHarian" . "" ?>';
+    const url_pdf = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTrxPerHalteBisHarian" . "" ?>';
 
     var dataStart = 0;
     var coreEvents;
@@ -123,19 +127,21 @@
         
         // coreEvents.load(null, [0, 'asc'], null);
 
-        coreEvents.datepicker('#date-haltebis', 'yyyy-mm-dd')
+        coreEvents.datepicker('#date', 'yyyy-mm-dd')
 
-        $('#download-haltebis-pdf').on('click', function(e) {
-            let dateHalteBis = $('#date-haltebis').val()
+        $('#download-pdf').on('click', function(e) {
+            let date = $('#date').val()
 
-            $(this).attr("href", url_pdf_haltebis + '?date=' + dateHalteBis + '');
+            $(this).attr("href", url_pdf + '?date=' + date + '');
             $(this).attr("target", "_blank");
         });
 
     });
 
-    $('#date-haltebis').on('change', function() {
+    $('#date').on('change', function() {
         let date = $(this).val()
+
+        loaderStart()
 
         $.ajax({
             method: "post",
@@ -149,9 +155,15 @@
             success : function (rs) {
 
                 if(rs.success){
-                    $('#statistik-rekap-haltebis').html('')
+                    $('#statistik-rekap').html('')
 
-                    $('.btn-group-haltebis').css('display', 'block')
+                    $('.btn-group').css('display', 'block')
+
+                    let explodeDateHarian = date.split('-');
+
+                    $(".tab-content-title").text("")
+
+                    $(".tab-content-title").text(`REKAP LAPORAN TRANSAKSI PER JENIS PERIODE ${explodeDateHarian[2]} ${getMonth(explodeDateHarian[1])} ${explodeDateHarian[0]}`)
 
                     let result = `
                         <div class="table-responsive">
@@ -166,7 +178,6 @@
                                         <th class="text-center border-dark" style="border:1px solid #555255">Cash</th>
                                         <th class="text-center border-dark" style="border:1px solid #555255">Cashless</th>
                                         <th class="text-center border-dark" style="border:1px solid #555255">Total Pendapatan</th>
-
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -205,8 +216,9 @@
                         </div>
                     `
 
-                    $('#statistik-rekap-haltebis').append(result)
+                    $('#statistik-rekap').append(result)
 
+                    loaderEnd()
                 }
             }
         })
@@ -214,6 +226,52 @@
 
     function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function loaderStart() {
+        Swal.fire({
+            title: "",
+            icon: "info",
+            text: "Proses menampilkan data, mohon ditunggu...",
+            didOpen: function() {
+                Swal.showLoading()
+            }
+        });
+    }
+
+    function loaderEnd() {
+        swal.close();
+    }
+
+    function getMonth(month) { 
+        let result
+        if(month == 01) {
+            result = "JANUARI"
+        } else if(month == 02) {
+            result = "FEBRUARI"
+        } else if(month == 03) {
+            result = "MARET"
+        } else if(month == 04) {
+            result = "APRIL"
+        } else if(month == 05) {
+            result = "MEI"
+        } else if(month == 06) {
+            result = "JUNI"
+        } else if(month == 07) {
+            result = "JULI"
+        } else if(month == 08) {
+            result = "AGUSTUS"
+        } else if(month == 09) {
+            result = "SEPTEMBER"
+        } else if(month == 10) {
+            result = "OKTOBER"
+        } else if(month == 11) {
+            result = "NOVEMBER"
+        } else {
+            result = "DESEMBER"
+        }
+
+        return result
     }
 
 </script>

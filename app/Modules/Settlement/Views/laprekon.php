@@ -24,14 +24,14 @@
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills no-border" id="tab">
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#tab-laprekon" role="tab" aria-controls="tab-laprekon" aria-selected="true"><i class="fa fa-calendar" aria-hidden="true"></i> Laporan Rekonsiliasi</a>
+                        <a class="nav-link active" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="true"><i class="fa fa-calendar" aria-hidden="true"></i> Laporan Rekonsiliasi</a>
                     </li>
                 </ul>
             </div>
             <div class="card-body">
                 <div class="padding">
                     <div class="tab-content">
-                        <div class="tab-pane fade active show" id="tab-laprekon" role="tabpanel" aria-labelledby="tab-laprekon">
+                        <div class="tab-pane fade active show" id="tab-data" role="tabpanel" aria-labelledby="tab-data">
                             <div class="form-group row">
                                 <div class="input-group mb-3 col-md-4">
                                     <select class="custom-select select2" name="bank_id" id="bank_id" required></select>
@@ -101,12 +101,6 @@
             url: '/bank_id_select_get',
             placeholder: 'Pilih Bank',
             params: null
-        },
-        {
-            id: 'bank_id_rekaprekon',
-            url: '/bank_id_select_get',
-            placeholder: 'Pilih Bank',
-            params: null
         }
     ];
 
@@ -143,8 +137,6 @@
         });
 
         coreEvents.datepickermonthly('#date', 'yyyy-mm')
-
-        coreEvents.datepickermonthly('#date_rekaprekon', 'yyyy-mm')
 
         $('#download-data-pdf').on('click', function(e) {
             let date = $('#date').val()

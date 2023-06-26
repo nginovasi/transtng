@@ -486,9 +486,9 @@ class CoreEvents {
 
 	daterangepicker(element, fdata = 'yyyy/mm/dd', forientation = 'bottom') {
 		$(element).daterangepicker({
-			autoApply: true,
+			autoUpdateInput: false,
 			locale: {
-				format: 'YYYY-MM-DD'
+				cancelLabel: 'Clear'
 			}
 		});
 	}

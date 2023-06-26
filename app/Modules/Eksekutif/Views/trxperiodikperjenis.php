@@ -67,6 +67,10 @@
 
                             <hr>
 
+                            <div class="tab-content-header my-3" style="display: block;">    
+                                <h6 class="tab-content-title-harian text-center font-weight-bold"></h6>
+                            </div>
+
                             <div id="statistik-rekap-harian"></div>
                         </div>
                         <div class="tab-pane fade" id="tab-data-bulan" role="tabpanel" aria-labelledby="tab-data-bulan">
@@ -99,6 +103,10 @@
                             </div>
 
                             <hr>
+
+                            <div class="tab-content-header my-3" style="display: block;">    
+                                <h6 class="tab-content-title-bulanan text-center font-weight-bold"></h6>
+                            </div>
 
                             <div id="statistik-rekap-bulanan"></div>
                         </div>
@@ -133,6 +141,10 @@
 
                             <hr>
 
+                            <div class="tab-content-header my-3" style="display: block;">    
+                                <h6 class="tab-content-title-tahunan text-center font-weight-bold"></h6>
+                            </div>
+
                             <div id="statistik-rekap-tahunan"></div>
                         </div>
                     </div>
@@ -152,9 +164,9 @@
     const base_url = '<?= base_url() ?>';
     const url = '<?= base_url() . "/" . uri_segment(0) . "/action/" . uri_segment(1) ?>';
     const url_ajax = '<?= base_url() . "/" . uri_segment(0) . "/ajax" ?>';
-    const url_pdf_harian = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTransaksiPerJenisHarian" . "" ?>';
-    const url_pdf_bulanan = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTransaksiPerJenisBulanan" . "" ?>';
-    const url_pdf_tahunan = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTransaksiPerJenisTahunan" . "" ?>';
+    const url_pdf_harian = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTrxPerJenisHarian" . "" ?>';
+    const url_pdf_bulanan = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTrxPerJenisBulanan" . "" ?>';
+    const url_pdf_tahunan = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTrxPerJenisTahunan" . "" ?>';
 
     var dataStart = 0;
     var coreEvents;
@@ -229,10 +241,12 @@
     $('#date-harian').on('change', function() {
         let date = $(this).val()
 
+        loaderStart()
+
         $.ajax({
             method: "post",
             dataType : "json",
-            url: url_ajax + "/getTransaksiPerjenisHarian",
+            url: url_ajax + "/getTrxPerJenisHarian",
             data:{
                 <?= csrf_token() ?>: "<?= csrf_hash() ?>",
                 "date": date,
@@ -244,6 +258,12 @@
                     $('#statistik-rekap-harian').html('')
 
                     $('.btn-group-harian').css('display', 'block')
+
+                    let explodeDateHarian = date.split('-');
+
+                    $(".tab-content-title-harian").text("")
+
+                    $(".tab-content-title-harian").text(`REKAP LAPORAN TRANSAKSI PER JENIS PERIODE ${explodeDateHarian[2]} ${getMonth(explodeDateHarian[1])} ${explodeDateHarian[0]}`)
 
                     let result = `
                         <div class="table-responsive">
@@ -317,6 +337,7 @@
 
                     $('#statistik-rekap-harian').append(result)
 
+                    loaderEnd()
                 }
             }
         })
@@ -325,10 +346,12 @@
     $('#date-bulanan').on('change', function() {
         let date = $(this).val()
 
+        loaderStart()
+
         $.ajax({
             method: "post",
             dataType : "json",
-            url: url_ajax + "/getTransaksiPerjenisBulan",
+            url: url_ajax + "/getTrxPerjenisBulan",
             data:{
                 <?= csrf_token() ?>: "<?= csrf_hash() ?>",
                 "date": date,
@@ -336,12 +359,16 @@
             },
             success : function (rs) {
 
-                console.info(rs)
-
                 if(rs.success){
                     $('#statistik-rekap-bulanan').html('')
 
                     $('.btn-group-bulanan').css('display', 'block')
+
+                    let explodeDateBulanan = date.split('-');
+
+                    $(".tab-content-title-bulanan").text("")
+
+                    $(".tab-content-title-bulanan").text(`REKAP LAPORAN TRANSAKSI PER JENIS PERIODE ${getMonth(explodeDateBulanan[1])} ${explodeDateBulanan[0]}`)
 
                     let result = `
                         <div class="table-responsive">
@@ -349,7 +376,7 @@
                             <thead>
                                 <tr class="border-dark" style="border:1px solid #555255">
                                     <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Jenis Transaksi</th>
-                                    <th colspan="${rs.data.total_per_date.length - 1}" class="text-center border-dark" style="border:1px solid #555255">Tanggal</th>
+                                    <th colspan="${objSize(rs.data.total_per_date)}" class="text-center border-dark" style="border:1px solid #555255">Tanggal</th>
                                     <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Total Trans</th>
                                     <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">Total Rupiah</th>
                                 </tr>
@@ -379,7 +406,7 @@
                         
                         let ttl_trx = 0;
                         let jml_trx = 0;
-                        for (let n = 1; n <= rs.data.total_per_date.length - 1; n++) {
+                        for (let n = 1; n <= objSize(rs.data.total_per_date); n++) {
                             result += `
                                 <th class="text-center border-dark" style="border:1px solid #555255">${rs.data.result['ttl_trx'][val.jenis] ? (rs.data.result['ttl_trx'][val.jenis][n] ? rs.data.result['ttl_trx'][val.jenis][n] : 0) : 0 }</th>
                             `
@@ -401,7 +428,7 @@
                             <th class="text-center border-dark" style="border:1px solid #555255">Total</th>
                     `
 
-                    for (let n = 1; n <= rs.data.total_per_date.length -1; n++) {
+                    for (let n = 1; n <= objSize(rs.data.total_per_date); n++) {
                             result += `
                                 <th class="text-center border-dark" style="border:1px solid #555255">${numberWithCommas(rs.data.total_per_date[n])}</th>
                             `
@@ -417,6 +444,7 @@
 
                     $('#statistik-rekap-bulanan').append(result)
 
+                    loaderEnd()
                 }
             }
         })
@@ -425,10 +453,12 @@
     $('#date-tahunan').on('change', function() {
         let date = $(this).val()
 
+        loaderStart()
+
         $.ajax({
             method: "post",
             dataType : "json",
-            url: url_ajax + "/getTransaksiPerjenisTahun",
+            url: url_ajax + "/getTrxPerjenisTahun",
             data:{
                 <?= csrf_token() ?>: "<?= csrf_hash() ?>",
                 "date": date,
@@ -440,6 +470,12 @@
                     $('#statistik-rekap-tahunan').html('')
 
                     $('.btn-group-tahunan').css('display', 'block')
+
+                    let explodeDateTahunan = date.split('-');
+
+                    $(".tab-content-title-tahunan").text("")
+
+                    $(".tab-content-title-tahunan").text(`REKAP LAPORAN TRANSAKSI PER JENIS PERIODE ${explodeDateTahunan[0]}`)
 
                     let result = `
                         <div class="table-responsive">
@@ -515,6 +551,7 @@
 
                     $('#statistik-rekap-tahunan').append(result)
 
+                    loaderEnd()
                 }
             }
         })
@@ -522,6 +559,72 @@
 
     function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function loaderStart() {
+        Swal.fire({
+            title: "",
+            icon: "info",
+            text: "Proses menampilkan data, mohon ditunggu...",
+            didOpen: function() {
+                Swal.showLoading()
+            }
+        });
+    }
+
+    function loaderEnd() {
+        swal.close();
+    }
+
+    var objSize = function(obj) {
+        var count = 0;
+        
+        if (typeof obj == "object") {
+        
+            if (Object.keys) {
+                count = Object.keys(obj).length;
+            } else if (window._) {
+                count = _.keys(obj).length;
+            } else if (window.$) {
+                count = $.map(obj, function() { return 1; }).length;
+            } else {
+                for (var key in obj) if (obj.hasOwnProperty(key)) count++;
+            }
+            
+        }
+        
+        return count;
+    };
+
+    function getMonth(month) { 
+        let result
+        if(month == 01) {
+            result = "JANUARI"
+        } else if(month == 02) {
+            result = "FEBRUARI"
+        } else if(month == 03) {
+            result = "MARET"
+        } else if(month == 04) {
+            result = "APRIL"
+        } else if(month == 05) {
+            result = "MEI"
+        } else if(month == 06) {
+            result = "JUNI"
+        } else if(month == 07) {
+            result = "JULI"
+        } else if(month == 08) {
+            result = "AGUSTUS"
+        } else if(month == 09) {
+            result = "SEPTEMBER"
+        } else if(month == 10) {
+            result = "OKTOBER"
+        } else if(month == 11) {
+            result = "NOVEMBER"
+        } else {
+            result = "DESEMBER"
+        }
+
+        return result
     }
 
 </script>

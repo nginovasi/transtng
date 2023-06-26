@@ -193,9 +193,7 @@
         $('.btn-group-download-template').css('display', 'block')
 
         if($('#excelfile').val() !== ""){
-
             $('.btn-group-process-file').css('display', 'block')
-            // $('#simpanexcel').css('display','none');
         }
     })
     
@@ -231,14 +229,11 @@
         let file = document.getElementById('excelfile').files[document.getElementById('excelfile').files.length - 1];
         document.getElementById('filename').innerHtml= file.name;
         $('#filename').text(file.name);
-        // $('#divexceltable').html('');
 
         if($('#bank_id').val() !== "" && $('#bank_id').val() !== null){
 
             $('.btn-group-process-file').css('display', 'block')
-            // $('#simpanexcel').css('display','none');
         }
-
     }
 
     $(document).on('submit', 'form[name="formexcel"]',function(e){
@@ -296,14 +291,19 @@
                 let resultCSV = [];
                 let blackListWord =  ["Saldo Awal", "Mutasi Debet", "Mutasi Kredit", "Saldo Akhir"];
                 for (let i = 0; i < readerResult.length; i++) {
-                    if(i != 0) {
-                        csvLineSplit =  readerResult[i].split('","');
+                    csvLineSplit =  readerResult[i].split('","');
 
+                    if(i != 0) {
                         if(csvLineSplit != "") {
                             resultCSV.push(csvLineSplit);
                             if(readerResult[i][0] == 0){
                                 resultCSV.pop()
                             }
+                        }
+                    } else {
+                        if(csvLineSplit[0] != '"Tanggal Transaksi' || csvLineSplit[1] != 'Keterangan' || csvLineSplit[2] != 'Cabang' || csvLineSplit[3] != 'Jumlah' || csvLineSplit[4] != 'Saldo"') {
+                            templateWrong()
+                            return
                         }
                     }
                 }
@@ -355,7 +355,7 @@
                                                             <th scope="col">Merchant</th>
                                                             <th scope="col">TID</th>
                                                             <th scope="col">Trans. Type</th>
-                                                            <th scope="col">Amount</th>
+                                                            <th scope="col">Kredit</th>
                                                             <th scope="col">No Ref</th>
                                                             <th scope="col">Sttl Number</th>
                                                             <th scope="col">Branch</th>
@@ -376,7 +376,7 @@
                                             <td class="text-right">${val['merchant']}</td>
                                             <td class="text-right">${val['tid']}</td>
                                             <td class="text-right">${val['type_trx']}</td>
-                                            <td class="text-right">${val['amount']}</td>
+                                            <td class="text-right">${val['kredit']}</td>
                                             <td class="text-right">${val['no_reff']}</td>
                                             <td class="text-right">${val['sttl_num']}</td>
                                             <td class="text-right">${val['branch']}</td>
@@ -400,7 +400,7 @@
                         } else {
                             swal.close();
 
-                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                            Swal.fire('Error', rs.message, 'error');
                         }
                     }
                 })
@@ -425,14 +425,19 @@
                 let resultCSV = [];
                 let blackListWord =  ["No."];
                 for (let i = 0; i < readerResult.length; i++) {
-                    if(i != 0) {
-                        csvLineSplit =  readerResult[i].split(';');
+                    csvLineSplit =  readerResult[i].split(';');
 
+                    if(i != 0) {
                         if(csvLineSplit != "") {
                             resultCSV.push(csvLineSplit);
                             if(readerResult[i][0] == 0){
                                 resultCSV.pop()
                             }
+                        }
+                    } else {
+                        if(csvLineSplit[0] != 'No.' || csvLineSplit[1] != 'Post Date' || csvLineSplit[2] != 'Branch' || csvLineSplit[3] != 'Journal No.' || csvLineSplit[4] != 'Description' || csvLineSplit[5] != 'Amount' || csvLineSplit[6] != 'Db/Cr' || csvLineSplit[7] != 'Balance') {
+                            templateWrong()
+                            return
                         }
                     }
                 }
@@ -484,7 +489,7 @@
                                                             <th scope="col">Branch</th>
                                                             <th scope="col">Journal Number</th>
                                                             <th scope="col">Description</th>
-                                                            <th scope="col">Amount</th>
+                                                            <th scope="col">Kredit</th>
                                                             <th scope="col">Debit/Credit</th>
                                                             <th scope="col">Balance</th>
                                                         </tr>
@@ -500,7 +505,7 @@
                                             <td>${val['branch']}</td>
                                             <td>${val['no_journal']}</td>
                                             <td>${val['description']}</td>
-                                            <td class="text-right">${val['amount']}</td>
+                                            <td class="text-right">${val['kredit']}</td>
                                             <td class="text-right">${val['dc']}</td>
                                             <td class="text-right">${val['balance']}</td>
                                         </tr>`
@@ -522,7 +527,7 @@
                         } else {
                             swal.close();
 
-                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                            Swal.fire('Error', rs.message, 'error');
                         }
                     }
                 })
@@ -547,14 +552,19 @@
                 let resultCSV = [];
                 let blackListWord =  ["tanggal"];
                 for (let i = 0; i < readerResult.length; i++) {
-                    if(i != 0) {
-                        csvLineSplit =  readerResult[i].split(';');
+                    csvLineSplit =  readerResult[i].split(';');
 
+                    if(i != 0) {
                         if(csvLineSplit != "") {
                             resultCSV.push(csvLineSplit);
                             if(readerResult[i][0] == 0){
                                 resultCSV.pop()
                             }
+                        }
+                    } else {
+                        if(csvLineSplit[0] != 'tanggal' || csvLineSplit[1] != 'transaksi' || csvLineSplit[2] != 'debet' || csvLineSplit[3] != 'kredit' || csvLineSplit[4] != 'Saldo') {
+                            templateWrong()
+                            return
                         }
                     }
                 }
@@ -606,7 +616,7 @@
                                                             <th scope="col">FILE 2</th>
                                                             <th scope="col">SHIFT</th>
                                                             <th scope="col">COUNT</th>
-                                                            <th scope="col">AMOUNT</th>
+                                                            <th scope="col">KREDIT</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody class="tbody">`
@@ -641,7 +651,7 @@
                         } else {
                             loaderEnd()
 
-                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                            Swal.fire('Error', rs.message, 'error');
                         }
                     }
                 })
@@ -667,16 +677,23 @@
                 let resultCSV = [];
                 let blackListWord =  ["Account No."];
                 for (let i = 0; i < readerResult.length; i++) {
+                    let csvLineSplit = readerResult[i].split(';')
+
                     if(i != 0) {
                         if(i % 2 == 1) {
-                            csvLineSplit = $.merge(readerResult[i].split(';'), readerResult[i + 1].split(';'))
+                            csvLineSplitMerge = $.merge(readerResult[i].split(';'), readerResult[i + 1].split(';'))
 
-                            if(csvLineSplit != "") {
-                                resultCSV.push(csvLineSplit);
+                            if(csvLineSplitMerge != "") {
+                                resultCSV.push(csvLineSplitMerge);
                                 if(readerResult[i][0] == 0){
                                     resultCSV.pop()
                                 }
                             }
+                        }
+                    } else {
+                        if(csvLineSplit[0] != 'Account No.' || csvLineSplit[1] != 'Date & Time' || csvLineSplit[2] != 'Value Date' || csvLineSplit[3] != 'Account No Alias' || csvLineSplit[4] != 'Description' || csvLineSplit[5] != 'Reference No.' || csvLineSplit[6] != 'Debit' || csvLineSplit[7] != 'Credit' || csvLineSplit[8] != 'Balance') {
+                            templateWrong()
+                            return
                         }
                     }
                 }
@@ -730,7 +747,7 @@
                                                             <th scope="col">DESCRIPTION</th>
                                                             <th scope="col">FILENAME</th>
                                                             <th scope="col">NO REFERENSI</th>
-                                                            <th scope="col">AMOUNT</th>
+                                                            <th scope="col">KREDIT</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody class="tbody">`
@@ -744,7 +761,7 @@
                                             <td>${val['description']}</td>
                                             <td>${val['sttl_file_name']}</td>
                                             <td>${val['no_ref']}</td>
-                                            <td class="text-right">${val['amount']}</td>
+                                            <td class="text-right">${val['kredit']}</td>
                                         </tr>`
                             })             
 
@@ -763,7 +780,7 @@
                         } else {
                             loaderEnd()
 
-                            Swal.fire('Error','Terjadi kesalahan pada server', 'error');
+                            Swal.fire('Error', rs.message, 'error');
                         }
                     }
                 })
@@ -792,11 +809,7 @@
                 saveExcel("Mandiri", DataMandiri)
                 break;
             default:
-            Swal.fire({
-                icon: 'error',
-                title: 'Kesalahan template',
-                text: 'Silahkan hub team!'
-            })
+            errorServer()
         }
     })
 
@@ -864,6 +877,22 @@
 
     function loaderEnd() {
         swal.close();
+    }
+
+    function templateWrong() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan Upload Template',
+            text: 'Silahkan gunakan template yang benar'
+        })
+    }
+
+    function errorServer() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan template',
+            text: 'Silahkan hub customer service!'
+        })
     }
 
 </script>

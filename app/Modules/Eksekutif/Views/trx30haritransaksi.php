@@ -36,13 +36,17 @@
                                 <select class="custom-select select2" name="haltebis_id" id="haltebis_id" required></select>
                             </div>
                         </div>
+
+                        <div class="tab-content-header my-3" style="display: block;">    
+                            <h6 class="tab-content-title-harian text-center font-weight-bold">REKAP LAPORAN TRANSAKSI 30 Hari Terakhir</h6>
+                        </div>
                         
                         <div class="tab-pane fade active show" id="tab-data" role="tabpanel" aria-labelledby="tab-data">
 
-                            <div id="chartdiv1" style="min-height: 500px"></div>
-                            <div id="chartdiv2" style="min-height: 500px"></div>
+                            <div id="chartdiv1" style="min-height: 500px; display: none"></div>
+                            <div id="chartdiv2" style="min-height: 500px; display: none"></div>
 
-                            <table class="table table-striped table-bordered table-hover" id="tabel_pta" style="display: none;">
+                            <table class="table table-striped table-bordered table-hover" id="tabel_trx_30d" style="display: none;">
                                 <thead>
                                     <tr class="border-dark" style="border:1px solid #555255">
                                         <th rowspan="2" class="text-center border-dark" style="border:1px solid #555255">No</th>
@@ -88,7 +92,7 @@
     const select2Array = [
         {
             id: 'haltebis_id',
-            url: '/haltebis_id_per_pendapatan30d_select_get',
+            url: '/haltebis_id_per_trx30d_select_get',
             placeholder: 'Pilih Halte/Bis',
             params: null
         }
@@ -138,13 +142,12 @@
     function loadGraph() {
         var haltebis_id = $('#haltebis_id').val();
 
-        //start loader
-        // loaderStart();
+        loaderStart();
 
         $.ajax({
             method: "post",
             dataType : "json",
-            url: url_ajax + "/chartinfo30hari",
+            url: url_ajax + "/chart_trx_30d",
             data:{
                 <?= csrf_token() ?>: "<?= csrf_hash() ?>",
                 "haltebis_id": haltebis_id,
@@ -338,9 +341,8 @@
                     chart1.render();
                     chart2.render();
 
-                    $('#tabel_pta').show();
-                    $('#tgl_export_action').show();
-                    $("#tabel_pta").find("tr:gt(0)").remove();
+                    $('#tabel_trx_30d').show();
+                    $("#tabel_trx_30d").find("tr:gt(0)").remove();
                     $.each(rs.data, function(index, value){
                         var result = `
                             <tr class="border-dark">
@@ -352,24 +354,15 @@
                             </tr>
                         `;
 
-                        $("#tabel_pta").append(result);
+                        $("#tabel_trx_30d").append(result);
                     });
 
-                    // loaderEnd();
-                    //end loader
-                    // setTimeout(function() {
-                    //     KTApp.unblock('#table-portlet');
-                    // }, 2000);
+                    loaderEnd()
                 }else{
-                    $("#tabel_pta").find("tr:gt(0)").remove();
-                    $('#tabel_pta').css('display','none');
-                    $("#tgl_export_action").css('display','none');
+                    $("#tabel_trx_30d").find("tr:gt(0)").remove();
+                    $('#tabel_trx_30d').css('display','none');
 
-                    //end loader
-                    // loaderEnd();
-                    swal("Belum ada data \nuntuk filter ini", {
-                        icon : "error"
-                    });
+                    loaderEnd();
                 }
             }
         })
@@ -377,6 +370,21 @@
 
     function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function loaderStart() {
+        Swal.fire({
+            title: "",
+            icon: "info",
+            text: "Proses menampilkan data, mohon ditunggu...",
+            didOpen: function() {
+                Swal.showLoading()
+            }
+        });
+    }
+
+    function loaderEnd() {
+        swal.close();
     }
 
 </script>
