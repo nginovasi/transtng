@@ -43,15 +43,12 @@
                                         <input type="text" class="form-control form-control-md date" name="date" id="date" placeholder="Masukkan Tanggal" required autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="form-control-sm mt-n1 col-md-2">
-                                    <button class="btn btn-success btn-transaction" id="btn-transaction">Lihat Transaksi</button>
-                                </div>
                                 <div class="mb-2 col-md-2">
-                                    <div class="btn-group-export" style="display: none;">
+                                    <div class="btn-group" style="display: none;">
                                         <button class="btn btn-white">Export</button>
                                         <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
                                         <div class="dropdown-menu bg-dark" role="menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(93px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                            <a class="dropdown-item" id="download-data-pdf">
+                                            <a class="dropdown-item" id="download-pdf">
                                                 PDF
                                             </a>    
                                             <!-- <a class="dropdown-item">
@@ -63,6 +60,10 @@
                             </div>
 
                             <hr>
+
+                            <div class="tab-content-header my-3" style="display: block;">    
+                                <h6 class="tab-content-title text-center font-weight-bold"></h6>
+                            </div>
 
                             <div id="statistik-rekap-data"></div>
                         </div>
@@ -83,7 +84,7 @@
     const base_url = '<?= base_url() ?>';
     const url = '<?= base_url() . "/" . uri_segment(0) . "/action/" . uri_segment(1) ?>';
     const url_ajax = '<?= base_url() . "/" . uri_segment(0) . "/ajax" ?>';
-    const url_pdf_jalur = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTrxPerPos" . "" ?>';
+    const url_pdf = '<?= base_url() . "/" . uri_segment(0) . "/pdf/exportTrxPerPos" . "" ?>';
 
     var dataStart = 0;
     var coreEvents;
@@ -127,17 +128,35 @@
 
         coreEvents.daterangepicker('#date', 'yyyy-mm-dd')
 
-        $('#download-data-pdf').on('click', function(e) {
+        $('#date').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+
+            loadPerPos()
+        });
+
+        $('#date').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+
+            $('.btn-group').css('display', 'none')
+
+            $(".tab-content-title").text("")
+
+            $('#statistik-rekap-data').html('')
+        });
+
+        $('#download-pdf').on('click', function(e) {
             let date = $('#date').val()
 
-            $(this).attr("href", url_pdf_jalur + '?date=' + date);
+            $(this).attr("href", url_pdf + '?date=' + date);
             $(this).attr("target", "_blank");
         });
 
     });
 
-    $('#btn-transaction').on('click', function() {
+    function loadPerPos() {
         let date = $('#date').val()
+
+        loaderStart()
 
         $.ajax({
             method: "post",
@@ -149,12 +168,23 @@
             },
             success : function (rs) {
 
-                console.info(rs)
-
                 if(rs.success){
                     $('#statistik-rekap-data').html('')
 
-                    $('.btn-group-export').css('display', 'block')
+                    $('.btn-group').css('display', 'block')
+
+                    let title = `REKAP LAPORAN TRANSAKSI `
+                    if(date) {
+                        let explodeDateHarian = date.split(' - ');
+                        let explodeDateStart = explodeDateHarian[0].split('-');
+                        let explodeDateEnd = explodeDateHarian[1].split('-');
+
+                        title += `PERIODE ${explodeDateStart[2]} ${getMonth(explodeDateStart[1])} ${explodeDateStart[0]} - ${explodeDateEnd[2]} ${getMonth(explodeDateEnd[1])} ${explodeDateEnd[0]} `
+                    }
+
+                    $(".tab-content-title").text("")
+
+                    $(".tab-content-title").text(`${title}`)
 
                     let result = `
                         <div class="table-responsive">
@@ -228,14 +258,60 @@
 
                     $('#statistik-rekap-data').append(result)
 
+                    loaderEnd()
                 }
-
             }
         })
-    })
+    }
 
     function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function loaderStart() {
+        Swal.fire({
+            title: "",
+            icon: "info",
+            text: "Proses menampilkan data, mohon ditunggu...",
+            didOpen: function() {
+                Swal.showLoading()
+            }
+        });
+    }
+
+    function loaderEnd() {
+        swal.close();
+    }
+
+    function getMonth(month) { 
+        let result
+        if(month == 01) {
+            result = "JANUARI"
+        } else if(month == 02) {
+            result = "FEBRUARI"
+        } else if(month == 03) {
+            result = "MARET"
+        } else if(month == 04) {
+            result = "APRIL"
+        } else if(month == 05) {
+            result = "MEI"
+        } else if(month == 06) {
+            result = "JUNI"
+        } else if(month == 07) {
+            result = "JULI"
+        } else if(month == 08) {
+            result = "AGUSTUS"
+        } else if(month == 09) {
+            result = "SEPTEMBER"
+        } else if(month == 10) {
+            result = "OKTOBER"
+        } else if(month == 11) {
+            result = "NOVEMBER"
+        } else {
+            result = "DESEMBER"
+        }
+
+        return result
     }
 
 </script>

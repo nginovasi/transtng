@@ -64,8 +64,8 @@
                     Banten 15138, Indonesia</h5>
     </div>
 
-    <div class="title" style="font-weight: bold; font-size: 20px;">
-        <h6>Laporan statistik transaksi per-jalur periode <?= $date; ?></h6>
+    <div class="title" style="font-weight: bold; font-size: 20px; text-align: center;">
+        <h6><?= $title; ?></h6>
     </div>
 
     <div class="body">
