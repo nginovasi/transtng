@@ -51,9 +51,11 @@ class EksekutifPdf extends BaseController {
         $mpdf->Output($title . '.pdf','I');
 	}
 
-    function exportTransaksiPerJenisHarian(){
+    function exportTrxPerJenisHarian(){
         $data = $this->request->getGet();
 
+        $explodeDate = explode("-", $data['date']);
+        
         $result = [];
         $totalPerDate = [];
 
@@ -91,6 +93,7 @@ class EksekutifPdf extends BaseController {
         }
 
         $result = [
+                    "title" => "REKAP LAPORAN TRANSAKSI PER JENIS PERIODE " . $explodeDate[2] . ' ' . $this->getMonth($explodeDate[1]) . ' ' . $explodeDate[0],
                     "date" => $data['date'],
                     "jenis" => $listTarif,
                     "total_per_date" => $totalPerDate,
@@ -99,10 +102,10 @@ class EksekutifPdf extends BaseController {
                     "jml_trx" => $jmlTrx
                 ];
 
-        $this->export('Laporan transaksi per jenis tanggal ' . $data['date'], $data['date'], $result, '\exportTransaksiPerJenisHarian_pdf');
+        $this->export('Laporan transaksi per jenis tanggal ' . $data['date'], $data['date'], $result, '\exportTrxPerJenisHarian_pdf');
 	}
 
-    function exportTransaksiPerJenisBulanan(){
+    function exportTrxPerJenisBulanan(){
         $data = $this->request->getGet();
         $date = $data['date'];
         $monthOnly = explode("-", $date)[1];
@@ -139,13 +142,14 @@ class EksekutifPdf extends BaseController {
         foreach($nonManual as $key => $val) {
             $result['ttl_trx'][$val->jenis][$val->tanggal] = $val->ttl_trx;
             $result['jml_trx'][$val->jenis][$val->tanggal] = $val->jml_trx;
-            $totalPerDate[$val->tanggal] += $val->ttl_trx;
+            $totalPerDate[intval($val->tanggal)] += $val->ttl_trx;
 
             $ttlTrx += $val->ttl_trx;
             $jmlTrx += $val->jml_trx;
         }
 
         $result = [
+                    "title" => "REKAP LAPORAN TRANSAKSI PER JENIS PERIODE " . $this->getMonth($monthOnly) . ' ' . $yearOnly,
                     "date" => $data['date'],
                     "jenis" => $listTarif,
                     "total_per_date" => $totalPerDate,
@@ -154,10 +158,10 @@ class EksekutifPdf extends BaseController {
                     "jml_trx" => $jmlTrx
                 ];
 
-        $this->export('Laporan transaksi per jenis bulan ' . $data['date'], $data['date'], $result, '\exportTransaksiPerJenisBulanan_pdf');
+        $this->export('Laporan transaksi per jenis bulan ' . $data['date'], $data['date'], $result, '\exportTrxPerJenisBulanan_pdf');
 	}
 
-    function exportTransaksiPerJenisTahunan(){
+    function exportTrxPerJenisTahunan(){
         $data = $this->request->getGet();
         $date = $data['date'];
 
@@ -197,6 +201,7 @@ class EksekutifPdf extends BaseController {
         }
 
         $result = [
+                    "title" => "REKAP LAPORAN TRANSAKSI PER JENIS PERIODE " . $data['date'],
                     "date" => $data['date'],
                     "jenis" => $listTarif,
                     "total_per_date" => $totalPerDate,
@@ -205,7 +210,7 @@ class EksekutifPdf extends BaseController {
                     "jml_trx" => $jmlTrx
                 ];
 
-        $this->export('Laporan transaksi per jenis tahun ' . $data['date'], $data['date'], $result, '\exportTransaksiPerJenisTahunan_pdf');
+        $this->export('Laporan transaksi per jenis tahun ' . $data['date'], $data['date'], $result, '\exportTrxPerJenisTahunan_pdf');
 	}
 
     function exportTransaksiPerHalteBisHarian(){
@@ -426,5 +431,48 @@ class EksekutifPdf extends BaseController {
 
         $this->export('Laporan transaksi per pos periode ' . $data['date'], $data['date'], $result, '\exportTrxPerPos_pdf');
 	}
+
+    function getMonth($month) {
+        $monthAlias = "";
+        switch($month) {
+            case "01":
+                $monthAlias = "JANUARI";
+                break;
+            case "02":
+                $monthAlias = "FEBRUARI";
+                break;
+            case "03":
+                $monthAlias = "MARET";
+                break;
+            case "04":
+                $monthAlias = "APRIL";
+                break;
+            case "05":
+                $monthAlias = "MEI";
+                break;
+            case "06":
+                $monthAlias = "JUNI";
+                break;
+            case "07":
+                $monthAlias = "JULI";
+                break;
+            case "08":
+                $monthAlias = "AGUSTUS";
+                break;
+            case "09":
+                $monthAlias = "SEPTEMBER";
+                break;
+            case "10":
+                $monthAlias = "OKTOBER";
+                break;
+            case "11":
+                $monthAlias = "NOVEMBER";
+                break;
+            default:
+                $monthAlias = "DESEMBER";
+        }
+
+        return $monthAlias;
+    }
 
 }

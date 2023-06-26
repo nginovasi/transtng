@@ -68,21 +68,7 @@ class EksekutifAjax extends BaseController
         echo json_encode(array("success" => true, "message" => "get data success", "data" => $result));
     }
 
-    public function jalur_id_select_get()
-    {
-        $data = $this->request->getGet();
-
-        $query = "SELECT id, CONCAT(jalur, ' (', rute, ')') as text
-                    FROM ref_jalur 
-                    WHERE is_deleted = 0
-                    AND is_dev = 0";
-
-        $where = ["jalur", "rute"];
-
-        parent::_loadSelect2($data, $query, $where);
-    }
-
-    public function getTransaksiPerjenisHarian()
+    public function getTrxPerJenisHarian()
     {
         $data = $this->request->getPost();
 
@@ -94,14 +80,14 @@ class EksekutifAjax extends BaseController
 
         $nonManual = $this->db->query("SELECT jenis,
                                             tanggal, 
-                                            HOUR(created_at) AS jam, 
+                                            HOUR(jam) AS jam, 
                                             COUNT(id) AS ttl_trx, 
                                             SUM(kredit) AS jml_trx
                                         FROM transaksi_bis a
                                         WHERE is_dev = 0
-                                        AND date(tanggal) = " . "'" . $data['date'] . "'" . "
-                                        GROUP BY jenis, DATE(created_at), HOUR(created_at)
-                                        ORDER BY HOUR(created_at), jenis, DATE(created_at)
+                                        AND tanggal = " . "'" . $data['date'] . "'" . "
+                                        GROUP BY jenis, DATE(tanggal), HOUR(jam)
+                                        ORDER BY HOUR(jam), jenis, DATE(tanggal)
                                         ")->getResult();
 
         $listTarif = $this->db->query("SELECT * 
@@ -135,7 +121,7 @@ class EksekutifAjax extends BaseController
         ]);
     }
 
-    public function getTransaksiPerjenisBulan()
+    public function getTrxPerjenisBulan()
     {
         $data = $this->request->getPost();
         $date = $data['date'];
@@ -166,14 +152,14 @@ class EksekutifAjax extends BaseController
 
         $countDate = cal_days_in_month(CAL_GREGORIAN, $monthOnly, $yearOnly);
 
-        for ($i = 0; $i <= $countDate; $i++) {
+        for ($i = 01; $i <= $countDate; $i++) {
             $totalPerDate[$i] = 0;
         }
 
         foreach ($nonManual as $key => $val) {
             $result['ttl_trx'][$val->jenis][$val->tanggal] = $val->ttl_trx;
             $result['jml_trx'][$val->jenis][$val->tanggal] = $val->jml_trx;
-            $totalPerDate[$val->tanggal] += $val->ttl_trx;
+            $totalPerDate[intval($val->tanggal)] += $val->ttl_trx;
 
             $ttlTrx += $val->ttl_trx;
             $jmlTrx += $val->jml_trx;
@@ -192,7 +178,7 @@ class EksekutifAjax extends BaseController
         ]);
     }
 
-    public function getTransaksiPerjenisTahun()
+    public function getTrxPerjenisTahun()
     {
         $data = $this->request->getPost();
         $date = $data['date'];
@@ -243,6 +229,20 @@ class EksekutifAjax extends BaseController
                 "jml_trx" => $jmlTrx
             ]
         ]);
+    }
+
+    public function jalur_id_select_get()
+    {
+        $data = $this->request->getGet();
+
+        $query = "SELECT id, CONCAT(jalur, ' (', rute, ')') as text
+                    FROM ref_jalur 
+                    WHERE is_deleted = 0
+                    AND is_dev = 0";
+
+        $where = ["jalur", "rute"];
+
+        parent::_loadSelect2($data, $query, $where);
     }
 
     public function getTransaksiPerHalteBisHarian()

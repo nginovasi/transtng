@@ -20,7 +20,7 @@ class Eksekutif extends BaseController {
         return parent::_authView();
     }
 
-    public function laptransaksimesinkartu() {
+    public function trxperiodikperjenis() {
         return parent::_authView();
     }
 
