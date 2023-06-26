@@ -23,7 +23,7 @@
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills no-border" id="tab">
                     <li class="nav-item">
-                        <a class="nav-link active" id="nav-data" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="false"><i class="fa fa-table"></i> Data <?= $latest_version ?></a>
+                        <a class="nav-link active" id="nav-data" data-toggle="tab" href="#tab-data" role="tab" aria-controls="tab-data" aria-selected="false"><i class="fa fa-table"></i> Data </a>
                     </li>
                 </ul>
             </div>
@@ -67,8 +67,6 @@
 
     var dataStart = 0;
     var coreEvents;
-
-    console.info('<?= $latest_version ?>')
 
     // init select2
     const select2Array = [];
