@@ -24,7 +24,7 @@ class Eksekutif extends BaseController {
         return parent::_authView();
     }
 
-    public function cekpta() {
+    public function trxperhaltebis() {
         return parent::_authView();
     }
 

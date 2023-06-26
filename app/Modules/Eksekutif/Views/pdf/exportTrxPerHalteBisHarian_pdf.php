@@ -59,8 +59,8 @@
                     Banten 15138, Indonesia</h5>
     </div>
 
-    <div class="title" style="font-weight: bold; font-size: 20px;">
-        <h6>Laporan statistik transaksi per-halte/bis periode <?= $date; ?> Tangerang</h6>
+    <div class="title" style="font-weight: bold; font-size: 20px; text-align: center;">
+        <h6><?= $title; ?></h6>
     </div>
 
     <div class="body">
@@ -83,7 +83,7 @@
                         <td class="field-center"><?= $key + 1 ?></td>
                         <td class="field-center"><?= $val->haltebis ?></td>
                         <td class="field-center"><?= $val->shift ?></td>
-                        <td class="field-center"><?= $val->imei ?></td>
+                        <td class="field-center"><?= $val->device_id ?></td>
                         <td class="field-center"><?= $val->jalur ?></td>
                         <td class="field-right"><?= number_format($val->cash) ?></td>
                         <td class="field-right"><?= number_format($val->is_cashless) ?></td>
