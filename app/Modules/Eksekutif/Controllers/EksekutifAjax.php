@@ -19,39 +19,7 @@ class EksekutifAjax extends BaseController
         return redirect()->to(base_url());
     }
 
-    public function findkartu()
-    {
-        $data = $this->request->getGet();
-        $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL"; //QUERY belum fix
-        $where = ["a.nama"];
-        parent::_loadSelect2($data, $query, $where);
-    }
-
-    public function loadtransaksipta()
-    {
-        $tanggal = $this->request->getPost('tanggal');
-        $result = $this->db->query("SELECT * FROM ref_narasi_tiket WHERE tanggal = '$tanggal'")->getResultArray();
-        $data = [];
-        foreach ($result as $key => $value) {
-            $data[] = [
-                'id' => $value['id'],
-                'tanggal' => $value['tanggal'],
-                'header' => $value['header'],
-                'footer' => $value['footer'],
-            ];
-        }
-        echo json_encode($data);
-    }
-
-    public function findpetugas()
-    {
-        $data = $this->request->getGet();
-        $query = "SELECT a.id, a.nama as 'text' FROM ref_tenant a WHERE a.nama IS NOT NULL"; //QUERY belum fix
-        $where = ["a.nama"];
-        parent::_loadSelect2($data, $query, $where);
-    }
-
-    public function haltebis_id_per_pendapatan30d_select_get()
+    public function haltebis_id_per_trx30d_select_get()
     {
         $data = $this->request->getGet();
 
@@ -77,6 +45,29 @@ class EksekutifAjax extends BaseController
         parent::_loadSelect2($data, $query, $where);
     }
 
+    public function chart_trx_30d()
+    {
+        $data = $this->request->getPost();
+
+        $query = "SELECT DATE_FORMAT(a.tanggal,'%d/%m/%y (%a)') AS tanggal,
+                        CONCAT(FLOOR(TIMESTAMPDIFF(minute,MIN(a.jam),MAX(a.jam))/60),' jam ', TIMESTAMPDIFF(minute,MIN(a.jam),MAX(a.jam)) mod 60,' menit') AS 'jam_aktif_transaksi',
+                        SUM(a.Kredit) AS pendapatan,
+                        SUM(1) AS trx 
+                    FROM transaksi_bis a
+                    where a.tanggal between date_add(curdate(),interval -30 day) and curdate() ";
+                    
+        if ($data['haltebis_id'] != "") {
+            $query .= "and a.kode_bis = " . "'" . $data["haltebis_id"] . "' ";
+        }
+
+        $query .= "group by a.tanggal
+                    order by a.tanggal";
+
+        $result = $this->db->query($query)->getResult();
+
+        echo json_encode(array("success" => true, "message" => "get data success", "data" => $result));
+    }
+
     public function jalur_id_select_get()
     {
         $data = $this->request->getGet();
@@ -89,32 +80,6 @@ class EksekutifAjax extends BaseController
         $where = ["jalur", "rute"];
 
         parent::_loadSelect2($data, $query, $where);
-    }
-
-    public function chartinfo30hari()
-    {
-        $data = $this->request->getPost();
-
-        $query = "SELECT DATE_FORMAT(a.tanggal,'%d/%m/%y (%a)') AS tanggal,
-                        CONCAT(FLOOR(TIMESTAMPDIFF(minute,MIN(a.jam),MAX(a.jam))/60),' jam ', TIMESTAMPDIFF(minute,MIN(a.jam),MAX(a.jam)) mod 60,' menit') AS 'jam_aktif_transaksi',
-                        SUM(a.Kredit) AS pendapatan,
-                        SUM(1) AS trx 
-                    FROM transaksi_bis a
-                    where a.tanggal between date_add(curdate(),interval -30 day) and curdate() ";
-        if ($data['haltebis_id'] != "") {
-            $query .= "and a.kode_bis = " . "'" . $data["haltebis_id"] . "' ";
-        }
-
-        $query .= "group by a.tanggal
-                    order by a.tanggal";
-
-        $result = $this->db->query($query)->getResult();
-
-        echo json_encode([
-            "success" => true,
-            "message" => "get data success",
-            "data" => $result
-        ]);
     }
 
     public function getTransaksiPerjenisHarian()
