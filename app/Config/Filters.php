@@ -13,6 +13,8 @@ class Filters extends BaseConfig
 		'web-auth'	=> \App\Filters\WebAuthentication::class,
 		'api-auth'	=> \App\Filters\ApiAuthentication::class,
 		'token-auth'	=> \App\Filters\TokenAuthentication::class,
+		'token-auth-encryption'	=> \App\Filters\TokenAuthenticationEncryption::class,
+		'api-auth-encryption'	=> \App\Filters\ApiAuthenticationEncryption::class,
 	];
 
 	// Always applied before every request
