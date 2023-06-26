@@ -213,6 +213,72 @@ class EksekutifPdf extends BaseController {
         $this->export('Laporan transaksi per jenis tahun ' . $data['date'], $data['date'], $result, '\exportTrxPerJenisTahunan_pdf');
 	}
 
+    function exportTrxPerJalurDateRangeJalurHalteBis(){
+        $data = $this->request->getGet();
+
+        $ttlTrx = 0;
+        $jmlTrx = 0;
+
+        $query = "SELECT a.jenis, 
+                        CASE WHEN ttl_trx THEN ttl_trx ELSE 0 END AS ttl_trx,
+                        CASE WHEN jml_trx THEN jml_trx ELSE 0 END AS jml_trx
+                    FROM ref_tarif a
+                    LEFT JOIN (
+                        SELECT a.jenis,
+                            count(a.id) as ttl_trx, 
+                            SUM(a.kredit) AS jml_trx 
+                            FROM transaksi_bis a
+                            LEFT JOIN ref_haltebis b
+	                            ON a.kode_bis = b.kode_haltebis
+                            WHERE a.is_dev = 0 ";
+
+        $title = "REKAP LAPORAN TRANSAKSI PER JENIS ";
+
+        if($data['date']) {
+            $dateStart = explode(" - ", $data['date'])[0];
+            $dateEnd = explode(" - ", $data['date'])[1];
+
+            $dateStartExplode = explode("-", $dateStart);
+            $dateEndExplode = explode("-", $dateEnd);
+
+            $title .= "PERIODE " . $dateStartExplode[2] . " " .  $this->getMonth($dateStartExplode[1]) . " " . $dateStartExplode[0] . " - " . $dateEndExplode[2] . " " .  $this->getMonth($dateEndExplode[1]) . " " . $dateEndExplode[0] . " ";
+
+            $query .= "AND tanggal BETWEEN " . "'" . $dateStart . "'" . " AND " . "'" . $dateEnd . "'" . " ";
+        }
+
+        if($data['jalur_id']) {
+            $title .= $data['jalur_text'];
+
+            $query .= "AND jalur = " . $data['jalur_id'] . " ";
+        }
+
+        if($data['jenpos_id'] != "") {
+            $query .= "AND jen_pos= " . $data['jenpos_id'] . " ";
+        }
+
+        $query .= "GROUP BY jenis
+            ) b
+            ON a.jenis = b.jenis
+            WHERE is_deleted = 0";
+
+        $result = $this->db->query($query)->getResult();
+
+        foreach($result as $key => $val) {
+            $ttlTrx += $val->ttl_trx;
+            $jmlTrx += $val->jml_trx;
+        }
+
+        $result = [
+                    "title" => $title,
+                    "date" => $data['date'],
+                    "result" => $result,
+                    "ttl_trx" => $ttlTrx,
+                    "jml_trx" => $jmlTrx
+                ];
+
+        $this->export('Laporan transaksi per jalur ' . $data['date'], $data['date'], $result, '\exportTrxPerJalurDateRangeJalurHalteBis_pdf');
+	}
+
     function exportTrxPerHalteBisHarian(){
         $data = $this->request->getGet();
 
@@ -258,60 +324,6 @@ class EksekutifPdf extends BaseController {
                 ];
 
         $this->export('Laporan transaksi per halte/bis ' . $data['date'], $data['date'], $result, '\exportTrxPerHalteBisHarian_pdf');
-	}
-
-    function exportTransaksiPerJalurDateRangeJalurHalteBis(){
-        $data = $this->request->getGet();
-
-        $dateStart = explode(" - ", $data['date'])[0];
-        $dateEnd = explode(" - ", $data['date'])[1];
-
-        $ttlTrx = 0;
-        $jmlTrx = 0;
-
-        $query = "SELECT a.jenis, 
-                    CASE WHEN ttl_trx THEN ttl_trx ELSE 0 END AS ttl_trx,
-                    CASE WHEN jml_trx THEN jml_trx ELSE 0 END AS jml_trx
-                FROM ref_tarif a
-                LEFT JOIN (
-                    SELECT jenis,
-                        count(id) as ttl_trx, 
-                        SUM(kredit) AS jml_trx 
-                        FROM transaksi_bis a
-                        WHERE is_dev = 0 ";
-
-        if($data['date']) {
-            $query .= "AND tanggal BETWEEN " . "'" . $dateStart . "'" . " AND " . "'" . $dateEnd . "'" . " ";
-        }
-
-        if($data['jalur_id']) {
-            $query .= "AND jalur = " . $data['jalur_id'] . " ";
-        }
-
-        if($data['jenpos_id']) {
-            $query .= "AND jenpos= " . $data['jenpos_id'] . " ";
-        }
-
-        $query .= "GROUP BY jenis
-            ) b
-            ON a.jenis = b.jenis
-            WHERE is_deleted = 0";
-
-        $result = $this->db->query($query)->getResult();
-
-        foreach($result as $key => $val) {
-            $ttlTrx += $val->ttl_trx;
-            $jmlTrx += $val->jml_trx;
-        }
-
-        $result = [
-                    "date" => $data['date'],
-                    "result" => $result,
-                    "ttl_trx" => $ttlTrx,
-                    "jml_trx" => $jmlTrx
-                ];
-
-        $this->export('Laporan transaksi per jalur ' . $data['date'], $data['date'], $result, '\exportTransaksiPerJalurDateRangeJalurHalteBis_pdf');
 	}
 
     function exportTrxPenumpangPerJamJalur(){
