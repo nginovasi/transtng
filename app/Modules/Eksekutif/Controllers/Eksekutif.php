@@ -32,7 +32,7 @@ class Eksekutif extends BaseController {
         return parent::_authView();
     }
 
-    public function lappenumpangjamkor() {
+    public function trxjamjalur() {
         return parent::_authView();
     }
 
