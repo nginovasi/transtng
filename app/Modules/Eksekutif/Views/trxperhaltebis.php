@@ -159,9 +159,9 @@
 
                     $('.btn-group').css('display', 'block')
 
-                    $(".tab-content-title").text("")
-
                     let explodeDateHarian = date.split('-');
+
+                    $(".tab-content-title").text("")
 
                     $(".tab-content-title").text(`REKAP LAPORAN TRANSAKSI PER JENIS PERIODE ${explodeDateHarian[2]} ${getMonth(explodeDateHarian[1])} ${explodeDateHarian[0]}`)
 

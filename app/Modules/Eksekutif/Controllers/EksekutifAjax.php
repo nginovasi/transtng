@@ -245,6 +245,54 @@ class EksekutifAjax extends BaseController
         parent::_loadSelect2($data, $query, $where);
     }
 
+    public function getTrxPerJalurDateRangeJalurHalteBis()
+    {
+        $data = $this->request->getPost();
+
+        $query = "SELECT a.jenis, 
+                        CASE WHEN ttl_trx THEN ttl_trx ELSE 0 END AS ttl_trx,
+                        CASE WHEN jml_trx THEN jml_trx ELSE 0 END AS jml_trx
+                    FROM ref_tarif a
+                    LEFT JOIN (
+                        SELECT a.jenis,
+                            count(a.id) as ttl_trx, 
+                            SUM(a.kredit) AS jml_trx 
+                            FROM transaksi_bis a
+                            LEFT JOIN ref_haltebis b
+	                            ON a.kode_bis = b.kode_haltebis
+                            WHERE a.is_dev = 0 ";
+
+        if ($data['date']) {
+            $dateStart = explode(" - ", $data['date'])[0];
+            $dateEnd = explode(" - ", $data['date'])[1];
+            
+            $query .= "AND a.tanggal BETWEEN " . "'" . $dateStart . "'" . " AND " . "'" . $dateEnd . "'" . " ";
+        }
+
+        if ($data['jalur_id']) {
+            $query .= "AND a.jalur = " . $data['jalur_id'] . " ";
+        }
+
+        if ($data['jenpos_id'] != "") {
+            $query .= "AND b.jen_pos= " . $data['jenpos_id'] . " ";
+        }
+
+        $query .= "GROUP BY jenis
+                    ) b
+                    ON a.jenis = b.jenis
+                    WHERE is_deleted = 0";
+
+        $result = $this->db->query($query)->getResult();
+
+        echo json_encode([
+            "success" => true,
+            "message" => "get data success",
+            "data" => [
+                "result" => $result
+            ]
+        ]);
+    }
+
     public function getTransaksiPerHalteBisHarian()
     {
         $data = $this->request->getPost();
@@ -268,52 +316,6 @@ class EksekutifAjax extends BaseController
                                     AND tanggal = " . "'" . $data['date'] . "'" . "
                                     GROUP BY CONCAT(b.kode_haltebis, ' - ', b.name), a.shift, a.jenis, a.jalur
                                     ")->getResult();
-
-        echo json_encode([
-            "success" => true,
-            "message" => "get data success",
-            "data" => [
-                "result" => $result
-            ]
-        ]);
-    }
-
-    public function getTransaksiPerJalurDateRangeJalurHalteBis()
-    {
-        $data = $this->request->getPost();
-
-        $dateStart = explode(" - ", $data['date'])[0];
-        $dateEnd = explode(" - ", $data['date'])[1];
-
-        $query = "SELECT a.jenis, 
-                        CASE WHEN ttl_trx THEN ttl_trx ELSE 0 END AS ttl_trx,
-                        CASE WHEN jml_trx THEN jml_trx ELSE 0 END AS jml_trx
-                    FROM ref_tarif a
-                    LEFT JOIN (
-                        SELECT jenis,
-                            count(id) as ttl_trx, 
-                            SUM(kredit) AS jml_trx 
-                            FROM transaksi_bis a
-                            WHERE is_dev = 0 ";
-
-        if ($data['date']) {
-            $query .= "AND tanggal BETWEEN " . "'" . $dateStart . "'" . " AND " . "'" . $dateEnd . "'" . " ";
-        }
-
-        if ($data['jalur_id']) {
-            $query .= "AND jalur = " . $data['jalur_id'] . " ";
-        }
-
-        if ($data['jenpos_id']) {
-            $query .= "AND jenpos= " . $data['jenpos_id'] . " ";
-        }
-
-        $query .= "GROUP BY jenis
-                    ) b
-                    ON a.jenis = b.jenis
-                    WHERE is_deleted = 0";
-
-        $result = $this->db->query($query)->getResult();
 
         echo json_encode([
             "success" => true,

@@ -28,7 +28,7 @@ class Eksekutif extends BaseController {
         return parent::_authView();
     }
 
-    public function lapkoridor() {
+    public function trxjalur() {
         return parent::_authView();
     }
 
