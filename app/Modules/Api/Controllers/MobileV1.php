@@ -481,10 +481,10 @@ class MobileV1 extends BaseController
 
         if(!empty($aduan_lampiran) ){
             $filename1 = $this->genNamefile();
-            // $file1 = '/home/ngi/php/php74/trans_tangerang/public/uploads/aduan/'.$filename1.'.png';
+            $file1 = '/home/ngi/php/php74/trans_tangerang/public/uploads/aduan/'.$filename1.'.png';
 
             //local
-            $file1 = '/Users/ngibookpro/Documents/project/php/transtng/public/uploads/aduan/'.$filename1.'.png';
+            // $file1 = '/Users/ngibookpro/Documents/project/php/transtng/public/uploads/aduan/'.$filename1.'.png';
 
             $data1 = base64_decode($aduan_lampiran);
 
