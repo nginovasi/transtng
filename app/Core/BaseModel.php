@@ -6,6 +6,7 @@ use CodeIgniter\HTTP\RequestInterface;
 
 class BaseModel extends Model
 {
+
 	protected $db;
 
 	protected $session;

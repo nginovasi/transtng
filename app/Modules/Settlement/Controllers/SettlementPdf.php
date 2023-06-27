@@ -1,245 +1,65 @@
 <?php
 
-namespace App\Modules\Settlement\Models;
+namespace App\Modules\Settlement\Controllers;
 
-use App\Core\BaseModel;
+use App\Modules\Settlement\Models\SettlementModel;
+use App\Core\BaseController;
 
-class SettlementModel extends BaseModel 
-{
-    public function loadBatchSttlBCA($data, $user_id) {
-        $result = [];
-        foreach($data as $key => $val) {
-            if(strlen($val[0]) == 5) {
-                if(strlen($val[1]) >= 80) {
-                    $description = explode(" ", $val[1]);
+class SettlementPdf extends BaseController {
 
-                    $datePaid = dateFormatSlashReverseFromddmmyyyyToyyyymmdd($description[2]);
-                    $dateTimeSttl = dateFormatSlashReverseFromddmmyyyyToyyyymmddhis($description[2], $description[3]);
-                    $dateTrx = dateFormatStringNoSpaceFromyyyymmddToyyymmdd(substr($description[7], 0, 8));
+    private $eksekutifModel;
 
-                    if(count($description) >= 9) {
-                        $sttlNum = $description[8];
-                    } else {
-                        $sttlNum = null;
-                    }
-
-                    $jumlah = explode(" ", $val[3]);
-
-                    $existingData = $this->db->query("SELECT * 
-                                                        FROM sttl_bca_paid
-                                                        WHERE date_trx = " . "'" . $dateTrx . "'" . "
-                                                        AND sttl_num = " . "'" . $sttlNum . "'" . "
-                                                        AND no_reff = " . "'" . $description[7] . "'" . "")->getNumRows();
-
-                    if($existingData == 0) {
-                        $result[] = (object) [
-                            "description" => $val[1],
-                            "date_paid" => $datePaid,
-                            "date_sttl" => $dateTimeSttl,
-                            "mid" => substr($description[5], 3, 9),
-                            "merchant" => $description[6],
-                            "date_trx" => $dateTrx,
-                            "tid" => substr($description[7], 8, 10),
-                            "sttl_num" => $sttlNum,
-                            "no_reff" => $description[7],
-                            "branch" => $val[2],
-                            "kredit" => doubleval(str_replace(",", "", $jumlah[0])),
-                            "type_trx" => $jumlah[1],
-                            "last_balance" => doubleval(str_replace(",", "", $val[4])),
-                            "created_by" => $user_id
-                        ];
-                    }
-                } else {
-                    echo json_encode(array("success" => false, "message" => "Format keterangan salah", "data" => $result));
-                    return;
-                }
-            } else {
-                echo json_encode(array("success" => false, "message" => "Format tanggal transaksi salah", "data" => $result));
-                return;
-            }
-        }
-
-        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
+    public function __construct() {
+        $this->eksekutifModel = new SettlementModel();
     }
 
-    public function loadBatchSttlBNI($data, $user_id) {
-        $result = [];
-
-        foreach($data as $key => $val) {
-            if($val[0] != "") {
-                $datePaid = dateFormatSlashFromyyyymmddhisToyyymmdd($val[1]); 
-
-                if(strlen($val[4]) == 110) {
-                    $dateTrx = dateFormatStringNoSpaceFromddmmyyyToyyymmdd(substr($val[4], 80, 8));
-                } else if(strlen($val[4]) >= 110 && $val[6] == "D") {
-                    $dateTrx = null;
-                } else {
-                    $dateTrx = null;
-                }
-
-                if(strpos($val[5], ',')) {
-                    $kredit = intval(doubleval(str_replace(",", "", $val[5])));
-                } else {
-                    $kredit = intval(doubleval($val[5]));
-                }
-
-                $existingData = $this->db->query("SELECT *
-                                                    FROM sttl_bni_paid
-                                                    WHERE date_paid = " . "'" . $datePaid . "'" . "
-                                                    AND no_journal = " . "'" . $val[3] . "'" . "
-                                                ")->getNumRows();
-
-                if($existingData == 0) {
-                    $result[] = (object) [
-                        "date_paid" => $datePaid,
-                        "branch" => $val[2],
-                        "no_journal" => $val[3],
-                        "description" => $val[4],
-                        "date_trx" => $dateTrx,
-                        "kredit" => $kredit,
-                        "dc" => $val[6],
-                        "balance" => $val[7],
-                        "created_by" => $user_id
-                    ];
-                }
-            } else {
-                echo json_encode(array("success" => false, "message" => "Format no salah", "data" => $result));
-                return;
-            }
-        }
-
-        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
+    public function index() {
+        return redirect()->to(base_url());
     }
 
-    public function loadBatchSttlBRI($data, $user_id) {
-        $result = [];
+    private function export($title, $id, $result, $file){
+        // mpf
+		$mpdf = new \Mpdf\Mpdf(['format' => 'A5']);
+		$mpdf->curlAllowUnsafeSslRequests = true;
 
-        foreach($data as $key => $val) {
-            if(strlen($val[1]) == 40) {
-                $datePaid = dateFormatSlashFromddmmyyyyToyyyymmdd($val[0]);
-                $dateSttl = dateFormatStringNoSpaceFromddmmyyyyToyyyymmdd(substr($val[1], 25, 6));
-
-                $existingData = $this->db->query("SELECT *
-                                                    FROM sttl_bri_paid
-                                                    WHERE date_trx = " . "'" . $dateSttl . "'" . "
-                                                    AND ref_trx = " . "'" . $val[1] . "'" . "
-                                                ")->getNumRows();
-
-                if($existingData == 0) {
-                    $result[] = (object) [
-                        "date_paid" => $datePaid,
-                        "date_trx" => $dateSttl,
-                        "ref_trx" => $val[1],
-                        "file_1" => substr($val[1], 0, 15),
-                        "body" => substr($val[1], 16, 8),
-                        "file_2" => substr($val[1], 25, 6),
-                        "shift" => substr($val[1], 32, 2),
-                        "count" => intval(substr($val[1], 36, 4)),
-                        "kredit" => substr(str_replace(".", "", $val[3]), 0, -2),
-                        "created_by" => $user_id
-                    ];
-                }
-            } else {
-                echo json_encode(array("success" => false, "message" => "Format transaksi salah", "data" => $result));
-                return;
-            }
+        // layout html view
+        $data = [];
+        foreach($result as $key => $val) {
+            $data[$key] = $val;
         }
 
-        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
-    }
+		$html = view('App\Modules\Settlement\Views\pdf' . $file , $data);
 
-    public function loadBatchSttlMandiri($data, $user_id) {
-        $result = [];
+        // margin left, right, top, bottom, header, footer
+		$mpdf->AddPage('L','', '', '', '', 20, 20, 5, 10, 90, 10);
 
-        foreach($data as $key => $val) {
-            $description = trim($val[4]) . " " . trim($val[5]);
+        // template background pdf
+        // $pagecount = $mpdf->SetSourceFile('assets/template.pdf');
+        // $tplIdx = $mpdf->ImportPage($pagecount);
 
-            if(strlen($val[0]) == 13 && strlen($description) >= 79) {
-                $dateTrx = dateFormatStringNoSpaceFromddmmyyyyToyyyymmddFull(substr($val[4], 18, 8));
+        // $mpdf->useTemplate($tplIdx);
 
-                if(strlen($val[1]) == 19) {
-                    $datePaidCol = dateFormatSlashAndDotFromddmmyyyyhisToyyyymmdd($val[1]);
-                } else {
-                    $datePaidCol = dateFormatSlashAndDotFromddmmyyhiToyyyymmdd($val[1]);
-                }
+		$mpdf->WriteHTML($html);
 
-                if(strpos(strtolower($description), strtolower("MANDIRIA")) || strpos(strtolower($description), strtolower("MANDIRIR"))) {
-                    $noReff = substr($description, 49, 30);
-                    $datePaid = dateFormatStringNoSpaceFromyyyymmddhisToyyymmddhis(substr($description, 21, 14));
-                };
+        // set header, so that the data return pdf, no binary text
+        $this->response->setHeader("Content-Type", "application/pdf");
 
-                if(strpos(strtolower($description), strtolower("BTNA"))) {
-                    $noReff = substr($description, 45, 30);
-                    $datePaid = null;
-                };
+        // output name pdf
+        $name = "";
+		// $mpdf->Output('SKD - '.$id.' - '. $name .'.pdf','I');
 
-                if(strpos(strtolower($description), strtolower("MTS-Trf-Kredit"))) {
-                    $noReff = substr($description, 56, 37);
-                    $datePaid = $datePaidCol;
-                };
+        $mpdf->Output($title . '.pdf','I');
+	}
 
-                if(strpos(strtolower($description), strtolower("MANDIRI Trans Jogya"))) {
-                    $noReff = substr($description, strpos($description, "MANDIRI Trans Jogya ") + 20);
-                    $datePaid = $datePaidCol;
-                };
+    function exportLapRekonBCA(){
+        $data = $this->request->getGet();
 
-                if(strpos(strtolower($description), strtolower("MANDIRI Transjogja - Bus"))) {
-                    $noReff = substr($description, strpos($description, "MANDIRI Transjogja - Bus") + 24);
-                    $datePaid = $datePaidCol;
-                };
+        $tenant = $this->getTenant($data["bank"]);
 
-                if(strpos(strtolower($description), strtolower("MANDIRI Trans JogjaA"))) {
-                    $noReff = substr($description, strpos($description, "MANDIRI Trans JogjaA") + strlen("20"));
-                    $datePaid = $datePaidCol;
-                };
+        $dateExplode = explode("-", $data['date']);
 
-                $existingData = $this->db->query("SELECT *
-                                                    FROM sttl_mandiri_paid
-                                                    WHERE sttl_file_name = " . "'" . $val[4] . "'" . "
-                                                    AND no_ref = " . "'" . $noReff . "'" . "
-                                                ")->getNumRows();
-
-                if($existingData == 0) {
-                    $result[] = (object) [
-                        "date_trx" => $dateTrx,
-                        "description" => $description,
-                        "date_paid_col" => $datePaidCol,
-                        "sttl_file_name" => $val[0],
-                        "no_ref" => $noReff,
-                        "date_paid" => $datePaid,
-                        "kredit" => intval(doubleval(str_replace(",", "", $val[8]))),
-                        "brance_code" => "99105",
-                        "created_by" => $user_id
-                    ];
-                }
-            } else {
-                echo json_encode(array("success" => false, "message" => "Format account no & description salah pada baris " . ($key + 1), "data" => $result));
-                return;          
-            }
-        }
-
-        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
-    }
-
-    public function insertLogSttl($bank, $nameFile, $data, $user_id) {
-        if(count($data) > 0) {
-            $dateSttl = $data[0]->date_paid . ' s/d ' . $data[count($data) - 1]->date_paid;
-        } else {
-            $dateSttl = "trx fail";
-        }
-
-        $result = [
-            "filename" => $nameFile,
-            "bank" => $bank,
-            "ttl_sttl" => count($data),
-            "date_sttl" => $dateSttl,
-            "created_by" => $user_id
-        ];
-
-        parent::base_insert($result, 'log_import_sttl');
-    }
-
-    public function loadLapRekonBCA($date) {
+        $monthAlias = $this->getMonth($dateExplode[1]);
+        
         $query = $this->db->query("SELECT a.tanggal AS date_trx, 
                                         c.date_paid AS date_paid, 
                                         c.ttl_trx,
@@ -247,7 +67,7 @@ class SettlementModel extends BaseModel
                                         c.jml_trx_paid,
                                         c.jml_trx_paid - SUM(b.kredit) AS difference_trx
                                 FROM (
-                                    SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $date . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
+                                    SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $data['date'] . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                     FROM (
                                         SELECT (((b4.0 << 1 | b3.0) << 1 | b2.0) << 1 | b1.0) << 1 | b0.0 AS n
                                         FROM (SELECT 0 UNION ALL SELECT 1) AS b0,
@@ -257,7 +77,7 @@ class SettlementModel extends BaseModel
                                                 (SELECT 0 UNION ALL SELECT 1) AS b4 
                                             ) t
                                         WHERE n > 0 
-                                        AND n <= day(last_day('" . $date . "'))
+                                        AND n <= day(last_day('" . $data['date'] . "'))
                                     ) a
                                 LEFT JOIN transaksi_bis b
                                 ON a.tanggal = b.tanggal
@@ -267,7 +87,7 @@ class SettlementModel extends BaseModel
                                             count(b.id) AS ttl_trx,
                                             sum(CASE WHEN b.kredit IS NOT NULL THEN b.kredit ELSE 0 END) as jml_trx_paid
                                     FROM (
-                                        SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $date . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
+                                        SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $data['date'] . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                         FROM (
                                             SELECT (((b4.0 << 1 | b3.0) << 1 | b2.0) << 1 | b1.0) << 1 | b0.0 AS n
                                             FROM (SELECT 0 UNION ALL SELECT 1) AS b0,
@@ -277,7 +97,7 @@ class SettlementModel extends BaseModel
                                             (SELECT 0 UNION ALL SELECT 1) AS b4 
                                         ) t
                                     WHERE n > 0 
-                                    AND n <= day(last_day('" . $date . "'))
+                                    AND n <= day(last_day('" . $data['date'] . "'))
                                     ) a
                                     LEFT JOIN sttl_bca_paid b
                                     ON a.tanggal = b.date_trx
@@ -300,6 +120,8 @@ class SettlementModel extends BaseModel
         }
 
         $result = [
+            "title" => "REKAP LAPORAN TRANSAKSI " . $tenant . " PERIODE " . $monthAlias . " " . $dateExplode[0],
+            "date" => $data['date'],
             "result" => $query,
             "ttl_trx" => $ttlTrx,
             "jml_trx" => $jmlTrx,
@@ -307,10 +129,18 @@ class SettlementModel extends BaseModel
             "difference_trx" => $differenceTrx
         ];
 
-        return $result;
-    }
+        $this->export('Laporan transaksi per jenis tanggal ' . $data['date'], $data['date'], $result, '\exportTrxLapRekon_pdf');
+	}
 
-    public function loadLapRekonBRI($date) {
+    function exportLapRekonBRI(){
+        $data = $this->request->getGet();
+
+        $tenant = $this->getTenant($data["bank"]);
+
+        $dateExplode = explode("-", $data['date']);
+
+        $monthAlias = $this->getMonth($dateExplode[1]);
+
         $query = $this->db->query("SELECT a.tanggal AS date_trx, 
                                             c.date_paid AS date_paid, 
                                             c.ttl_trx,
@@ -318,7 +148,7 @@ class SettlementModel extends BaseModel
                                             c.jml_trx_paid,
                                             c.jml_trx_paid - SUM(b.kredit) AS difference_trx
                                     FROM (
-                                        SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $date . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
+                                        SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $data['date'] . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                         FROM (
                                             SELECT (((b4.0 << 1 | b3.0) << 1 | b2.0) << 1 | b1.0) << 1 | b0.0 AS n
                                             FROM (SELECT 0 UNION ALL SELECT 1) AS b0,
@@ -328,7 +158,7 @@ class SettlementModel extends BaseModel
                                                     (SELECT 0 UNION ALL SELECT 1) AS b4 
                                         ) t
                                         WHERE n > 0 
-                                        AND n <= day(last_day('" . $date . "'))
+                                        AND n <= day(last_day('" . $data['date'] . "'))
                                     ) a
                                     LEFT JOIN transaksi_bis b
                                         ON a.tanggal = b.tanggal
@@ -338,7 +168,7 @@ class SettlementModel extends BaseModel
                                                 COUNT(b.id) AS ttl_trx,
                                                 sum(CASE WHEN b.kredit IS NOT NULL THEN b.kredit ELSE 0 END) as jml_trx_paid
                                         FROM (
-                                            SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $date . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
+                                            SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $data['date'] . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                             FROM (
                                                 SELECT (((b4.0 << 1 | b3.0) << 1 | b2.0) << 1 | b1.0) << 1 | b0.0 AS n
                                                 FROM (SELECT 0 UNION ALL SELECT 1) AS b0,
@@ -348,7 +178,7 @@ class SettlementModel extends BaseModel
                                                 (SELECT 0 UNION ALL SELECT 1) AS b4 
                                             ) t
                                         WHERE n > 0 
-                                        AND n <= day(last_day('" . $date . "'))
+                                        AND n <= day(last_day('" . $data['date'] . "'))
                                         ) a
                                         LEFT JOIN sttl_bri_paid b
                                         ON a.tanggal = b.date_trx
@@ -371,6 +201,8 @@ class SettlementModel extends BaseModel
         }
 
         $result = [
+            "title" => "REKAP LAPORAN TRANSAKSI " . $tenant . " PERIODE " . $monthAlias . " " . $dateExplode[0],
+            "date" => $data['date'],
             "result" => $query,
             "ttl_trx" => $ttlTrx,
             "jml_trx" => $jmlTrx,
@@ -378,10 +210,18 @@ class SettlementModel extends BaseModel
             "difference_trx" => $differenceTrx
         ];
 
-        return $result;
-    }
+        $this->export('Laporan transaksi per jenis tanggal ' . $data['date'], $data['date'], $result, '\exportTrxLapRekon_pdf');
+	}
 
-    public function loadLapRekonBNI($date) {
+    function exportLapRekonBNI(){
+        $data = $this->request->getGet();
+
+        $tenant = $this->getTenant($data["bank"]);
+
+        $dateExplode = explode("-", $data['date']);
+
+        $monthAlias = $this->getMonth($dateExplode[1]);
+        
         $query = $this->db->query("SELECT a.tanggal AS date_trx, 
                                             c.date_paid AS date_paid, 
                                             c.ttl_trx,
@@ -389,7 +229,7 @@ class SettlementModel extends BaseModel
                                             c.jml_trx_paid,
                                             c.jml_trx_paid - SUM(b.kredit) AS difference_trx
                                     FROM (
-                                        SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $date . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
+                                        SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $data['date'] . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                         FROM (
                                             SELECT (((b4.0 << 1 | b3.0) << 1 | b2.0) << 1 | b1.0) << 1 | b0.0 AS n
                                             FROM (SELECT 0 UNION ALL SELECT 1) AS b0,
@@ -399,7 +239,7 @@ class SettlementModel extends BaseModel
                                                     (SELECT 0 UNION ALL SELECT 1) AS b4 
                                         ) t
                                         WHERE n > 0 
-                                        AND n <= day(last_day('" . $date . "'))
+                                        AND n <= day(last_day('" . $data['date'] . "'))
                                     ) a
                                     LEFT JOIN transaksi_bis b
                                         ON a.tanggal = b.tanggal
@@ -409,7 +249,7 @@ class SettlementModel extends BaseModel
                                                 COUNT(b.id) AS ttl_trx,
                                                 sum(CASE WHEN b.kredit IS NOT NULL THEN b.kredit ELSE 0 END) as jml_trx_paid
                                         FROM (
-                                            SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $date . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
+                                            SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $data['date'] . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                             FROM (
                                                 SELECT (((b4.0 << 1 | b3.0) << 1 | b2.0) << 1 | b1.0) << 1 | b0.0 AS n
                                                 FROM (SELECT 0 UNION ALL SELECT 1) AS b0,
@@ -419,7 +259,7 @@ class SettlementModel extends BaseModel
                                                 (SELECT 0 UNION ALL SELECT 1) AS b4 
                                             ) t
                                         WHERE n > 0 
-                                        AND n <= day(last_day('" . $date . "'))
+                                        AND n <= day(last_day('" . $data['date'] . "'))
                                         ) a
                                         LEFT JOIN sttl_bni_paid b
                                         ON a.tanggal = b.date_trx
@@ -442,6 +282,8 @@ class SettlementModel extends BaseModel
         }
 
         $result = [
+            "title" => "REKAP LAPORAN TRANSAKSI " . $tenant . " PERIODE " . $monthAlias . " " . $dateExplode[0],
+            "date" => $data['date'],
             "result" => $query,
             "ttl_trx" => $ttlTrx,
             "jml_trx" => $jmlTrx,
@@ -449,10 +291,18 @@ class SettlementModel extends BaseModel
             "difference_trx" => $differenceTrx
         ];
 
-        return $result;
-    }
+        $this->export('Laporan transaksi per jenis tanggal ' . $data['date'], $data['date'], $result, '\exportTrxLapRekon_pdf');
+	}
 
-    public function loadLapRekonMandiri($date) {
+    function exportLapRekonMandiri(){
+        $data = $this->request->getGet();
+
+        $tenant = $this->getTenant($data["bank"]);
+
+        $dateExplode = explode("-", $data['date']);
+
+        $monthAlias = $this->getMonth($dateExplode[1]);
+
         $query = $this->db->query("SELECT a.tanggal AS date_trx, 
                                             c.date_paid AS date_paid, 
                                             c.ttl_trx,
@@ -460,7 +310,7 @@ class SettlementModel extends BaseModel
                                             c.jml_trx_paid,
                                             c.jml_trx_paid - SUM(b.kredit) AS difference_trx
                                     FROM (
-                                        SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $date . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
+                                        SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $data['date'] . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                         FROM (
                                             SELECT (((b4.0 << 1 | b3.0) << 1 | b2.0) << 1 | b1.0) << 1 | b0.0 AS n
                                             FROM (SELECT 0 UNION ALL SELECT 1) AS b0,
@@ -470,7 +320,7 @@ class SettlementModel extends BaseModel
                                                     (SELECT 0 UNION ALL SELECT 1) AS b4 
                                         ) t
                                         WHERE n > 0 
-                                        AND n <= day(lASt_day('" . $date . "'))
+                                        AND n <= day(lASt_day('" . $data['date'] . "'))
                                     ) a
                                     LEFT JOIN transaksi_bis b
                                         ON a.tanggal = b.tanggal
@@ -480,7 +330,7 @@ class SettlementModel extends BaseModel
                                                 count(b.id) AS ttl_trx,
                                                 sum(CASE WHEN b.kredit IS NOT NULL THEN b.kredit ELSE 0 END) as jml_trx_paid
                                         FROM (
-                                            SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $date . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
+                                            SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $data['date'] . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                             FROM (
                                                 SELECT (((b4.0 << 1 | b3.0) << 1 | b2.0) << 1 | b1.0) << 1 | b0.0 AS n
                                                 FROM (SELECT 0 UNION ALL SELECT 1) AS b0,
@@ -490,7 +340,7 @@ class SettlementModel extends BaseModel
                                                 (SELECT 0 UNION ALL SELECT 1) AS b4 
                                             ) t
                                         WHERE n > 0 
-                                        AND n <= day(last_day('" . $date . "'))
+                                        AND n <= day(last_day('" . $data['date'] . "'))
                                         ) a
                                         LEFT JOIN sttl_mandiri_paid b
                                         ON a.tanggal = b.date_trx
@@ -513,6 +363,8 @@ class SettlementModel extends BaseModel
         }
 
         $result = [
+            "title" => "REKAP LAPORAN TRANSAKSI " . $tenant . " PERIODE " . $monthAlias . " " . $dateExplode[0],
+            "date" => $data['date'],
             "result" => $query,
             "ttl_trx" => $ttlTrx,
             "jml_trx" => $jmlTrx,
@@ -520,7 +372,72 @@ class SettlementModel extends BaseModel
             "difference_trx" => $differenceTrx
         ];
 
-        return $result;
+        $this->export('Laporan transaksi per jenis tanggal ' . $data['date'], $data['date'], $result, '\exportTrxLapRekon_pdf');
+	}
+
+    function getTenant($bank) {
+        $bankAlias = "";
+        switch($bank) {
+            case "BCA":
+                $bankAlias = "FLAZZ";
+                break;
+            case "BNI":
+                $bankAlias = "TAPCASH";
+                break;
+            case "BRI":
+                $bankAlias = "BRIZZI";
+                break;
+            case "Mandiri":
+                $bankAlias = "E-MONEY";
+                break;
+            default:
+                $bankAlias = "SERVER ERROR";
+        }
+
+        return $bankAlias;
     }
-    
+
+    function getMonth($month) {
+        $monthAlias = "";
+        switch($month) {
+            case "01":
+                $monthAlias = "JANUARI";
+                break;
+            case "02":
+                $monthAlias = "FEBRUARI";
+                break;
+            case "03":
+                $monthAlias = "MARET";
+                break;
+            case "04":
+                $monthAlias = "APRIL";
+                break;
+            case "05":
+                $monthAlias = "MEI";
+                break;
+            case "06":
+                $monthAlias = "JUNI";
+                break;
+            case "07":
+                $monthAlias = "JULI";
+                break;
+            case "08":
+                $monthAlias = "AGUSTUS";
+                break;
+            case "09":
+                $monthAlias = "SEPTEMBER";
+                break;
+            case "10":
+                $monthAlias = "OKTOBER";
+                break;
+            case "11":
+                $monthAlias = "NOVEMBER";
+                break;
+            default:
+                $monthAlias = "DESEMBER";
+        }
+
+        return $monthAlias;
+    }
+
 }

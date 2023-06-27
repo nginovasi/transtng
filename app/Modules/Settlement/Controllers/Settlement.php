@@ -16,30 +16,11 @@ class Settlement extends BaseController {
         return redirect()->to(base_url());
     }
 
-    public function ceksettlement() {
-        return parent::_authView();
-    }
-
-    public function comparesettlement() {
+    public function importsettlement() {
         return parent::_authView();
     }
 
     public function laprekon() {
-        return parent::_authView();
-    }
-
-    public function laporanpendapatan() {
-        return parent::_authView();
-    }
-
-    public function laprimportsettlement() {
-        return parent::_authView();
-    }
-
-    public function importrsf() {
-        return parent::_authView();
-    }
-    public function importsettlement() {
         return parent::_authView();
     }
 

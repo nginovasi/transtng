@@ -49,6 +49,14 @@
             text-align: right;
             font-weight: bold;
         }
+        
+        .text-success {
+            color: #5cb85c;
+        }
+
+        .text-danger {
+            color: #d9534f;
+        }
 
 	</style>
 
@@ -72,46 +80,42 @@
         <table class="table" id="">
             <thead>
                 <tr>
-                    <th rowspan="2" class="field">No</th>
-                    <th rowspan="2" class="field">Pos</th>
-                    <th colspan="3" class="field">Shift Pagi</th>
-                    <th colspan="3" class="field">Shift Malam</th>
-                    <th rowspan="2" class="field">Jumlah</th>
-                </tr>
-                <tr>
-                    <th class="field">Cash</th>
-                    <th class="field">Cashless</th>
-                    <th class="field">Jumlah</th>
-                    <th class="field">Cash</th>
-                    <th class="field">Cashless</th>
-                    <th class="field">Jumlah</th>
+                    <th class="field">#</th>
+                    <th class="field">Tanggal Transaksi</th>
+                    <th class="field">Tanggal Pembayaran</th>
+                    <th class="field">Jumlah Transaksi</th>
+                    <th class="field">Nominal Transaksi</th>
+                    <th class="field">Nominal Dibayarkan</th>
+                    <th class="field">Selisih</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach($result as $key => $val) { ?>
                     <tr>
                         <td class="field-center"><?= $key + 1 ?></td>
-                        <td class="field-center"><?= $val->name ?></td>
-                        <td class="field-right"><?= number_format($val->cashless_shift_pagi) ?></td>
-                        <td class="field-right"><?= number_format($val->cash_shift_pagi) ?></td>
-                        <td class="field-right"><?= number_format($val->jml_shift_pagi) ?></td>
-                        <td class="field-right"><?= number_format($val->cashless_shift_malam) ?></td>
-                        <td class="field-right"><?= number_format($val->cash_shift_malam) ?></td>
-                        <td class="field-right"><?= number_format($val->jml_shift_malam) ?></td>
-                        <td class="field-right"><?= number_format($val->jml) ?></td>
+                        <td class="field-center"><?= $val->date_trx ? $val->date_trx : '-' ?></td>
+                        <td class="field-center"><?= $val->date_paid ? $val->date_paid : '-' ?></td>
+                        <td class="field-right"><?= number_format($val->ttl_trx) ?></td>
+                        <td class="field-right"><?= number_format($val->jml_trx) ?></td>
+                        <td class="field-right"><?= number_format($val->jml_trx_paid) ?></td>
+
+                        <?php if($val->difference_trx > 0) { ?>
+                            <td class="field-right text-success">+<?= number_format($val->difference_trx) ?></td>
+                        <?php } else if($val->difference_trx < 0) {  ?>
+                            <td class="field-right text-danger"><?= number_format($val->difference_trx) ?></td>
+                        <?php } else { ?>
+                            <td class="field-right"><?= number_format($val->difference_trx) ?></td>
+                        <?php } ?>
                     </tr>
                 <?php } ?>
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="2" class="field-right-foot">Total</td>
-                    <td class="field-right-foot"><?= number_format($ttl_trx_cash_shift_pagi) ?></td>
-                    <td class="field-right-foot"><?= number_format($jml_trx_cashless_shift_pagi) ?></td>
-                    <td class="field-right-foot"><?= number_format($jml_trx_jml_shift_pagi) ?></td>
-                    <td class="field-right-foot"><?= number_format($ttl_trx_cash_shift_malam) ?></td>
-                    <td class="field-right-foot"><?= number_format($jml_trx_cashless_shift_malam) ?></td>
-                    <td class="field-right-foot"><?= number_format($jml_trx_jml_shift_malam) ?></td>
-                    <td class="field-right-foot"><?= number_format($jml_trx_jml) ?></td>
+                    <td colspan="3" class="field-right-foot">Total</td>
+                    <td class="field-right-foot"><?= number_format($ttl_trx) ?></td>
+                    <td class="field-right-foot"><?= number_format($jml_trx) ?></td>
+                    <td class="field-right-foot"><?= number_format($jml_trx_paid) ?></td>
+                    <td class="field-right-foot"><?= number_format($difference_trx) ?></td>
                 </tr>
             </tfoot>
         </table>

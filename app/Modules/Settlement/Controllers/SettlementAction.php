@@ -16,226 +16,167 @@ class SettlementAction extends BaseController {
         return redirect()->to(base_url());
     }
 
-    public function pdf() {
-        $url = uri_segment("3");
-        $url_export = $url . "_export";
-        $filter = $_GET['search'];
-        $data['data_url'] = uri_segment("2");
-        $data['data_excel'] = $this->settlementModel->export_view($url_export, $filter);
-
-        $html = view("Settlement/Views/$url", $data);
-        $mpdf = new \Mpdf\Mpdf();
-        if (isset($_GET['o'])) {
-            if ($_GET['o'] == 'l') {
-                $mpdf->AddPage('L');
-            }
-        }
-
-        $mpdf->WriteHTML($html);
-        $this->response->setHeader('Content-Type', 'application/pdf');
-        $mpdf->Output($url.'_'.date('YmdHis').'.pdf', 'I');
-    }
-
-    public function excel() {
-        $url = uri_segment("3");
-        header("Content-type: application/vnd-ms-excel; charset=utf-8;");
-        header("Content-Disposition: attachment; filename=".$url."_".date('YmdHis').".xls");
-        header("Pragma: no-cache; Expires: 0");
-        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-        header("Cache-Control: private", false);
-
-        $url_export = $url . "_export";
-        $filter = $_GET['search'];
-        $data['data_url'] = uri_segment("2");
-        $data['data_excel'] = $this->settlementModel->export_view($url_export, $filter);
-
-        echo view("Settlement/Views/$url", $data);
-    }
-
-    public function ceksettlement_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function ceksettlement_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function ceksettlement_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function ceksettlement_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function comparesettlement_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function comparesettlement_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function comparesettlement_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function comparesettlement_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function laprekon_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function laprekon_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function laprekon_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function laprekon_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function laporanpendapatan_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function laporanpendapatan_save()
-    {
-        parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function laporanpendapatan_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function laporanpendapatan_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
     public function importsettlement_load()
     {
         parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
+            $query = "SELECT a.*, b.user_web_username
+                        FROM log_import_sttl a
+                        LEFT JOIN m_user_web b
+                            ON a.created_by = b.id
+                        WHERE filename IS NOT NULL";
+
+            $where = ["a.filename", "a.bank", "b.user_web_username"];
 
             parent::_loadDatatable($query, $where, $this->request->getPost());
         });
     }
 
-    public function importsettlement_save()
+    public function importsettlement_load_BCAPaid() {
+        $data = $this->request->getPost();
+
+        $dataDecode = json_decode($data['data']);
+
+        $user_id = $this->session->get('id');
+
+        $this->settlementModel->loadBatchSttlBCA($dataDecode, $user_id);
+    }
+
+    public function importsettlement_save_BCAPaid()
     {
         parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+            $data = $this->request->getPost();
+
+            $dataDecode = json_decode($data['data']);
+
+            $user_id = $this->session->get('id');
+
+            $this->settlementModel->insertLogSttl("BCA", $data['name_file'], $dataDecode, $user_id);
+
+            if($dataDecode) {
+                parent::_insertBatchv2('sttl_bca_paid', $dataDecode);
+            } else {
+                echo json_encode(array("success" => false, "message" => "Data tidak ada", "data" => null));
+            }            
         });
     }
 
-    public function importsettlement_edit()
-    {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
-        });
+    public function importsettlement_load_BNIPaid() {
+        $data = $this->request->getPost();
+
+        $dataDecode = json_decode($data['data']);
+
+        $user_id = $this->session->get('id');
+
+        $this->settlementModel->loadBatchSttlBNI($dataDecode, $user_id);
     }
 
-    public function importsettlement_delete()
-    {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
-        });
-    }
-
-    public function importrsf_load()
-    {
-        parent::_authLoad(function () {
-            $query = "SELECT a.* FROM ref_narasi_tiket a";
-            $where = ["a.header", "a.footer"];
-
-            parent::_loadDatatable($query, $where, $this->request->getPost());
-        });
-    }
-
-    public function importrsf_save()
+    public function importsettlement_save_BNIPaid()
     {
         parent::_authInsert(function () {
-            // parent::_insert('ref_narasi_tiket', $this->request->getPost());
+            $data = $this->request->getPost();
+
+            $dataDecode = json_decode($data['data']);
+
+            $user_id = $this->session->get('id');
+
+            $this->settlementModel->insertLogSttl("BNI", $data['name_file'], $dataDecode, $user_id);
+
+            if($dataDecode) {
+                parent::_insertBatchv2('sttl_bni_paid', $dataDecode);
+            } else {
+                echo json_encode(array("success" => false, "message" => "Data tidak ada", "data" => null));
+            }            
         });
     }
 
-    public function importrsf_edit()
+    public function importsettlement_load_BRIPaid() {
+        $data = $this->request->getPost();
+
+        $dataDecode = json_decode($data['data']);
+
+        $user_id = $this->session->get('id');
+
+        $this->settlementModel->loadBatchSttlBRI($dataDecode, $user_id);
+    }
+
+    public function importsettlement_save_BRIPaid()
     {
-        parent::_authEdit(function () {
-            // parent::_edit('ref_narasi_tiket', $this->request->getPost());
+        parent::_authInsert(function () {
+            $data = $this->request->getPost();
+
+            $dataDecode = json_decode($data['data']);
+
+            $user_id = $this->session->get('id');
+
+            $this->settlementModel->insertLogSttl("BRI", $data['name_file'], $dataDecode, $user_id);
+
+            if($dataDecode) {
+                parent::_insertBatchv2('sttl_bri_paid', $dataDecode);
+            } else {
+                echo json_encode(array("success" => false, "message" => "Data tidak ada", "data" => null));
+            }            
         });
     }
 
-    public function importrsf_delete()
+    public function importsettlement_load_MandiriPaid() {
+        $data = $this->request->getPost();
+
+        $dataDecode = json_decode($data['data']);
+
+        $user_id = $this->session->get('id');
+
+        $this->settlementModel->loadBatchSttlMandiri($dataDecode, $user_id);
+    }
+
+    public function importsettlement_save_MandiriPaid()
     {
-        parent::_authDelete(function () {
-            // parent::_delete('ref_narasi_tiket', $this->request->getPost());
+        parent::_authInsert(function () {
+            $data = $this->request->getPost();
+
+            $dataDecode = json_decode($data['data']);
+
+            $user_id = $this->session->get('id');
+
+            $this->settlementModel->insertLogSttl("Mandiri", $data['name_file'], $dataDecode, $user_id);
+
+            if($dataDecode) {
+                parent::_insertBatchv2('sttl_mandiri_paid', $dataDecode);
+            } else {
+                echo json_encode(array("success" => false, "message" => "Data tidak ada", "data" => null));
+            }            
         });
+    }
+
+    public function laprekon_load_BCALapRekon() {
+        $data = $this->request->getPost();
+
+        $result = $this->settlementModel->loadLapRekonBCA($data['date']);
+
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
+    }
+
+    public function laprekon_load_BRILapRekon() {
+        $data = $this->request->getPost();
+
+        $result = $this->settlementModel->loadLapRekonBRI($data['date']);
+
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
+    }
+
+    public function laprekon_load_BNILapRekon() {
+        $data = $this->request->getPost();
+
+        $result = $this->settlementModel->loadLapRekonBNI($data['date']);
+
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
+    }
+
+    public function laprekon_load_MandiriLapRekon() {
+        $data = $this->request->getPost();
+
+        $result = $this->settlementModel->loadLapRekonMandiri($data['date']);
+
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
 }

@@ -72,18 +72,10 @@
         <table class="table" id="">
             <thead>
                 <tr>
-                    <th rowspan="2" class="field">No</th>
-                    <th rowspan="2" class="field">Pos</th>
-                    <th colspan="3" class="field">Shift Pagi</th>
-                    <th colspan="3" class="field">Shift Malam</th>
-                    <th rowspan="2" class="field">Jumlah</th>
-                </tr>
-                <tr>
-                    <th class="field">Cash</th>
-                    <th class="field">Cashless</th>
-                    <th class="field">Jumlah</th>
-                    <th class="field">Cash</th>
-                    <th class="field">Cashless</th>
+                    <th class="field">No</th>
+                    <th class="field">Tanggal</th>
+                    <th class="field">Jam</th>
+                    <th class="field">Total</th>
                     <th class="field">Jumlah</th>
                 </tr>
             </thead>
@@ -91,27 +83,18 @@
                 <?php foreach($result as $key => $val) { ?>
                     <tr>
                         <td class="field-center"><?= $key + 1 ?></td>
-                        <td class="field-center"><?= $val->name ?></td>
-                        <td class="field-right"><?= number_format($val->cashless_shift_pagi) ?></td>
-                        <td class="field-right"><?= number_format($val->cash_shift_pagi) ?></td>
-                        <td class="field-right"><?= number_format($val->jml_shift_pagi) ?></td>
-                        <td class="field-right"><?= number_format($val->cashless_shift_malam) ?></td>
-                        <td class="field-right"><?= number_format($val->cash_shift_malam) ?></td>
-                        <td class="field-right"><?= number_format($val->jml_shift_malam) ?></td>
-                        <td class="field-right"><?= number_format($val->jml) ?></td>
+                        <td class="field-center"><?= implode('-', array_reverse(explode('-', $val->tanggal))) ?></td>
+                        <td class="field-center"><?= $val->jam . ':00 WIB' ?></td>
+                        <td class="field-right"><?= number_format($val->ttl_trx) ?></td>
+                        <td class="field-right"><?= number_format($val->jml_trx) ?></td>
                     </tr>
                 <?php } ?>
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="2" class="field-right-foot">Total</td>
-                    <td class="field-right-foot"><?= number_format($ttl_trx_cash_shift_pagi) ?></td>
-                    <td class="field-right-foot"><?= number_format($jml_trx_cashless_shift_pagi) ?></td>
-                    <td class="field-right-foot"><?= number_format($jml_trx_jml_shift_pagi) ?></td>
-                    <td class="field-right-foot"><?= number_format($ttl_trx_cash_shift_malam) ?></td>
-                    <td class="field-right-foot"><?= number_format($jml_trx_cashless_shift_malam) ?></td>
-                    <td class="field-right-foot"><?= number_format($jml_trx_jml_shift_malam) ?></td>
-                    <td class="field-right-foot"><?= number_format($jml_trx_jml) ?></td>
+                    <td colspan="3" class="field-right-foot">Total</td>
+                    <td class="field-right-foot"><?= number_format($ttl_trx) ?></td>
+                    <td class="field-right-foot"><?= number_format($jml_trx) ?></td>
                 </tr>
             </tfoot>
         </table>

@@ -9,9 +9,6 @@ class Ngi extends BaseController
 {
     private $NgiModel;
 
-    /**
-     * Constructor.
-     */
     public function __construct()
     {
         $this->NgiModel = new NgiModel();
@@ -28,43 +25,22 @@ class Ngi extends BaseController
         return view('App\Modules\Main\Views\layout', $data);
     }
 
-    // software licence not use
-    // public function softwarelicense()
-    // {
-    //     return parent::_authView();
-    // }
-
     public function dataalat()
     {
         return parent::_authView();
     }
-
-    // public function koreksitopup()
-    // {
-    //     return parent::_authView();
-    // }
-
-    // public function resetpasswordpetugas()
-    // {
-    //     return parent::_authView();
-    // }
-
+    
     public function appupdate()
     {
-        $latestVersion = $this->db->query("SELECT MAX(app_version) as app_version FROM ref_haltebis WHERE is_deleted = 0")->getRow();
+        $latestVersion = $this->db->query("SELECT MAX(app_version) as app_version 
+                                            FROM ref_haltebis 
+                                            WHERE is_deleted = 0
+                                            AND is_dev = 0
+                                            AND is_active = 0")->getRow();
 
         $data['latest_version'] = $latestVersion->app_version;
         
         return parent::_authView($data);
     }
 
-    // public function laporantrouble()
-    // {
-    //     return parent::_authView();
-    // }
-
-    // public function laprekoninternal()
-    // {
-    //     return parent::_authView();
-    // }
 }
