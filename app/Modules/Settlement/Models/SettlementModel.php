@@ -4,8 +4,8 @@ namespace App\Modules\Settlement\Models;
 
 use App\Core\BaseModel;
 
-class SettlementModel extends BaseModel {
-
+class SettlementModel extends BaseModel 
+{
     public function loadBatchSttlBCA($data, $user_id) {
         $result = [];
         foreach($data as $key => $val) {
@@ -13,47 +13,53 @@ class SettlementModel extends BaseModel {
                 if(strlen($val[1]) >= 80) {
                     $description = explode(" ", $val[1]);
 
-                    $datePaid = date_create(implode("-", array_reverse(explode("/", $description[2]))));
-                    $dateTimeSttl = date_create(implode("-", array_reverse(explode("/", $description[2]))) . " " . $description[3]);
-                    $dateTrx = date_create(substr($description[7], 0, 8));
+                    $datePaid = dateFormatSlashReverseFromddmmyyyyToyyyymmdd($description[2]);
+                    $dateTimeSttl = dateFormatSlashReverseFromddmmyyyyToyyyymmddhis($description[2], $description[3]);
+                    $dateTrx = dateFormatStringNoSpaceFromyyyymmddToyyymmdd(substr($description[7], 0, 8));
 
                     if(count($description) >= 9) {
                         $sttlNum = $description[8];
                     } else {
-                        $sttlNum = 0;
+                        $sttlNum = null;
                     }
 
                     $jumlah = explode(" ", $val[3]);
 
                     $existingData = $this->db->query("SELECT * 
                                                         FROM sttl_bca_paid
-                                                        WHERE date_trx = " . "'" . date_format($dateTrx, "Y-m-d") . "'" . "
+                                                        WHERE date_trx = " . "'" . $dateTrx . "'" . "
                                                         AND sttl_num = " . "'" . $sttlNum . "'" . "
                                                         AND no_reff = " . "'" . $description[7] . "'" . "")->getNumRows();
 
                     if($existingData == 0) {
                         $result[] = (object) [
                             "description" => $val[1],
-                            "date_paid" => date_format($datePaid, "Y-m-d"),
-                            "date_sttl" => date_format($dateTimeSttl, "Y-m-d H:i:s"),
-                            "mid" => substr($description[5], 3, 12),
+                            "date_paid" => $datePaid,
+                            "date_sttl" => $dateTimeSttl,
+                            "mid" => substr($description[5], 3, 9),
                             "merchant" => $description[6],
-                            "date_trx" => date_format($dateTrx, "Y-m-d"),
-                            "tid" => substr($description[7], 8, 18),
+                            "date_trx" => $dateTrx,
+                            "tid" => substr($description[7], 8, 10),
                             "sttl_num" => $sttlNum,
                             "no_reff" => $description[7],
                             "branch" => $val[2],
-                            "amount" => doubleval(str_replace(",", "", $jumlah[0])),
+                            "kredit" => doubleval(str_replace(",", "", $jumlah[0])),
                             "type_trx" => $jumlah[1],
-                            "last_balance" => str_replace(",", "", $val[4]),
+                            "last_balance" => doubleval(str_replace(",", "", $val[4])),
                             "created_by" => $user_id
                         ];
                     }
+                } else {
+                    echo json_encode(array("success" => false, "message" => "Format keterangan salah", "data" => $result));
+                    return;
                 }
+            } else {
+                echo json_encode(array("success" => false, "message" => "Format tanggal transaksi salah", "data" => $result));
+                return;
             }
         }
 
-        return $result;
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
     public function loadBatchSttlBNI($data, $user_id) {
@@ -61,10 +67,10 @@ class SettlementModel extends BaseModel {
 
         foreach($data as $key => $val) {
             if($val[0] != "") {
-                $datePaid = date_format(date_create($val[1]), "Y-m-d H:i:s");
+                $datePaid = dateFormatSlashFromyyyymmddhisToyyymmdd($val[1]); 
 
                 if(strlen($val[4]) == 110) {
-                    $dateTrx = date_format(date_create(substr($val[4], 84, 4) . substr($val[4], 82, 2) . substr($val[4], 80, 2)), "Y-m-d");
+                    $dateTrx = dateFormatStringNoSpaceFromddmmyyyToyyymmdd(substr($val[4], 80, 8));
                 } else if(strlen($val[4]) >= 110 && $val[6] == "D") {
                     $dateTrx = null;
                 } else {
@@ -72,9 +78,9 @@ class SettlementModel extends BaseModel {
                 }
 
                 if(strpos($val[5], ',')) {
-                    $amount = intval(doubleval(str_replace(",", "", $val[5])));
+                    $kredit = intval(doubleval(str_replace(",", "", $val[5])));
                 } else {
-                    $amount = intval(doubleval($val[5]));
+                    $kredit = intval(doubleval($val[5]));
                 }
 
                 $existingData = $this->db->query("SELECT *
@@ -90,16 +96,19 @@ class SettlementModel extends BaseModel {
                         "no_journal" => $val[3],
                         "description" => $val[4],
                         "date_trx" => $dateTrx,
-                        "amount" => $amount,
+                        "kredit" => $kredit,
                         "dc" => $val[6],
                         "balance" => $val[7],
                         "created_by" => $user_id
                     ];
                 }
+            } else {
+                echo json_encode(array("success" => false, "message" => "Format no salah", "data" => $result));
+                return;
             }
         }
 
-        return $result;
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
     public function loadBatchSttlBRI($data, $user_id) {
@@ -107,19 +116,19 @@ class SettlementModel extends BaseModel {
 
         foreach($data as $key => $val) {
             if(strlen($val[1]) == 40) {
-                $datePaid = dateFormatYYSlash($val[0]);
-                $dateSttl = dateFormatYY(substr($val[1], 25, 6));
+                $datePaid = dateFormatSlashFromddmmyyyyToyyyymmdd($val[0]);
+                $dateSttl = dateFormatStringNoSpaceFromddmmyyyyToyyyymmdd(substr($val[1], 25, 6));
 
                 $existingData = $this->db->query("SELECT *
                                                     FROM sttl_bri_paid
-                                                    WHERE date_sttl = " . "'" . $dateSttl . "'" . "
+                                                    WHERE date_trx = " . "'" . $dateSttl . "'" . "
                                                     AND ref_trx = " . "'" . $val[1] . "'" . "
                                                 ")->getNumRows();
 
                 if($existingData == 0) {
                     $result[] = (object) [
                         "date_paid" => $datePaid,
-                        "date_sttl" => $dateSttl,
+                        "date_trx" => $dateSttl,
                         "ref_trx" => $val[1],
                         "file_1" => substr($val[1], 0, 15),
                         "body" => substr($val[1], 16, 8),
@@ -130,31 +139,33 @@ class SettlementModel extends BaseModel {
                         "created_by" => $user_id
                     ];
                 }
+            } else {
+                echo json_encode(array("success" => false, "message" => "Format transaksi salah", "data" => $result));
+                return;
             }
         }
 
-        return $result;
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
     public function loadBatchSttlMandiri($data, $user_id) {
         $result = [];
 
         foreach($data as $key => $val) {
-
             $description = trim($val[4]) . " " . trim($val[5]);
 
             if(strlen($val[0]) == 13 && strlen($description) >= 79) {
-                $dateTrx = dateFormat00(substr($val[4], 18, 12));
+                $dateTrx = dateFormatStringNoSpaceFromddmmyyyyToyyyymmddFull(substr($val[4], 18, 8));
 
                 if(strlen($val[1]) == 19) {
-                    $datePaidCol = dateFormatSlashAndDot($val[1]);
+                    $datePaidCol = dateFormatSlashAndDotFromddmmyyyyhisToyyyymmdd($val[1]);
                 } else {
-                    $datePaidCol = dateFormat00SlashAndDot($val[1]);
+                    $datePaidCol = dateFormatSlashAndDotFromddmmyyhiToyyyymmdd($val[1]);
                 }
 
                 if(strpos(strtolower($description), strtolower("MANDIRIA")) || strpos(strtolower($description), strtolower("MANDIRIR"))) {
                     $noReff = substr($description, 49, 30);
-                    $datePaid = dateFormatNonSpaceyyyymmddhhmmss(substr($description, 21, 14));
+                    $datePaid = dateFormatStringNoSpaceFromyyyymmddhisToyyymmddhis(substr($description, 21, 14));
                 };
 
                 if(strpos(strtolower($description), strtolower("BTNA"))) {
@@ -196,14 +207,18 @@ class SettlementModel extends BaseModel {
                         "sttl_file_name" => $val[0],
                         "no_ref" => $noReff,
                         "date_paid" => $datePaid,
-                        "amount" => intval(doubleval(str_replace(",", "", $val[8]))),
-                        "brance_code" => "99105"
+                        "kredit" => intval(doubleval(str_replace(",", "", $val[8]))),
+                        "brance_code" => "99105",
+                        "created_by" => $user_id
                     ];
                 }
+            } else {
+                echo json_encode(array("success" => false, "message" => "Format account no & description salah pada baris " . ($key + 1), "data" => $result));
+                return;          
             }
         }
 
-        return $result;
+        echo json_encode(array("success" => true, "message" => "Get data success", "data" => $result));
     }
 
     public function insertLogSttl($bank, $nameFile, $data, $user_id) {
@@ -250,7 +265,7 @@ class SettlementModel extends BaseModel {
                                     SELECT tanggal AS date_trx,
                                             date_paid,
                                             count(b.id) AS ttl_trx,
-                                            sum(b.kredit) AS jml_trx_paid
+                                            sum(CASE WHEN b.kredit IS NOT NULL THEN b.kredit ELSE 0 END) as jml_trx_paid
                                     FROM (
                                         SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $date . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                         FROM (
@@ -321,7 +336,7 @@ class SettlementModel extends BaseModel {
                                         SELECT tanggal AS date_trx,
                                                 date_paid,
                                                 COUNT(b.id) AS ttl_trx,
-                                                SUM(b.kredit) AS jml_trx_paid
+                                                sum(CASE WHEN b.kredit IS NOT NULL THEN b.kredit ELSE 0 END) as jml_trx_paid
                                         FROM (
                                             SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $date . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                             FROM (
@@ -392,7 +407,7 @@ class SettlementModel extends BaseModel {
                                         SELECT tanggal AS date_trx,
                                                 date_paid,
                                                 COUNT(b.id) AS ttl_trx,
-                                                SUM(b.kredit) AS jml_trx_paid
+                                                sum(CASE WHEN b.kredit IS NOT NULL THEN b.kredit ELSE 0 END) as jml_trx_paid
                                         FROM (
                                             SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $date . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                             FROM (
@@ -463,7 +478,7 @@ class SettlementModel extends BaseModel {
                                         SELECT tanggal AS date_trx,
                                                 date_paid,
                                                 count(b.id) AS ttl_trx,
-                                                sum(b.kredit) AS jml_trx_paid
+                                                sum(CASE WHEN b.kredit IS NOT NULL THEN b.kredit ELSE 0 END) as jml_trx_paid
                                         FROM (
                                             SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $date . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                             FROM (

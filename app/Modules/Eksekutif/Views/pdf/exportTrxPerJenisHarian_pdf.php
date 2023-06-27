@@ -38,8 +38,8 @@
                     Banten 15138, Indonesia</h5>
     </div>
 
-    <div class="title" style="font-weight: bold; font-size: 20px;">
-        <h6>Laporan statistik transaksi per-jenis periode <?= $date; ?> Tangerang</h6>
+    <div class="title" style="font-weight: bold; font-size: 20px; text-align: center;">
+        <h6><?= $title; ?></h6>
     </div>
 
     <div class="body">
@@ -47,20 +47,14 @@
             <thead>
                 <tr>
                     <th rowspan="2" style="border:1px solid #555255;">Jenis Transaksi</th>
-                    <th colspan="<?= count($total_per_date) - 1 ?>" style="border:1px solid #555255;">Tanggal</th>
+                    <th colspan="24" style="border:1px solid #555255;">Jam</th>
                     <th rowspan="2" style="border:1px solid #555255;">Total Trans</th>
                     <th rowspan="2" style="border:1px solid #555255;">Total Rupiah</th>
                 </tr>
                 <tr>
-                    <?php
-                        foreach($total_per_date as $key => $val) {
-                            if($key != 0) {
-                    ?>
+                    <?php foreach($total_per_date as $key => $val) { ?>
                         <th style="border:1px solid #555255;"><?= $key ?></th>
-                    <?php 
-                            }
-                        } 
-                    ?>
+                    <?php } ?>
                 </tr>
             </thead>
             <tbody>
@@ -72,20 +66,14 @@
                             $ttl_trx_cstm = 0;
                             $jml_trx_cstm = 0;
                         ?>
-                        <?php 
-                            for ($n = 0; $n < count($total_per_date); $n++) {
-                                if($n != 0) {
-                        ?>
+                        <?php for ($n = 0; $n < 24; $n++) { ?>
                             <th style="border:1px solid #555255"><?= isset($result['ttl_trx'][$val->jenis]) ? (isset($result['ttl_trx'][$val->jenis][$n]) ? number_format($result['ttl_trx'][$val->jenis][$n]) : 0) : 0 ?></th>
                         
                             <?php
                                 $ttl_trx_cstm += intval(isset($result['ttl_trx'][$val->jenis]) ? (isset($result['ttl_trx'][$val->jenis][$n]) ? $result['ttl_trx'][$val->jenis][$n] : 0) : 0);
                                 $jml_trx_cstm += intval(isset($result['jml_trx'][$val->jenis]) ? (isset($result['jml_trx'][$val->jenis][$n]) ? $result['jml_trx'][$val->jenis][$n] : 0) : 0);
                             ?>
-                        <?php 
-                                }
-                            } 
-                        ?>
+                        <?php } ?>
 
 
                         <th style="border:1px solid #555255"><?= number_format($ttl_trx_cstm) ?></th>
@@ -96,15 +84,9 @@
             <tfoot>
                 <tr>
                     <th style="border:1px solid #555255">Total</th>
-                    <?php 
-                        for ($n = 0; $n < count($total_per_date); $n++) {
-                            if($n != 0) {
-                    ?>
+                    <?php for ($n = 0; $n < 24; $n++) { ?>
                         <th style="border:1px solid #555255"><?= number_format($total_per_date[$n]) ?></th>
-                    <?php 
-                            }
-                        } 
-                    ?>
+                    <?php } ?>
                     <th style="border:1px solid #555255"><?= number_format($ttl_trx) ?></th>
                     <th style="border:1px solid #555255"><?= number_format($jml_trx) ?></th>
                 </tr>

@@ -85,7 +85,7 @@ class SettlementPdf extends BaseController {
                                     SELECT tanggal AS date_trx,
                                             date_paid,
                                             count(b.id) AS ttl_trx,
-                                            sum(b.kredit) AS jml_trx_paid
+                                            sum(CASE WHEN b.kredit IS NOT NULL THEN b.kredit ELSE 0 END) as jml_trx_paid
                                     FROM (
                                         SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $data['date'] . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                         FROM (
@@ -166,7 +166,7 @@ class SettlementPdf extends BaseController {
                                         SELECT tanggal AS date_trx,
                                                 date_paid,
                                                 COUNT(b.id) AS ttl_trx,
-                                                SUM(b.kredit) AS jml_trx_paid
+                                                sum(CASE WHEN b.kredit IS NOT NULL THEN b.kredit ELSE 0 END) as jml_trx_paid
                                         FROM (
                                             SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $data['date'] . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                             FROM (
@@ -247,7 +247,7 @@ class SettlementPdf extends BaseController {
                                         SELECT tanggal AS date_trx,
                                                 date_paid,
                                                 COUNT(b.id) AS ttl_trx,
-                                                SUM(b.kredit) AS jml_trx_paid
+                                                sum(CASE WHEN b.kredit IS NOT NULL THEN b.kredit ELSE 0 END) as jml_trx_paid
                                         FROM (
                                             SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $data['date'] . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                             FROM (
@@ -328,7 +328,7 @@ class SettlementPdf extends BaseController {
                                         SELECT tanggal AS date_trx,
                                                 date_paid,
                                                 count(b.id) AS ttl_trx,
-                                                sum(b.kredit) AS jml_trx_paid
+                                                sum(CASE WHEN b.kredit IS NOT NULL THEN b.kredit ELSE 0 END) as jml_trx_paid
                                         FROM (
                                             SELECT STR_TO_DATE(CONCAT(DATE_FORMAT('" . $data['date'] . "','%Y-%m'),'-',n),'%Y-%m-%e') AS tanggal 
                                             FROM (

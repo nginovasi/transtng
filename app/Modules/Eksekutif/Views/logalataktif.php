@@ -77,7 +77,7 @@
     // init select2
     const select2Array = [{
         id: 'haltebis_id',
-        url: '/haltebis_id_per_pendapatan30d_select_get',
+        url: '/haltebis_id_per_trx30d_select_get',
         placeholder: 'Pilih Halte/Bis',
         params: null
     }];

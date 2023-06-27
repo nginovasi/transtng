@@ -64,8 +64,8 @@
                     Banten 15138, Indonesia</h5>
     </div>
 
-    <div class="title" style="font-weight: bold; font-size: 20px;">
-        <h6>Laporan statistik transaksi per-jalur periode <?= $date; ?></h6>
+    <div class="title" style="font-weight: bold; font-size: 20px; text-align: center;">
+        <h6><?= $title; ?></h6>
     </div>
 
     <div class="body">
@@ -73,8 +73,7 @@
             <thead>
                 <tr>
                     <th class="field">No</th>
-                    <th class="field">Tanggal</th>
-                    <th class="field">Jam</th>
+                    <th class="field">Jenis</th>
                     <th class="field">Total</th>
                     <th class="field">Jumlah</th>
                 </tr>
@@ -83,8 +82,7 @@
                 <?php foreach($result as $key => $val) { ?>
                     <tr>
                         <td class="field-center"><?= $key + 1 ?></td>
-                        <td class="field-center"><?= implode('-', array_reverse(explode('-', $val->tanggal))) ?></td>
-                        <td class="field-center"><?= $val->jam . ':00 WIB' ?></td>
+                        <td class="field-center"><?= $val->jenis ?></td>
                         <td class="field-right"><?= number_format($val->ttl_trx) ?></td>
                         <td class="field-right"><?= number_format($val->jml_trx) ?></td>
                     </tr>
@@ -92,7 +90,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3" class="field-right-foot">Total</td>
+                    <td colspan="2" class="field-right-foot">Total</td>
                     <td class="field-right-foot"><?= number_format($ttl_trx) ?></td>
                     <td class="field-right-foot"><?= number_format($jml_trx) ?></td>
                 </tr>
