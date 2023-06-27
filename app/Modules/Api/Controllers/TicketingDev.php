@@ -186,6 +186,8 @@ class TicketingDev extends BaseController
             'status' => $status_power
         ];
 
+        $this->db->query("UPDATE ref_haltebis SET is_power = '$status_power' WHERE device_id ='$device_id'");
+
         if($this->apiModel->base_insert($logError,'log_power')){
             $res['success'] = true;
             $res['status'] = 100;
@@ -235,8 +237,27 @@ class TicketingDev extends BaseController
             $trx['device_id'] = $device_id;
             $trx['jenis'] = $jenis_transaksi;
 
+            $log['no_kartu'] = $nomor_kartu;
+            $log['no_trx'] = $nomor_transaksi;
+            $log['tanggal'] = $tanggal;
+            $log['jam'] = $jam;
+            $log['kredit'] = $nominal_transaksi;
+            $log['saldo'] = $sisa_saldo;
+            $log['kode_bis'] = $kode_lambung;
+            $log['jalur'] = $kode_jalur;
+            $log['device_id'] = $device_id;
+            $log['jenis'] = $jenis_transaksi;
+            $log['bank'] = $bank;
+            $log['mid'] = $mid;
+            $log['tid'] = $tid;
+            $log['deduct_res'] = $deduct_response;
+
             try{
                 $this->apiModel->base_insert($trx,'transaksi_bis');
+            } catch (\Exception $e){}
+
+            try{
+                $this->apiModel->base_insert($log,'log_transaksi');
             } catch (\Exception $e){}
 
             switch ($bank){
@@ -340,4 +361,5 @@ class TicketingDev extends BaseController
         );
         return $signed_payload;
     }
+
 }
