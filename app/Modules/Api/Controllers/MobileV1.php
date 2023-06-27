@@ -466,12 +466,17 @@ class MobileV1 extends BaseController
 	}
 
     public function aduan(){
-        $data = $this->request->getPost();
-        $aduan_email = $data['aduan_email'];
-        $aduan_user_id = $data['aduan_user_id'];
-        $aduan_judul = $data['aduan_judul'];
-        $aduan_detail = $data['aduan_detail'];
-        $aduan_lampiran = $data['aduan_lampiran'];
+        $datapost = file_get_contents('php://input');
+
+        $datadec = $this->decrypted($datapost);
+        parse_str($datadec, $queryArray);
+
+        $data = $queryArray;
+        $aduan_email = addslashes($data['aduan_email']);
+        $aduan_user_id = addslashes($data['aduan_user_id']);
+        $aduan_judul = addslashes($data['aduan_judul']);
+        $aduan_detail = addslashes($data['aduan_detail']);
+        $aduan_lampiran = addslashes($data['aduan_lampiran']);
         $aduan_ip = $this->request->getIPAddress();
 
         if(!empty($aduan_lampiran) ){
@@ -479,7 +484,7 @@ class MobileV1 extends BaseController
             $file1 = '/home/ngi/php/php74/trans_tangerang/public/uploads/aduan/'.$filename1.'.png';
 
             //local
-            // $file1 = '/Users/ngibookpro/Documents/project/php/transtng/public/uploads/ttd/'.$filename1.'.png';
+            // $file1 = '/Users/ngibookpro/Documents/project/php/transtng/public/uploads/aduan/'.$filename1.'.png';
 
             $data1 = base64_decode($aduan_lampiran);
 
@@ -493,56 +498,34 @@ class MobileV1 extends BaseController
 			$fileAduan = NULL;
 		}
 
-        $insertAduan = Array(
+        $insertAduan = [
             'aduan_email' => $aduan_email,
             'aduan_user_id' => $aduan_user_id,
             'aduan_judul' => $aduan_judul,
             'aduan_detail' => $aduan_detail,
             'aduan_lampiran' => $fileAduan,
             'aduan_ip' => $aduan_ip
-        );
-        if($this->apiModel->base_insert($insertAduan,'t_aduan')){
-            // $this->toStream("t_aduan",array($insertAduan));
-            return $this->response->setJSON(res_success(1, 'Success', null));
+        ];
 
+        if($this->apiModel->base_insert($insertAduan,'t_aduan')){
+            return $this->response->setJSON(res_success(1, 'Success', null));
         }else{
             return $this->response->setJSON(res_notfound(0, 'Failed Insert'));
         }
 
     }
 
-    function toStream($table,$dataArray){
-        $curl = curl_init();
-        $datapost['key']    = 'ngiraya';
-        $datapost['table']  = $table;
-        $datapost['data']   = $dataArray;
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => 'https://stream.nginovasi.id:5002/api/listener',
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => '',
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 0,
-          CURLOPT_FOLLOWLOCATION => true,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => 'POST',
-          CURLOPT_POSTFIELDS =>json_encode($datapost),
-          CURLOPT_HTTPHEADER => array(
-            'Authorization: Basic aHViZGF0Ok51c2FudGFyYTQw',
-            'Content-Type: application/json'
-          ),
-        ));
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-        return $response;
-    }
-
     public function historyAduan(){
-        $data = $this->request->getPost();
+        $datapost = file_get_contents('php://input');
+
+        $datadec = $this->decrypted($datapost);
+        parse_str($datadec, $queryArray);
+
+        $data = $queryArray;
         $userId = $data['user_mobile_id'];
 
-        $query = $this->db->query("SELECT *,CONCAT('".base_url()."/',aduan_lampiran) as aduan_image,CONCAT('".base_url()."/',aduan_reply_lampiran) as aduan_reply_image from t_aduan where aduan_user_id = '".addslashes($userId)."' order by id desc")->getResult();
+        $query = $this->db->query("SELECT id,aduan_judul,aduan_detail,aduan_reply,aduan_email,
+        CONCAT('".base_url()."/',aduan_lampiran) as aduan_image,CONCAT('".base_url()."/',aduan_reply_lampiran) as aduan_reply_image from t_aduan where aduan_user_id = '".addslashes($userId)."' order by id desc")->getResult();
         
         if(empty($query)){
             return $this->response->setJSON(res_notfound(1, "Data Not Found"));
