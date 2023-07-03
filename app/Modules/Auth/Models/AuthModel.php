@@ -44,4 +44,13 @@ class AuthModel extends BaseModel
     {
         return $this->db->query("UPDATE m_user_web SET user_web_password = ? WHERE id = ?", array($newPassword, $id));
     }
+
+    public function setlastLoginAt($curDate, $id) {
+        return $this->db->query("UPDATE m_user_web SET last_login_at = ? WHERE id = ?", array($curDate, $id));
+    }
+
+    public function setQrLoginLogout($qrLogin, $qrLogout, $id) {
+        return $this->db->query("UPDATE m_user_web SET user_qr_login = ?, user_qr_logout = ? WHERE id = ?", array($qrLogin, $qrLogout, $id));
+    }
+
 }
