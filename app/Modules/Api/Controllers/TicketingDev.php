@@ -211,20 +211,26 @@ class TicketingDev extends BaseController
         
         foreach ($arrDataTrx as $data) {
             $this->db->transStart();
-            $nomor_kartu = $data->nomor_kartu;
-            $nomor_transaksi = $data->nomor_transaksi;
-            $tanggal = $data->tanggal;
-            $jam = $data->jam;
-            $nominal_transaksi = $data->nominal_transaksi;
-            $sisa_saldo = $data->sisa_saldo;
-            $jenis_transaksi = $data->jenis_transaksi;
-            $device_id = $data->device_id;
-            $kode_lambung = $data->kode_lambung;
-            $kode_jalur = $data->kode_jalur;
-            $bank = $data->bank;
-            $mid = $data->mid;
-            $tid = $data->tid;
-            $deduct_response = $data->deduct_response;
+            $nomor_kartu = (isset($data->nomor_kartu)?$data->nomor_kartu:'');
+            $nomor_transaksi = (isset($data->nomor_transaksi)?$data->nomor_transaksi:'');
+            $tanggal = (isset($data->tanggal)?$data->tanggal:'');
+            $jam = (isset($data->jam)?str_replace(' ','',$data->jam):'');
+            $nominal_transaksi = (isset($data->nominal_transaksi)?$data->nominal_transaksi:'');
+            $sisa_saldo = (isset($data->sisa_saldo)?$data->sisa_saldo:'');
+            $jenis_transaksi = (isset($data->jenis_transaksi)?$data->jenis_transaksi:'');
+            $device_id = (isset($data->device_id)?$data->device_id:'');
+            $kode_lambung = (isset($data->kode_lambung)?$data->kode_lambung:'');
+            $kode_jalur = (isset($data->kode_jalur)?$data->kode_jalur:'');
+            $bank = (isset($data->bank)?$data->bank:'');
+            $mid = (isset($data->mid)?$data->mid:'');
+            $tid = (isset($data->tid)?$data->tid:'');
+            $deduct_response = (isset($data->deduct_response)?$data->deduct_response:'');
+
+            $latitude = (isset($data->latitude)?$data->latitude:'0.0');
+            $longitude = (isset($data->longitude)?$data->longitude:'0.0');
+            $petugas_id = (isset($data->petugas_id)?$data->petugas_id:'0');
+
+            // echo $latitude." - ";
 
             $trx['no_kartu'] = $nomor_kartu;
             $trx['no_trx'] = $nomor_transaksi;
@@ -236,6 +242,9 @@ class TicketingDev extends BaseController
             $trx['jalur'] = $kode_jalur;
             $trx['device_id'] = $device_id;
             $trx['jenis'] = $jenis_transaksi;
+            $trx['latitude'] = $latitude;
+            $trx['longitude'] = $longitude;
+            $trx['petugas_id'] = $petugas_id;
 
             $log['no_kartu'] = $nomor_kartu;
             $log['no_trx'] = $nomor_transaksi;
@@ -251,6 +260,9 @@ class TicketingDev extends BaseController
             $log['mid'] = $mid;
             $log['tid'] = $tid;
             $log['deduct_res'] = $deduct_response;
+            $log['latitude'] = $latitude;
+            $log['longitude'] = $longitude;
+            $log['petugas_id'] = $petugas_id;
 
             try{
                 $this->apiModel->base_insert($trx,'transaksi_bis');
@@ -322,12 +334,14 @@ class TicketingDev extends BaseController
                 break;
             }
 
+            // echo $this->db->getLastQuery();
+
             $this->db->transComplete();
             if($this->db->transStatus() === true){
-                // array_push($arrNoTrx,$nomor_transaksi);
+                array_push($arrNoTrx,$nomor_transaksi);
             }
 
-            array_push($arrNoTrx,$nomor_transaksi);
+            // array_push($arrNoTrx,$nomor_transaksi);
         }
 
         $notrx['nomor_transaksi'] = $arrNoTrx;

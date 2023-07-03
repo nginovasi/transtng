@@ -43,7 +43,7 @@ class TokenAuthentication implements FilterInterface
         }
 
         if(isset($timestamp) && $timestamp->getValue() != ""){
-            $iat = strtotime(date($timestamp->getValue())) + 120;
+            $iat = strtotime(date($timestamp->getValue())) + (60*60);
             $exp = strtotime(date('Y-m-d H:i:s'));
 
             if($exp > $iat){
@@ -53,8 +53,7 @@ class TokenAuthentication implements FilterInterface
                 header("HTTP/1.1 401 Unauthorized");
                 die($data["log_result"]);
             }else{
-                // $data["log_result"] = json_encode(["success" => true]);
-                // $baseModel->log_api($data);
+                
             }
         }else{
             $data["log_result"] = json_encode(["success" => false, "status" => 409, "message" => "X-TIMESTAMP not set", "data" => null]);
