@@ -58,6 +58,37 @@ class AuthAction extends BaseController
                     // var_dump($sessionData);
                     $session->set($sessionData);
                     $this->baseModel->log_action("login", "Akses Diberikan");
+
+                    $loginAt = date("Y-m-d H:i:s");
+
+                    $this->authModel->setlastLoginAt($loginAt, $user->id);
+
+                    $encrypter = $this->baseModel->initEncrypter();
+
+                    $qrLoginData = [
+                        "status"   => "login",
+                        "id"       => $user->id,
+                        "username" => $user->user_web_username,
+                        "email"    => $user->user_web_email,
+                        "login_at" => $loginAt
+                    ];
+                    $qrLogin = bin2hex($encrypter->encrypt(json_encode($qrLoginData)));
+
+                    $qrLogoutData = [
+                        "status"   => "logout",
+                        "id"       => $user->id,
+                        "username" => $user->user_web_username,
+                        "email"    => $user->user_web_email,
+                        "login_at" => $loginAt
+                    ];
+                    $qrLogout = bin2hex($encrypter->encrypt(json_encode($qrLogoutData)));
+
+                    // sample decrypt
+                    // $encrypter->decrypt(hex2bin(bin2hex($encrypter->encrypt(json_encode($qrLoginData)))));
+                    // $encrypter->decrypt(hex2bin(bin2hex($encrypter->encrypt(json_encode($qrLogoutData)))));
+                    
+                    $this->authModel->setQrLoginLogout($qrLogin, $qrLogout, $user->id);
+
                     $response = ["success" => TRUE, "title"   => "Success", "text"    => "Berhasil"];
                 } else {
                     $this->baseModel->log_action("login", "Akses Ditolak");
