@@ -19,6 +19,14 @@ class BaseModel extends Model
 		$this->request = $request;
 	}
 
+	function initEncrypter(){
+		$config         = new \Config\Encryption();
+		$config->key    = getenv('app.encrypt.key');
+		$config->driver = 'OpenSSL';
+
+		return \Config\Services::encrypter($config);
+	}
+
 	function log_action($action, $result){
 		helper("extension");
 		$builder = $this->db->table('s_log_privilege');
