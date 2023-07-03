@@ -133,37 +133,145 @@ class BJBQrisDev extends BaseController
 
         $qr_code = $req_data['qr_code'];
 
-        $trxData = $this->db->query("SELECT *
-                                    FROM t_qris_bjb 
-                                    WHERE qris ='$qr_code'")->getRow();
+        $encrypter = $this->initEncrypter();
+        
+        try{
+            $log_petugas = json_decode($encrypter->decrypt(hex2bin($qr_code)));
+            $action = (isset($log_petugas->status)?$log_petugas->status:'');
 
-        if($trxData){
-            if($trxData->status == 0){
-                $this->db->query("UPDATE t_qris_bjb SET status = 1 WHERE qris ='$qr_code'");
+            if($action == 'login'){
+                $userData = $this->db->query("SELECT * FROM m_user_web WHERE user_qr_login ='$qr_code' AND is_deleted = 0")->getRow();
+                if ($userData) {
+                    $userId = $userData->id;
+                    $userName = $userData->user_web_username;
+                    $email = $userData->user_web_email;
+                    
+                    $deviceData = $this->db->query("SELECT * FROM ref_haltebis WHERE device_id ='$device_id' AND is_deleted = 0")->getRow();
+                    
+                    if($deviceData){
+                        $kodeBis = $deviceData->kode_haltebis;
+                        $jalurId = $deviceData->jalur_id;
+                    }else{
+                        $kodeBis = '';
+                        $jalurId = '';
+                    }
+
+                    $log['petugas_id'] = $userId;
+                    $log['aktivitas'] = 'Login';
+                    $log['kode_bis'] = $kodeBis;
+                    $log['jalur'] = $jalurId;
+                    $log['device_id'] = $device_id;
+
+                    $this->apiModel->base_insert($log,'log_petugas');
+                    $this->db->query("UPDATE m_user_web SET last_login_tob_at = NOW() WHERE id ='$userId'");
+
+                    $user['user_id'] = $userId;
+                    $user['user_name'] = $userName;
+                    $user['user_email'] = $email;
+
+                    $res['success'] = true;
+                    $res['status'] = 100;
+                    $res['message'] = "Login Sukses";
+                    $res['type'] = "Login";
+                    $res['data'] = $user;
+                } else {
+                    $res['success'] = false;
+                    $res['status'] = 102;
+                    $res['type'] = "Login";
+                    $res['message'] = "Login QR tidak ditemukan";
+                    $res['data'] = null;
+                }
+            }elseif($action == 'logout'){
+                $userData = $this->db->query("SELECT * FROM m_user_web WHERE user_qr_logout ='$qr_code' AND is_deleted = 0")->getRow();
+                if ($userData) {
+                    $userId = $userData->id;
+                    $userName = $userData->user_web_username;
+                    $email = $userData->user_web_email;
+                    
+                    $deviceData = $this->db->query("SELECT * FROM ref_haltebis WHERE device_id ='$device_id' AND is_deleted = 0")->getRow();
+                    
+                    if($deviceData){
+                        $kodeBis = $deviceData->kode_haltebis;
+                        $jalurId = $deviceData->jalur_id;
+                    }else{
+                        $kodeBis = '';
+                        $jalurId = '';
+                    }
+
+                    $log['petugas_id'] = $userId;
+                    $log['aktivitas'] = 'Logout';
+                    $log['kode_bis'] = $kodeBis;
+                    $log['jalur'] = $jalurId;
+                    $log['device_id'] = $device_id;
+
+                    $this->apiModel->base_insert($log,'log_petugas');
+                    $this->db->query("UPDATE m_user_web SET last_logout_tob_at = NOW() WHERE id ='$userId'");
+
+                    $user['user_id'] = $userId;
+                    $user['user_name'] = $userName;
+                    $user['user_email'] = $email;
+
+                    $res['success'] = true;
+                    $res['status'] = 100;
+                    $res['message'] = "Logout Sukses";
+                    $res['type'] = "Logout";
+                    $res['data'] = $user;
+                } else {
+                    $res['success'] = false;
+                    $res['status'] = 102;
+                    $res['message'] = "Logout QR tidak ditemukan";
+                    $res['type'] = "Logout";
+                    $res['data'] = null;
+                }
+            } else {
+                $res['success'] = false;
+                $res['status'] = 104;
+                $res['message'] = "Login / Logout Gagal";
+                $res['type'] = "Login";
+                $res['data'] = null;
             }
+        } catch (\Exception $e){
+            $trxData = $this->db->query("SELECT * FROM t_qris_bjb WHERE qris ='$qr_code'")->getRow();
+
+            if($trxData){
                 
-            $status = 'Paid';
+                if($trxData->status == 0){
+                    $this->db->query("UPDATE t_qris_bjb SET status = 1 WHERE qris ='$qr_code'");
+                }
 
-            $resData['order_id'] = $trxData->order_id;
-            $resData['nomor_transaksi'] = $trxData->no_trx;
-            $resData['tanggal'] = $trxData->tanggal;
-            $resData['jam'] = $trxData->jam;
-            $resData['nominal_transaksi'] = $trxData->amount;
-            $resData['jenis_transaksi'] = $trxData->jenis;
-            $resData['status'] = $status;
-
-            $res['success'] = true;
-            $res['status'] = 100;
-            $res['message'] = "Sukses";
-            $res['data'] = $resData;
-        } else {
-            $res['success'] = false;
-            $res['status'] = 103;
-            $res['message'] = "Transaksi tidak ditemukan";
-            $res['data'] = null;
+                $status = 'Paid';
+    
+                $resData['order_id'] = $trxData->order_id;
+                $resData['nomor_transaksi'] = $trxData->no_trx;
+                $resData['tanggal'] = $trxData->tanggal;
+                $resData['jam'] = $trxData->jam;
+                $resData['nominal_transaksi'] = $trxData->amount;
+                $resData['jenis_transaksi'] = $trxData->jenis;
+                $resData['status'] = $status;
+    
+                $res['success'] = true;
+                $res['status'] = 100;
+                $res['type'] = "QRIS BJB";
+                $res['message'] = "Sukses";
+                $res['data'] = $resData;
+            } else {
+                $res['success'] = false;
+                $res['status'] = 103;
+                $res['type'] = "QRIS BJB";
+                $res['message'] = "Transaksi tidak ditemukan";
+                $res['data'] = null;
+            }
         }
 
         return $this->response->setJSON($res);
     }
+
+    function initEncrypter(){
+		$config         = new \Config\Encryption();
+		$config->key    = getenv('app.encrypt.key');
+		$config->driver = 'OpenSSL';
+
+		return \Config\Services::encrypter($config);
+	}
 
 }
