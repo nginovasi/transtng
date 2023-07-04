@@ -38,7 +38,7 @@ $session = \Config\Services::session();
 							<div style="z-index: 3 !important;position: absolute;margin-top: 10px;margin-left: 200px;">
 								<!-- <select class="form-control" id="select-koridor"></select> -->
 							</div>
-							<div id="map" style="height: 600px"></div>
+							<div id="map" style="height: 618px"></div>
 						</div>
 						<div class="col-xl-4 col-lg-12 col-md-12">
 							<div class="card flex" data-sr-id="9" style="visibility: visible; transform: none; opacity: 1; transition: none 0s ease 0s;">
@@ -47,7 +47,7 @@ $session = \Config\Services::session();
 										<div class="text-center mb-3 bg-primary">
 											<small class="font-weight-bold">Aktivitas Transaksi</small>
 										</div>
-										<div class="row text-center mb-2">
+										<div class="row text-center mb-5">
 											<div class="col-6 px-2">
 												<span class="text-sm">Pendapatan Hari Ini</span>
 												<div class="text-md font-weight-bold text-primary" id="ttl_kredit_now">Rp. 0</div>
@@ -57,7 +57,7 @@ $session = \Config\Services::session();
 												<div class="text-md font-weight-bold text-primary" id="ttl_penumpang_now">0</div>
 											</div>
 										</div>
-										<div class="row text-center mb-3">
+										<div class="row text-center">
 											<div class="col">
 												<span class="text-sm">Jumlah Jalur</span>
 												<div class="text-md font-weight-bold text-primary" id="ttl_jalur">0</div>
@@ -156,14 +156,13 @@ $session = \Config\Services::session();
 											<th><span class="d-none d-sm-block">Bus</span></th>
 											<th><span class="d-none d-sm-block">Status</span></th>
 											<th><span class="d-none d-sm-block">Masuk Pada</span></th>
-											<th><span class="d-none d-sm-block">Detail</span></th>
+											<th style="width: 10px !important"><span class="d-none d-sm-block">Detail</span></th>
 										</tr>
 									</thead>
 									<tbody></tbody>
 								</table>
 							</div>
 						</div>
-						<div class="card-footer"></div>
 					</div>
 				</div>
 			</div>
@@ -360,6 +359,10 @@ $session = \Config\Services::session();
 							info: true,
 							orderable: false,
 							pageLength: 5,
+							lengthMenu: [
+								[5, 10, 25, 50, -1],
+								[5, 10, 25, 50, "All"]
+							],
 							columns: [{
 									data: 'id',
 									render: function(data, type, row, meta) {
@@ -392,7 +395,7 @@ $session = \Config\Services::session();
 								}
 							],
 							"order": [
-								[1, "asc"]
+								[0, "asc"]
 							],
 							"columnDefs": [{
 								"targets": [0],
@@ -425,6 +428,11 @@ $session = \Config\Services::session();
 							paging: true,
 							info: true,
 							orderable: false,
+							pageLength: 5,
+							lengthMenu: [
+								[5, 10, 25, 50, -1],
+								[5, 10, 25, 50, "All"]
+							],
 							columns: [{
 									data: 'id',
 									render: function(data, type, row, meta) {
@@ -467,7 +475,7 @@ $session = \Config\Services::session();
 								}
 							],
 							"order": [
-								[1, "asc"]
+								[0, "asc"]
 							],
 							"columnDefs": [{
 								"targets": [0],
@@ -492,6 +500,16 @@ $session = \Config\Services::session();
 				success: function(res) {
 					if (res) {
 						var data = res.data;
+
+						var currentDateTime = new Date();
+						var year = currentDateTime.getFullYear();
+						var month = currentDateTime.getMonth() + 1;
+						var day = currentDateTime.getDate();
+						var hours = currentDateTime.getHours();
+						var minutes = currentDateTime.getMinutes();
+						var seconds = currentDateTime.getSeconds();
+						var formattedDateTime = month + '-' + day + '-' + year + ' ' + hours + ':' + minutes + ':' + seconds;
+
 						var table = $('#table-monit-pta').DataTable({
 							destroy: true,
 							data: data,
@@ -500,6 +518,10 @@ $session = \Config\Services::session();
 							info: true,
 							orderable: false,
 							pageLength: 5,
+							lengthMenu: [
+								[5, 10, 25, 50, -1],
+								[5, 10, 25, 50, "All"]
+							],
 							columns: [{
 									data: 'id',
 									render: function(data, type, row, meta) {
@@ -513,44 +535,34 @@ $session = \Config\Services::session();
 									}
 								},
 								{
-									data: 'name',
+									data: 'halte_name',
 									render: function(data, type, row, meta) {
 										if (data == null) {
 											return '<span class="text-secondary">-</span>';
 										} else {
 											return '<span class="text-secondary">' + data + '</span>';
 										}
+									}
+								},
+								{
+									data: 'last_login_tob_at_status',
+									render: function(data, type, row, meta) {
+										// online or offline
+										if (data != '-') {
+											return '<span class="badge badge-success">Online</span>'
+										} else {
+											return '<span class="badge badge-danger">Offline</span>'
+										}
+
 									}
 								},
 								{
 									data: 'last_login_tob_at',
 									render: function(data, type, row, meta) {
-
-										var currentDateTime = new Date();
-										var year = currentDateTime.getFullYear();
-										var month = currentDateTime.getMonth() + 1;
-										var day = currentDateTime.getDate();
-										var hours = currentDateTime.getHours();
-										var minutes = currentDateTime.getMinutes();
-										var seconds = currentDateTime.getSeconds();
-
-										var formattedDateTime = month + '-' + day + '-' + year + ' ' + hours + ':' + minutes + ':' + seconds;
-
-										if (data <= formattedDateTime && row.last_logout_tob_at <= data) {
-											return '<span class="badge badge-success">Online</span>';
-										} else {
-											return '<span class="badge badge-danger">Offline</span>';
-										}
-
-									}
-								},
-								{
-									data: 'last_login_at',
-									render: function(data, type, row, meta) {
-										if (data == null) {
-											return '<span class="text-secondary">-</span>';
-										} else {
+										if (row.last_login_tob_at_status != '-') {
 											return '<span class="text-secondary">' + data + '</span>';
+										} else {
+											return '<span class="text-secondary">-</span>';
 										}
 									}
 								},
@@ -562,7 +574,7 @@ $session = \Config\Services::session();
 								}
 							],
 							"order": [
-								[1, "asc"]
+								[0, "asc"]
 							],
 							"columnDefs": [{
 								"targets": [0],
@@ -851,7 +863,7 @@ $session = \Config\Services::session();
 					var data = res.data;
 					var html = '';
 					if (data[0].no_trx == '') {
-						$('#detail-pta').html('<div class="col-md-12 text-center">Data tidak ditemukan</div>');
+						$('#detail-pta').html('<tr><td colspan="7" class="text-center">Belum ada data untuk petugas ini</td></tr>');
 					} else {
 						no = 1;
 						for (var i = 0; i < data.length; i++) {
@@ -877,7 +889,7 @@ $session = \Config\Services::session();
 						$('#detail-pta-footer').html('<tr class="font-weight-bold text-uppercase"><td colspan="6" class="text-right">Total</td><td colspan="3">Rp. ' + numberWithCommas(sum_kredit) + '</td></tr>');
 					}
 				} else {
-					$('#detail-pta').html('<div class="col-md-12 text-center">Data tidak ditemukan</div>');
+					$('#detail-pta').html('<tr><td colspan="7" class="text-center">Data tidak ditemukan untuk petugas ini</td></tr>');
 				}
 			},
 		});
