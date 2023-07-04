@@ -362,6 +362,34 @@ class EksekutifAjax extends BaseController
         ]);
     }
 
+    public function getTrxPerPetugasHarian()
+    {
+        $data = $this->request->getPost();
+
+        $result = $this->db->query("SELECT b.user_web_username, 
+                                            a.shift, 
+                                            a.kode_bis, 
+                                            a.device_id, 
+                                            concat(c.jalur, ' (', c.rute, ') ' ) AS jalur, 
+                                            sum(a.kredit) AS jml_trx
+                                        FROM transaksi_bis a
+                                        LEFT JOIN m_user_web b
+                                            ON a.petugas_id = b.id
+                                        LEFT JOIN ref_jalur c
+                                            ON a.jalur = c.id
+                                        WHERE a.is_dev = 0
+                                        AND tanggal = " . "'" . $data['date'] . "'" . "
+                                        GROUP BY b.user_web_username, a.shift, a.kode_bis, a.device_id, a.jalur")->getResult();
+
+        echo json_encode([
+            "success" => true,
+            "message" => "get data success",
+            "data" => [
+                "result" => $result
+            ]
+        ]);
+    }
+
     public function getTrxPerPos()
     {
         $data = $this->request->getPost();
