@@ -146,4 +146,38 @@ class MainAjax extends BaseController
         }
         echo json_encode($data);
     }
+
+    public function getMonitPTA() {
+        $query = "SELECT a.id, a.user_web_name, a.last_login_at, a.last_login_tob_at, a.last_logout_tob_at, b.tanggal, c.name
+        FROM m_user_web a
+        LEFT JOIN transaksi_bis b ON b.petugas_id = a.id AND DATE(b.tanggal) = CURDATE() -- PRODUCTION
+        -- LEFT JOIN transaksi_bis b ON b.petugas_id = a.id AND DATE(b.tanggal) = '2023-06-23' -- TESTING
+        LEFT JOIN ref_haltebis c ON c.kode_haltebis = b.kode_bis
+        WHERE a.is_deleted = 0 AND a.user_web_role_id = 2 
+        GROUP BY a.id";
+        $rs = $this->db->query($query)->getResult();
+        if($rs) {
+            $data = ['success' => TRUE, 'message' => 'Data berhasil ditemukan', 'data' => $rs ];
+        } else {
+            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => [0 => ['id' => '', 'user_web_name' => '', 'last_login_at' => '', 'last_login_tob_at' => '', 'last_logout_tob_at' => '', 'tanggal' => '', 'name' => '']] ];
+        }
+        echo json_encode($data);
+    }
+
+    public function getDetailPTA() {
+        $data = $this->request->getPost();
+        $query = "SELECT a.user_web_name, b.no_trx, b.kredit, b.jenis, c.kode_haltebis, b.shift
+                    FROM m_user_web a
+                    LEFT JOIN transaksi_bis b ON b.petugas_id = a.id AND DATE(b.tanggal) = CURDATE() -- PRODUCTION
+                    -- LEFT JOIN transaksi_bis b ON b.petugas_id = a.id AND DATE(b.tanggal) = '2023-06-23' -- TESTING
+                    LEFT JOIN ref_haltebis c ON c.kode_haltebis = b.kode_bis
+                    WHERE a.is_deleted = 0 AND a.user_web_role_id = 2 AND a.id = '".$data['id']."'";
+        $rs = $this->db->query($query)->getResult();
+        if($rs[0]->no_trx != NULL) {
+            $data = ['success' => TRUE, 'message' => 'Data berhasil ditemukan', 'data' => $rs ];
+        } else {
+            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => [0 => ['user_web_name' => '', 'no_trx' => '', 'kredit' => '', 'jenis' => '', 'kode_bis' => '', 'shift' => '', 'jalur' => '']] ];
+        }
+        echo json_encode($data);
+    }
 }
