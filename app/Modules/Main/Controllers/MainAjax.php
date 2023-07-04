@@ -148,13 +148,22 @@ class MainAjax extends BaseController
     }
 
     public function getMonitPTA() {
-        $query = "SELECT a.id, a.user_web_name, a.last_login_at, a.last_login_tob_at, a.last_logout_tob_at, b.tanggal, c.name
-        FROM m_user_web a
-        LEFT JOIN transaksi_bis b ON b.petugas_id = a.id AND DATE(b.tanggal) = CURDATE() -- PRODUCTION
-        -- LEFT JOIN transaksi_bis b ON b.petugas_id = a.id AND DATE(b.tanggal) = '2023-06-23' -- TESTING
-        LEFT JOIN ref_haltebis c ON c.kode_haltebis = b.kode_bis
-        WHERE a.is_deleted = 0 AND a.user_web_role_id = 2 
-        GROUP BY a.id";
+        // $query = "SELECT a.id, a.user_web_name, a.last_login_at, a.last_login_tob_at, a.last_logout_tob_at, b.tanggal, c.name
+        // FROM m_user_web a
+        // LEFT JOIN transaksi_bis b ON b.petugas_id = a.id AND DATE(b.tanggal) = CURDATE() -- PRODUCTION
+        // -- LEFT JOIN transaksi_bis b ON b.petugas_id = a.id AND DATE(b.tanggal) = '2023-06-23' -- TESTING
+        // LEFT JOIN ref_haltebis c ON c.kode_haltebis = b.kode_bis
+        // WHERE a.is_deleted = 0 AND a.user_web_role_id = 2 
+        // GROUP BY a.id";
+        $query = "SELECT a.id, a.user_web_name,
+                    CASE WHEN c.name IS NULL THEN '-' ELSE c.name END AS halte_name, a.last_login_tob_at, a.last_logout_tob_at,
+                    CASE WHEN DATE(a.last_login_tob_at) < CURDATE() || a.last_login_tob_at IS NULL THEN '-' ELSE a.last_login_tob_at END AS last_login_tob_at_status,
+                    CASE WHEN DATE(a.last_logout_tob_at) < CURDATE() || a.last_login_tob_at IS NULL THEN '-' ELSE a.last_logout_tob_at END AS last_logout_tob_at_status
+                    FROM m_user_web a
+                    LEFT JOIN transaksi_bis b ON b.petugas_id = a.id AND DATE(b.tanggal) = CURDATE()
+                    LEFT JOIN ref_haltebis c ON c.kode_haltebis = b.kode_bis
+                    WHERE a.is_deleted = 0 AND a.user_web_role_id = 2 
+                    GROUP BY a.id";
         $rs = $this->db->query($query)->getResult();
         if($rs) {
             $data = ['success' => TRUE, 'message' => 'Data berhasil ditemukan', 'data' => $rs ];
@@ -166,7 +175,7 @@ class MainAjax extends BaseController
 
     public function getDetailPTA() {
         $data = $this->request->getPost();
-        $query = "SELECT a.user_web_name, b.no_trx, b.kredit, b.jenis, c.kode_haltebis, b.shift
+        $query = "SELECT a.id, a.user_web_name, b.no_trx, b.kredit, b.jenis, c.kode_haltebis, b.shift
                     FROM m_user_web a
                     LEFT JOIN transaksi_bis b ON b.petugas_id = a.id AND DATE(b.tanggal) = CURDATE() -- PRODUCTION
                     -- LEFT JOIN transaksi_bis b ON b.petugas_id = a.id AND DATE(b.tanggal) = '2023-06-23' -- TESTING
