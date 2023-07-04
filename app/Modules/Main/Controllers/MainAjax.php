@@ -48,7 +48,7 @@ class MainAjax extends BaseController
         if($rs) {
             $data = ['success' => TRUE, 'message' => 'Data berhasil ditemukan', 'data' => $rs ];
         } else {
-            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => [] ];
+            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => [0 => ['jenis_transaksi' => '', 'total_penumpang' => 0, 'penumpang_kemarin' => 0, 'selisih_penumpang' => 0]] ];
         }
         echo json_encode($data);
     }
@@ -63,7 +63,7 @@ class MainAjax extends BaseController
         if($rs) {
             $data = ['success' => TRUE, 'message' => 'Data berhasil ditemukan', 'data' => $rs ];
         } else {
-            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => [] ];
+            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => ['total_penumpang' => 0, 'total_kredit' => 0] ];
         }
         echo json_encode($data);
     }
@@ -78,7 +78,7 @@ class MainAjax extends BaseController
         if($rs) {
             $data = ['success' => TRUE, 'message' => 'Data berhasil ditemukan', 'data' => $rs ];
         } else {
-            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => [] ];
+            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => ['id' => '', 'jalur' => '', 'rute' => '', 'color' => '', 'ttl_pendapatan_jalur' => 0, 'ttl_penumpang_jalur' => 0] ];
         }
         echo json_encode($data);
     }
@@ -91,7 +91,7 @@ class MainAjax extends BaseController
         if($rs) {
             $data = ['success' => TRUE, 'message' => 'Data berhasil ditemukan', 'data' => $rs ];
         } else {
-            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => [] ];
+            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => ['ttl_tob' => 0, 'ttl_tob_online' => 0] ];
         }
         echo json_encode($data);
     }
@@ -104,7 +104,7 @@ class MainAjax extends BaseController
         if($rs) {
             $data = ['success' => TRUE, 'message' => 'Data berhasil ditemukan', 'data' => $rs ];
         } else {
-            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => [] ];
+            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => ['ttl_jalur' => 0] ];
         }
         echo json_encode($data);
     }
@@ -118,7 +118,31 @@ class MainAjax extends BaseController
         if($rs) {
             $data = ['success' => TRUE, 'message' => 'Data berhasil ditemukan', 'data' => $rs ];
         } else {
-            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => [] ];
+            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => ['tgl_transaksi' => '', 'sum_value' => 0, 'sum_penumpang' => 0] ];
+        }
+        echo json_encode($data);
+    }
+
+    public function getPerJenisTransaksi() {
+        $query = "SELECT 
+                        CASE
+                            WHEN jenis LIKE '%BRIZZI%' THEN SUBSTRING(jenis, 1, 7)
+                            WHEN jenis LIKE '%E-Money%' THEN SUBSTRING(jenis, 1, 7)
+                            WHEN jenis LIKE '%FLAZZ%' THEN SUBSTRING(jenis, 1, 6)
+                            WHEN jenis LIKE '%TapCash%' THEN SUBSTRING(jenis, 1, 8)
+                            ELSE jenis
+                        END AS jenis_transaksi,
+                        SUM(CASE WHEN tanggal = CURDATE() - INTERVAL 1 DAY THEN a.kredit ELSE 0 END) AS ttl_pendapatan_kemarin,
+                        SUM(CASE WHEN tanggal = CURDATE() THEN a.kredit ELSE 0 END) AS ttl_pendapatan_sekarang,
+                        SUM(CASE WHEN tanggal = CURDATE() THEN a.kredit ELSE 0 END) - SUM(CASE WHEN tanggal = CURDATE() - INTERVAL 1 DAY THEN a.kredit ELSE 0 END) AS selisih_pendapatan
+                    FROM transaksi_bis a
+                    WHERE a.is_dev = 0
+                    GROUP BY a.jenis;";
+        $rs = $this->db->query($query)->getResult();
+        if($rs) {
+            $data = ['success' => TRUE, 'message' => 'Data berhasil ditemukan', 'data' => $rs ];
+        } else {
+            $data = ['success' => FALSE, 'message' => 'Data tidak ditemukan', 'data' => [0 => ['jenis_transaksi' => '', 'ttl_pendapatan_kemarin' => 0, 'ttl_pendapatan_sekarang' => 0, 'selisih_pendapatan' => 0]] ];
         }
         echo json_encode($data);
     }

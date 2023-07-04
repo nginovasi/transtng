@@ -1,4 +1,6 @@
+<!-- content -->
 <div>
+    <!-- title -->
     <div class="page-hero page-container " id="page-hero">
         <div class="padding d-flex">
             <div class="page-title">
@@ -7,7 +9,7 @@
             <div class="flex"></div>
         </div>
     </div>
-    <div class="page-content page-container" id="page-content">
+    <div class="container page-content page-container" id="page-content">
         <div class="card">
             <div class="card-body">
                 <div class="padding">
