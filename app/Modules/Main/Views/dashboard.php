@@ -102,39 +102,66 @@ $session = \Config\Services::session();
 					<div class="card">
 						<div class="card-header text-uppercase font-weight-bold">Pendapatan per Jalur</div>
 						<div class="card-body">
-							<table class="table table-theme v-middle table-hover" id="table-jalur">
-								<thead class="text-muted">
-									<tr>
-										<th>#</th>
-										<th>Jalur</th>
-										<th><span class="d-none d-sm-block">Rute</span></th>
-										<th><span class="d-none d-sm-block">Pendapatan</span></th>
-										<th><span class="d-none d-sm-block">Penumpang</span></th>
-									</tr>
-								</thead>
-								<tbody></tbody>
-							</table>
+							<div class="table-responsive">
+								<table class="table table-theme v-middle table-hover" id="table-jalur">
+									<thead class="text-muted">
+										<tr>
+											<th>#</th>
+											<th>Jalur</th>
+											<th><span class="d-none d-sm-block">Rute</span></th>
+											<th><span class="d-none d-sm-block">Pendapatan</span></th>
+											<th><span class="d-none d-sm-block">Penumpang</span></th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
 						</div>
-						<div class="card-footer"></div>
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="card">
 						<div class="card-header text-uppercase font-weight-bold">Penumpang per jenis pembayaran</div>
 						<div class="card-body">
-							<table class="table table-theme v-middle table-hover" id="table-jenis-pembayaran">
-								<thead class="text-muted">
-									<tr>
-										<th>#</th>
-										<th>Jenis</th>
-										<!-- <th><span class="d-none d-sm-block">Status</span></th> -->
-										<th><span class="d-none d-sm-block">Kemarin</span></th>
-										<th><span class="d-none d-sm-block">Hari Ini</span></th>
-										<th><span class="d-none d-sm-block">Selisih</span></th>
-									</tr>
-								</thead>
-								<tbody></tbody>
-							</table>
+							<div class="table-responsive">
+								<table class="table table-theme v-middle table-hover" id="table-jenis-pembayaran">
+									<thead class="text-muted">
+										<tr>
+											<th>#</th>
+											<th>Jenis</th>
+											<!-- <th><span class="d-none d-sm-block">Status</span></th> -->
+											<th><span class="d-none d-sm-block">Kemarin</span></th>
+											<th><span class="d-none d-sm-block">Hari Ini</span></th>
+											<th><span class="d-none d-sm-block">Selisih</span></th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header text-uppercase font-weight-bold">Monitoring PTA</div>
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="table table-theme v-middle table-hover" id="table-monit-pta">
+									<thead class="text-muted">
+										<tr>
+											<th style="width: 10px !important">#</th>
+											<th>Petugas</th>
+											<th><span class="d-none d-sm-block">Bus</span></th>
+											<th><span class="d-none d-sm-block">Status</span></th>
+											<th><span class="d-none d-sm-block">Masuk Pada</span></th>
+											<th><span class="d-none d-sm-block">Detail</span></th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
 						</div>
 						<div class="card-footer"></div>
 					</div>
@@ -144,6 +171,42 @@ $session = \Config\Services::session();
 	</div>
 	<!-- ############ Main END-->
 </div>
+
+<!-- .modal -->
+<div id="modal-lg" class="modal fade" data-backdrop="true" style="display: none;" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<!-- .modal-content -->
+		<div class="modal-content ">
+			<div class="modal-header ">
+				<div class="modal-title text-md">Modal title</div>
+				<button class="close" data-dismiss="modal">×</button>
+			</div>
+			<div class="modal-body">
+				<div class="p-4 text-center">
+					<div class="table-responsive">
+						<table class="table table-theme v-middle table-hover">
+							<thead class="text-muted">
+								<tr>
+									<th style="width: 10px !important">#</th>
+									<th>Petugas</th>
+									<th><span class="d-none d-sm-block">Shift</span></th>
+									<th><span class="d-none d-sm-block">No Transaksi</span></th>
+									<th><span class="d-none d-sm-block">Nominal</span></th>
+									<th><span class="d-none d-sm-block">Jenis</span></th>
+									<th><span class="d-none d-sm-block">Kode BIS</span></th>
+								</tr>
+							</thead>
+							<tbody id="detail-pta"></tbody>
+							<tfoot id="detail-pta-footer"></tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+</div>
+<!-- /.modal -->
 
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <!-- script internal -->
@@ -284,20 +347,19 @@ $session = \Config\Services::session();
 				type: 'GET',
 				dataType: 'json',
 				beforeSend: function() {
-					// $('#jalur').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
+					$('tbody').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
 				},
 				success: function(res) {
 					if (res) {
 						var data = res.data;
-						// datatable table-jalur
 						var table = $('#table-jalur').DataTable({
 							destroy: true,
 							data: data,
 							searching: false,
-							paging: false,
-							info: false,
+							paging: true,
+							info: true,
 							orderable: false,
-							// dom: 'Bfrtip',
+							pageLength: 5,
 							columns: [{
 									data: 'id',
 									render: function(data, type, row, meta) {
@@ -343,7 +405,7 @@ $session = \Config\Services::session();
 					console.log(err);
 				}
 			});
-			
+
 		var getPerJenisTransaksi =
 			$.ajax({
 				url: url_ajax + '/getPerJenisTransaksi',
@@ -360,10 +422,9 @@ $session = \Config\Services::session();
 							destroy: true,
 							data: data,
 							searching: false,
-							paging: false,
-							info: false,
+							paging: true,
+							info: true,
 							orderable: false,
-							// dom: 'Bfrtip',
 							columns: [{
 									data: 'id',
 									render: function(data, type, row, meta) {
@@ -373,7 +434,6 @@ $session = \Config\Services::session();
 								{
 									data: 'jenis_transaksi',
 									render: function(data, type, row, meta) {
-										// if selisih than give color green else red
 										if (row.selisih_penumpang == '0') {
 											$color = 'color: grey !important';
 											$icon = '<i class="fa fa-exchange" aria-hidden="true" style="' + $color + '"></i>';
@@ -390,7 +450,7 @@ $session = \Config\Services::session();
 								{
 									data: 'ttl_pendapatan_kemarin',
 									render: function(data, type, row, meta) {
-										return '<span class="text-secondary">' + numberWithCommas(data) + '</span>';
+										return '<span class="text-secondary">Rp. ' + numberWithCommas(data) + '</span>';
 									}
 								},
 								{
@@ -402,7 +462,102 @@ $session = \Config\Services::session();
 								{
 									data: 'selisih_pendapatan',
 									render: function(data, type, row, meta) {
-										return '<span class="text-secondary">' + numberWithCommas(data) + '</span>';
+										return '<span class="text-secondary">Rp. ' + numberWithCommas(data) + '</span>';
+									}
+								}
+							],
+							"order": [
+								[1, "asc"]
+							],
+							"columnDefs": [{
+								"targets": [0],
+								"orderable": false
+							}]
+						});
+					}
+				},
+				error: function(err) {
+					console.log(err);
+				}
+			});
+
+		var getMonitPTA =
+			$.ajax({
+				url: url_ajax + '/getMonitPTA',
+				type: 'GET',
+				dataType: 'json',
+				beforeSend: function() {
+					$('tbody').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
+				},
+				success: function(res) {
+					if (res) {
+						var data = res.data;
+						var table = $('#table-monit-pta').DataTable({
+							destroy: true,
+							data: data,
+							searching: false,
+							paging: true,
+							info: true,
+							orderable: false,
+							pageLength: 5,
+							columns: [{
+									data: 'id',
+									render: function(data, type, row, meta) {
+										return meta.row + meta.settings._iDisplayStart + 1;
+									}
+								},
+								{
+									data: 'user_web_name',
+									render: function(data, type, row, meta) {
+										return '<span class="text-secondary text-uppercase">' + data + '</span>';
+									}
+								},
+								{
+									data: 'name',
+									render: function(data, type, row, meta) {
+										if (data == null) {
+											return '<span class="text-secondary">-</span>';
+										} else {
+											return '<span class="text-secondary">' + data + '</span>';
+										}
+									}
+								},
+								{
+									data: 'last_login_tob_at',
+									render: function(data, type, row, meta) {
+
+										var currentDateTime = new Date();
+										var year = currentDateTime.getFullYear();
+										var month = currentDateTime.getMonth() + 1;
+										var day = currentDateTime.getDate();
+										var hours = currentDateTime.getHours();
+										var minutes = currentDateTime.getMinutes();
+										var seconds = currentDateTime.getSeconds();
+
+										var formattedDateTime = month + '-' + day + '-' + year + ' ' + hours + ':' + minutes + ':' + seconds;
+
+										if (data <= formattedDateTime && row.last_logout_tob_at <= data) {
+											return '<span class="badge badge-success">Online</span>';
+										} else {
+											return '<span class="badge badge-danger">Offline</span>';
+										}
+
+									}
+								},
+								{
+									data: 'last_login_at',
+									render: function(data, type, row, meta) {
+										if (data == null) {
+											return '<span class="text-secondary">-</span>';
+										} else {
+											return '<span class="text-secondary">' + data + '</span>';
+										}
+									}
+								},
+								{
+									data: 'id',
+									render: function(data, type, row, meta) {
+										return '<button class="btn btn-white" data-toggle="modal" data-target="#modal-lg" onclick="detailPTA(' + data + ')"><i class="fa fa-eye"></i></button>';
 									}
 								}
 							],
@@ -675,6 +830,56 @@ $session = \Config\Services::session();
 			for (var i = 0; i < arguments.length; i++) {
 				// console.log(arguments[i][2].responseJSON);
 			}
+		});
+	}
+
+	function detailPTA(id) {
+		$.ajax({
+			url: url_ajax + '/getDetailPTA',
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				id: id,
+				<?= csrf_token() ?>: "<?= csrf_hash() ?>"
+			},
+			beforeSend: function() {
+				$('#modal-lg .modal-title').html('Detail PTA');
+				$('#detail-pta').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
+			},
+			success: function(res) {
+				if (res) {
+					var data = res.data;
+					var html = '';
+					if (data[0].no_trx == '') {
+						$('#detail-pta').html('<div class="col-md-12 text-center">Data tidak ditemukan</div>');
+					} else {
+						no = 1;
+						for (var i = 0; i < data.length; i++) {
+							html += `
+									<tr>
+										<td>` + no + `</td>
+										<td class="text-uppercase">` + data[i].user_web_name + `</td>
+										<td>Shift ` + data[i].shift + `</td>
+										<td>` + data[i].no_trx + `</td>
+										<td>` + data[i].kredit + `</td>
+										<td>` + data[i].jenis + `</td>
+										<td>` + data[i].kode_haltebis + `</td>
+									</tr>`;
+							no++;
+						}
+						$('#detail-pta').html(html);
+
+						// sum all kredit
+						var sum_kredit = 0;
+						for (var i = 0; i < data.length; i++) {
+							sum_kredit += parseInt(data[i].kredit);
+						}
+						$('#detail-pta-footer').html('<tr class="font-weight-bold text-uppercase"><td colspan="6" class="text-right">Total</td><td colspan="3">Rp. ' + numberWithCommas(sum_kredit) + '</td></tr>');
+					}
+				} else {
+					$('#detail-pta').html('<div class="col-md-12 text-center">Data tidak ditemukan</div>');
+				}
+			},
 		});
 	}
 
