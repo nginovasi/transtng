@@ -1,10 +1,14 @@
+<!-- style internal -->
 <style>
     .select2-container {
         width: 100% !important;
     }
 </style>
+
+<!-- content -->
 <div>
-    <div class="page-hero page-container " id="page-hero">
+    <!-- title -->
+    <div class="page-hero page-container" id="page-hero">
         <div class="padding d-flex">
             <div class="page-title">
                 <h2 class="text-md text-highlight"><?= $page_title ?></h2>
@@ -12,7 +16,9 @@
             <div class="flex"></div>
         </div>
     </div>
-    <div class="page-content page-container" id="page-content">
+    
+    <!-- body -->
+    <div class="container page-content page-container" id="page-content">
         <div class="card">
             <div class="card-header">
                 <ul class="nav nav-pills card-header-pills no-border" id="tab">
@@ -36,7 +42,6 @@
                                             <th>Username</th>
                                             <th>Nama Lengkap</th>
                                             <th>Email User</th>
-                                            <th>NIP</th>
                                             <th>Jenis User</th>
                                             <th></th>
                                         </tr>
@@ -62,13 +67,16 @@
                                     <label>Email</label>
                                     <input type="email" class="form-control" id="user_web_email" name="user_web_email" required autocomplete="off" placeholder="email user" maxlength="50">
                                 </div>
-                                <div class="form-group">
-                                    <label>NIP</label>
-                                    <input type="text" class="form-control" id="user_web_nik" name="user_web_nik" autocomplete="off" placeholder="NIP user" maxlength="16">
-                                </div>
-                                <div class="form-group">
+                                <div class="form-group" id="group_pass">
                                     <label>Password</label>
-                                    <input type="password" class="form-control" id="user_web_password" name="user_web_password" required autocomplete="off" placeholder="password user untuk login" maxlength="32">
+                                    <div class="input-group mb-3">
+                                        <input type="password" class="form-control" id="user_web_password" name="user_web_password" required autocomplete="off" placeholder="password user untuk login" maxlength="32">
+                                        <div class="input-group-append" id="div_show_pass">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-eye-slash" id="show_password" onclick="showPassword()"></i>
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label>Jenis User</label>
@@ -86,6 +94,8 @@
         </div>
     </div>
 </div>
+
+<!-- script internal -->
 <script type="text/javascript">
     const auth_insert = '<?= $rules->i ?>';
     const auth_edit = '<?= $rules->e ?>';
@@ -124,6 +134,9 @@
             afterAction: function(result) {
                 $('#user_web_password').attr('disabled', true);
                 $('#user_web_role_id').val(result.data.user_web_role_id).trigger('change');
+                $('#user_web_password').attr('maxlength', 100);
+                $('#div_show_pass').hide();
+                $('#group_pass').html('');
             }
         }
 
@@ -133,7 +146,20 @@
         }
 
         coreEvents.resetHandler = {
-            action: function() {}
+            action: function() {
+                $('#div_show_pass').show();
+                $('#user_web_password').attr('maxlength', 32);
+                $('#group_pass').html(`<label>Password</label>
+                                    <div class="input-group mb-3">
+                                        <input type="password" class="form-control" id="user_web_password" name="user_web_password" required autocomplete="off" placeholder="password user untuk login" maxlength="32">
+                                        <input type="hidden" id="pass_hidden" name="user_web_password" value="">
+                                        <div class="input-group-append" id="div_show_pass">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-eye-slash" id="show_password" onclick="showPassword()"></i>
+                                            </span>
+                                        </div>
+                                    </div>`);
+            }
         }
 
         select2Array.forEach(function(x) {
@@ -145,14 +171,29 @@
         // $('#user_web_role_id').select2({
         //     placeholder: "Pilih jenis user"
         // });
-
-        $('#user_web_username').keypress(function (e) {
+        
+        $('#div_show_pass').show();
+        $('#user_web_password').attr('maxlength', 32);
+        $('#user_web_username').keypress(function(e) {
             var txt = String.fromCharCode(e.which);
             if (!txt.match(/[a-z0-9_]/)) {
                 return false;
             }
         });
     });
+
+    function showPassword() {
+        var x = document.getElementById("user_web_password");
+        if (x.type === "password") {
+            x.type = "text";
+            $('#show_password').removeClass('fa-eye-slash');
+            $('#show_password').addClass('fa-eye');
+        } else {
+            x.type = "password";
+            $('#show_password').removeClass('fa-eye');
+            $('#show_password').addClass('fa-eye-slash');
+        }
+    }
 
     function datatableColumn() {
         let columns = [{
@@ -174,17 +215,6 @@
             {
                 data: "user_web_email",
                 orderable: true
-            },
-            {
-                data: "user_web_nik",
-                orderable: true,
-                render: function(a, type, data, index) {
-                    if(data.user_web_nik == null || data.user_web_nik == "") {
-                        return "<span class='badge badge-warning'>NIP Belum Diinput / Diupdate</span>"
-                    } else {
-                        return "<span class='badge badge-success'>"+data.user_web_nik+"</span>"
-                    }
-                }
             },
             {
                 data: "user_web_role_name",

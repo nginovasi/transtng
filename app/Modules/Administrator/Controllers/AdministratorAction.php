@@ -141,13 +141,13 @@ class AdministratorAction extends BaseController
     {
         parent::_authInsert(function () {
             $data = $this->request->getPost();
-            $nip = $this->request->getPost('user_web_nik');
 
             if ($data['id'] != '') {
-                if (!$this->administratorModel->checkExistingPass($data['id'], $data['user_web_password'])) {
-                    $encSHA512 = parent::sha512($data['user_web_password'], getenv('app.salt'));
-                    $data['user_web_password'] = base64_encode($encSHA512);
-                }
+                // if (!$this->administratorModel->checkExistingPass($data['id'], $data['user_web_password'])) {
+                //     $encSHA512 = parent::sha512($data['user_web_password'], getenv('app.salt'));
+                //     $data['user_web_password'] = base64_encode($encSHA512);
+                // }
+                
                 parent::_insert('m_user_web', $data);
             } else {
                 if ($this->administratorModel->checkUsername($data['user_web_username'])) {
