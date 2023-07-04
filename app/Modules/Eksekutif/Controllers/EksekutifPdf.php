@@ -471,6 +471,81 @@ class EksekutifPdf extends BaseController {
         $this->export($title, $data['date'], $result, '\exportTrxPerPos_pdf');
 	}
 
+    function exportTrxPerPetugasHarian(){
+        $data = $this->request->getGet();
+
+        $explodeDate = explode("-", $data['date']);
+
+        $jmlTrx = 0;
+
+        $result = $this->db->query("SELECT b.user_web_username, 
+                                            a.shift, 
+                                            a.kode_bis, 
+                                            a.device_id, 
+                                            concat(c.jalur, ' (', c.rute, ') ' ) as jalur, 
+                                            sum(a.kredit) as jml_trx
+                                            FROM transaksi_bis a
+                                            LEFT JOIN m_user_web b
+                                                ON a.petugas_id = b.id
+                                            LEFT JOIN ref_jalur c
+                                                ON a.jalur = c.id
+                                            WHERE a.is_dev = 0
+                                            AND tanggal = " . "'" . $data['date'] . "'" . "
+                                            GROUP BY b.user_web_username, a.shift, a.kode_bis, a.device_id, a.jalur")->getResult();
+
+        foreach($result as $key => $val) {
+            $jmlTrx += $val->jml_trx;
+        }
+
+        $title = "REKAP LAPORAN TRANSAKSI PER PETUGAS PERIODE " . $explodeDate[2] . ' ' . $this->getMonth($explodeDate[1]) . ' ' . $explodeDate[0];
+
+        $result = [
+                    "title" => $title,
+                    "date" => $data['date'],
+                    "result" => $result,
+                    "jml_trx" => $jmlTrx
+                ];
+
+        $this->export('Laporan transaksi per halte/bis ' . $data['date'], $data['date'], $result, '\exportTrxPerPetugasHarian_pdf');
+	}
+
+    function exportTrxPerPetugasDetailHarian(){
+        $data = $this->request->getGet();
+
+        $explodeDate = explode("-", $data['d_tanggal']);
+
+        $result = $this->db->query("SELECT a.id, a.no_trx, a.jam, a.kode_bis, a.jenis, a.kredit
+                                    FROM transaksi_bis a
+                                    LEFT JOIN m_user_web b
+                                        ON a.petugas_id = b.id
+                                    LEFT JOIN ref_jalur c
+                                        ON a.jalur = c.id
+                                    WHERE a.is_dev = 0
+                                    AND tanggal = " . "'" . $data["d_tanggal"] . "'" . "
+                                    AND b.user_web_username = " . "'" . $data["d_user_web_username"] . "'" . "
+                                    AND a.shift = " . "'" . $data["d_shift"] . "'" . "
+                                    AND a.kode_bis = " . "'" . $data["d_kode_bis"] . "'" . "
+                                    AND a.device_id = " . "'" . $data["d_device_id"] . "'" . "
+                                    AND concat(c.jalur, ' (', c.rute, ') ' ) = " . "'" . $data["d_jalur"] . "'" . "")->getResult();
+
+        $jmlTrx = 0;
+
+        foreach($result as $key => $val) {
+            $jmlTrx += $val->kredit;
+        }
+
+        $title = "REKAP LAPORAN TRANSAKSI " . strtoupper($data["d_username"]) . ', Shift ' . $data["d_shift"] . ' Periode ' . $explodeDate[2] . ' ' . $this->getMonth($explodeDate[1]) . ' ' . $explodeDate[0];
+
+        $result = [
+                    "title" => $title,
+                    "date" => $data['d_tanggal'],
+                    "result" => $result,
+                    "jml_trx" => $jmlTrx
+                ];
+
+        $this->export($title, $data['d_tanggal'], $result, '\exportTrxPerPetugasDetailHarian_pdf');
+	}
+
     function getMonth($month) {
         $monthAlias = "";
         switch($month) {

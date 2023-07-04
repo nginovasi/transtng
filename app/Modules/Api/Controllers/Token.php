@@ -25,51 +25,9 @@ class Token extends BaseController
         return view('App\Modules\Api\Views\test'); 
     }
 
-    public function signature(){
-        $timestamp = $this->request->getHeader("X-TIMESTAMP");
-        // $ipAddress = get_client_ip(); //filter ip
-        $ipAddress = "0.0.0.0";
-        $data = json_encode([
-            "timestamp" => $timestamp,
-            "ip_address" => $ipAddress 
-        ]);
-
-        $signature = sign_data($data);
-
-        if($signature != ""){
-            $response = ["success" => true, "message" => "Success", "signature" => $signature];
-        }else{
-            $response = ["success" => true, "message" => "Invalid Request", "signature" => null, "error_code" => "500"];
-        }
-
-        return $this->response->setJson($response);
-    }
-
-    public function jwt(){
-        $signature = $this->request->getPost("signature");
-        $timestamp = $this->request->getHeader("X-TIMESTAMP");
-        // $ipAddress = get_client_ip(); //filter ip
-        // $ipAddress = "0.0.0.0";
-        $data = json_encode([
-            "timestamp" => $timestamp,
-            "ip_address" => $ipAddress 
-        ]);
-
-        $verify = verify_data($data, $signature);
-
-        if($verify){
-            $token = $this->_generateJwtToken($ipAddress);
-            $response = ["success" => true, "message" => "Success", "token" => $token];
-        }else{
-            $response = ["success" => false, "message" => "Invalid Signature", "token" => null, "error_code" => "500"];
-        }
-
-        return $this->response->setJson($response);
-    }
-
     private function _generateJwtToken($ipAddress){
         $issuedAt = time();
-        $expTime = $issuedAt + (1 * 15 * 60);
+        $expTime = $issuedAt + (24 * 60 * 60);
 
         $header = json_encode([
             'typ' => 'JWT', 
@@ -93,23 +51,14 @@ class Token extends BaseController
 
     public function auth(){
         header('Content-Type: application/json');
-        $payload = file_get_contents('php://input');
 
         $timestamp = $this->request->getHeader("X-TIMESTAMP");
         $deviceId = $this->request->getHeader("X-DEVICE-ID");
 
-        if(!isset($payload)||$payload==null){
-            $response = ["success" => false, "status" => 406, "message" => "Request body not set", "data" => null];
-            return $this->response->setJson($response);
-        }
-
         $token = $this->_generateJwtToken($deviceId->getValue());
-        $signature = $this->signatureService($payload,$deviceId->getValue(),$timestamp->getValue(),$token);
-
 
         $data['token'] = $token;
-        $data['expired'] = 60*15;
-        $data['signature'] = $signature;
+        $data['expired'] = 24*60*60;
 
         $response = ["success" => true, "status" => 100, "message" => "Success", "data" => $data];
         
