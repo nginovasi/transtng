@@ -7,7 +7,7 @@ $user = $session->get('name');
     <div class="navbar navbar-expand-lg">
         <!-- brand -->
         <a href="<?= base_url() ?>/main" class="navbar-brand d-lg-none">
-            <img src="<?= base_url(); ?>/assets/img/logo.svg">
+            <img src="<?= base_url(); ?>/assets/img/TNGLogo-TNGIcon.svg">
         </a>
         <!-- / brand -->
         <!-- Navbar collapse -->

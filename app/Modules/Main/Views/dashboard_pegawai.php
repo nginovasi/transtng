@@ -21,7 +21,7 @@ $session = \Config\Services::session();
 			<div class="padding d-flex">
 				<div class="page-title">
 					<h2 class="text-md text-highlight">Dashboard</h2>
-					<small class="text-muted">Welcome aboard,<strong><?= $session->get('name') ?></strong> (<?= $session->get('role_name') ?>)</small>
+					<small class="text-muted">Welcome aboard, <strong><?= $session->get('name') ?></strong> (<?= $session->get('role_name') ?>)</small>
 				</div>
 				<div class="flex"></div>
 			</div>
@@ -38,7 +38,7 @@ $session = \Config\Services::session();
 							<div style="z-index: 3 !important;position: absolute;margin-top: 10px;margin-left: 200px;">
 								<!-- <select class="form-control" id="select-koridor"></select> -->
 							</div>
-							<div id="map" style="height: 618px"></div>
+							<div id="map" style="height: 550px"></div>
 						</div>
 						<div class="col-xl-4 col-lg-12 col-md-12">
 							<div class="card flex" data-sr-id="9" style="visibility: visible; transform: none; opacity: 1; transition: none 0s ease 0s;">
@@ -47,7 +47,7 @@ $session = \Config\Services::session();
 										<div class="text-center mb-3 bg-primary">
 											<small class="font-weight-bold">Aktivitas Transaksi</small>
 										</div>
-										<div class="row text-center mb-5">
+										<div class="row text-center">
 											<div class="col-6 px-2">
 												<span class="text-sm">Pendapatan Hari Ini</span>
 												<div class="text-md font-weight-bold text-primary" id="ttl_kredit_now">Rp. 0</div>
@@ -57,7 +57,7 @@ $session = \Config\Services::session();
 												<div class="text-md font-weight-bold text-primary" id="ttl_penumpang_now">0</div>
 											</div>
 										</div>
-										<div class="row text-center">
+										<!-- <div class="row text-center">
 											<div class="col">
 												<span class="text-sm">Jumlah Jalur</span>
 												<div class="text-md font-weight-bold text-primary" id="ttl_jalur">0</div>
@@ -66,7 +66,7 @@ $session = \Config\Services::session();
 												<span class="text-sm">Jumlah TOB</span>
 												<div class="text-md font-weight-bold text-primary" id="ttl_tob">0 <small class="text-muted" id="ttl_tob_offline">(0)</small></div>
 											</div>
-										</div>
+										</div> -->
 									</div>
 								</div>
 							</div>
@@ -113,7 +113,7 @@ $session = \Config\Services::session();
 											<th><span class="d-none d-sm-block">Penumpang</span></th>
 										</tr>
 									</thead>
-									<tbody id='table-jalur-body'></tbody>
+									<tbody></tbody>
 								</table>
 							</div>
 						</div>
@@ -145,21 +145,23 @@ $session = \Config\Services::session();
 			<div class="row">
 				<div class="col-md-12">
 					<div class="card">
-						<div class="card-header text-uppercase font-weight-bold">Monitoring PTA</div>
+						<div class="card-header text-uppercase font-weight-bold">Monitoring PTA <?= $session->get('name') ?></div>
 						<div class="card-body">
 							<div class="table-responsive">
-								<table class="table table-theme v-middle table-hover" id="table-monit-pta">
+								<table class="table table-theme v-middle table-hover" id="table-detail-monit-pta">
 									<thead class="text-muted">
 										<tr>
 											<th style="width: 10px !important">#</th>
 											<th>Petugas</th>
-											<th><span class="d-none d-sm-block">Bus</span></th>
-											<th><span class="d-none d-sm-block">Status</span></th>
-											<th><span class="d-none d-sm-block">Masuk Pada</span></th>
-											<th style="width: 10px !important"><span class="d-none d-sm-block">Detail</span></th>
+											<th><span class="d-none d-sm-block">Shift</span></th>
+											<th><span class="d-none d-sm-block">No Transaksi</span></th>
+											<th><span class="d-none d-sm-block">Nominal</span></th>
+											<th><span class="d-none d-sm-block">Jenis</span></th>
+											<th><span class="d-none d-sm-block">Kode BIS</span></th>
 										</tr>
 									</thead>
-									<tbody></tbody>
+									<tbody id="detail-pta"></tbody>
+									<tfoot id="detail-pta-footer"></tfoot>
 								</table>
 							</div>
 						</div>
@@ -170,42 +172,6 @@ $session = \Config\Services::session();
 	</div>
 	<!-- ############ Main END-->
 </div>
-
-<!-- .modal -->
-<div id="modal-lg" class="modal fade" data-backdrop="true" style="display: none;" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<!-- .modal-content -->
-		<div class="modal-content ">
-			<div class="modal-header ">
-				<div class="modal-title text-md">Modal title</div>
-				<button class="close" data-dismiss="modal">×</button>
-			</div>
-			<div class="modal-body">
-				<div class="p-4 text-center">
-					<div class="table-responsive">
-						<table class="table table-theme v-middle table-hover">
-							<thead class="text-muted">
-								<tr>
-									<th style="width: 10px !important">#</th>
-									<th>Petugas</th>
-									<th><span class="d-none d-sm-block">Shift</span></th>
-									<th><span class="d-none d-sm-block">No Transaksi</span></th>
-									<th><span class="d-none d-sm-block">Nominal</span></th>
-									<th><span class="d-none d-sm-block">Jenis</span></th>
-									<th><span class="d-none d-sm-block">Kode BIS</span></th>
-								</tr>
-							</thead>
-							<tbody id="detail-pta"></tbody>
-							<tfoot id="detail-pta-footer"></tfoot>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-</div>
-<!-- /.modal -->
 
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <!-- script internal -->
@@ -266,7 +232,6 @@ $session = \Config\Services::session();
 		}).addTo(map);
 
 		loadAllAjax();
-
 	});
 
 	function loadAllAjax() {
@@ -275,8 +240,12 @@ $session = \Config\Services::session();
 		var getAllTransaksi =
 			$.ajax({
 				url: url_ajax + '/getAllTransaksi',
-				type: 'GET',
+				type: 'POST',
 				dataType: 'json',
+				data: {
+					petugas_id: <?= $session->get('id') ?>,
+					<?= csrf_token() ?>: "<?= csrf_hash() ?>"
+				},
 				beforeSend: function() {
 					$('#ttl_penumpang_now').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
 					$('#ttl_kredit_now').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
@@ -287,7 +256,7 @@ $session = \Config\Services::session();
 						$('#ttl_kredit_now').html('Rp ' + numberWithCommas(res.data.total_kredit));
 					} else {
 						$('#ttl_penumpang_now').html('0');
-						$('#ttl_kredit_now').html('Rp 0');
+						$('#ttl_kredit_now').html('Rp. 0');
 					}
 				},
 				error: function(err) {
@@ -296,55 +265,15 @@ $session = \Config\Services::session();
 			});
 		ajaxPromises.push(getAllTransaksi);
 
-		var getAllDevice =
-			$.ajax({
-				url: url_ajax + '/getAllDevice',
-				type: 'GET',
-				dataType: 'json',
-				beforeSend: function() {
-					$('#ttl_tob').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
-				},
-				success: function(res) {
-					data = res.data;
-					if (res.success) {
-						$('#ttl_tob').html(data.ttl_tob + ' <small class="text-muted" id="ttl_tob_offline">(' + data.ttl_tob_online + ' Online)</small>');
-					} else {
-						$('#ttl_tob').html('0 (0 Online)');
-					}
-				},
-				error: function(err) {
-					console.log(err);
-				}
-			});
-		ajaxPromises.push(getAllDevice);
-
-		var getAllJalur =
-			$.ajax({
-				url: url_ajax + '/getAllJalur',
-				type: 'GET',
-				dataType: 'json',
-				beforeSend: function() {
-					$('#ttl_jalur').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
-				},
-				success: function(res) {
-					data = res.data;
-					if (res.success) {
-						$('#ttl_jalur').html(data.ttl_jalur);
-					} else {
-						$('#ttl_jalur').html('0');
-					}
-				},
-				error: function(err) {
-					console.log(err);
-				}
-			});
-		ajaxPromises.push(getAllJalur);
-
 		var getAllJalurTransaksi =
 			$.ajax({
 				url: url_ajax + '/getAllTransaksiJalur',
-				type: 'GET',
+				type: 'POST',
 				dataType: 'json',
+				data: {
+					petugas_id: <?= $session->get('id') ?>,
+					<?= csrf_token() ?>: "<?= csrf_hash() ?>"
+				},
 				beforeSend: function() {
 					$('tbody').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
 				},
@@ -403,26 +332,31 @@ $session = \Config\Services::session();
 							}]
 						});
 					} else {
-						$('#table-jalur-body').html('<tr><td colspan="5" class="text-center">Data tidak ditemukan</td></tr>');
+						$('#table-jalur tbody').html('<tr><td colspan="5" class="text-center">Belum ada aktivitas untuk hari ini</td></tr>');
 					}
 				},
 				error: function(err) {
 					console.log(err);
 				}
 			});
+		ajaxPromises.push(getAllJalurTransaksi);
 
 		var getPerJenisTransaksi =
 			$.ajax({
 				url: url_ajax + '/getPerJenisTransaksi',
-				type: 'GET',
+				type: 'POST',
 				dataType: 'json',
+				data: {
+					petugas_id: <?= $session->get('id') ?>,
+					<?= csrf_token() ?>: "<?= csrf_hash() ?>"
+				},
 				beforeSend: function() {
 					// $('#jalur').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
 				},
 				success: function(res) {
 					if (res.success) {
 						var data = res.data;
-						// datatable table-jenis-pembayaran
+						console.log(data);
 						var table = $('#table-jenis-pembayaran').DataTable({
 							destroy: true,
 							data: data,
@@ -444,17 +378,17 @@ $session = \Config\Services::session();
 								{
 									data: 'jenis_transaksi',
 									render: function(data, type, row, meta) {
-										if (row.selisih_penumpang == '0') {
+										if (row.selisih_pendapatan == '0') {
 											$color = 'color: grey !important';
 											$icon = '<i class="fa fa-exchange" aria-hidden="true" style="' + $color + '"></i>';
-										} else if (row.selisih_penumpang > 0) {
+										} else if (row.selisih_pendapatan > 0) {
 											$color = 'color: green !important';
 											$icon = '<i class="fa fa-arrow-up" aria-hidden="true" style="' + $color + '"></i>';
 										} else {
-											$color = 'color: grey !important';
-											$icon = '<i class="fa fa-exchange" aria-hidden="true" style="' + $color + '"></i>';
+											$color = 'color: red !important';
+											$icon = '<i class="fa fa-arrow-down" aria-hidden="true" style="' + $color + '"></i>';
 										}
-										return '<span class="text-secondary">' + data + '&nbsp;</span> ' + $icon;
+										return '<span class="text-secondary" style="' + $color + '">' + data + '&nbsp;</span> ' + $icon;
 									}
 								},
 								{
@@ -472,7 +406,14 @@ $session = \Config\Services::session();
 								{
 									data: 'selisih_pendapatan',
 									render: function(data, type, row, meta) {
-										return '<span class="text-secondary">Rp. ' + numberWithCommas(data) + '</span>';
+										if (data == '0') {
+											$color = 'color: grey !important';
+										} else if (data > 0) {
+											$color = 'color: green !important';
+										} else {
+											$color = 'color: red !important';
+										}
+										return '<span class="text-secondary" style="' + $color + '">Rp. ' + numberWithCommas(data) + '</span>';
 									}
 								}
 							],
@@ -485,36 +426,31 @@ $session = \Config\Services::session();
 							}]
 						});
 					} else {
-						$('#table-jenis-pembayaran').html('<tr><td colspan="5" class="text-center">Data tidak ditemukan</td></tr>');
+						$('#table-jenis-pembayaran tbody').html('<tr><td colspan="5" class="text-center text-muted">Belum ada aktivitas untuk hari ini</td></tr>');
 					}
 				},
 				error: function(err) {
 					console.log(err);
 				}
 			});
+		ajaxPromises.push(getPerJenisTransaksi);
 
-		var getMonitPTA =
+		var detailPTA = 
 			$.ajax({
-				url: url_ajax + '/getMonitPTA',
-				type: 'GET',
+				url: url_ajax + '/getDetailPTA',
+				type: 'POST',
 				dataType: 'json',
+				data: {
+					id: <?= $session->get('id') ?>,
+					<?= csrf_token() ?>: "<?= csrf_hash() ?>"
+				},
 				beforeSend: function() {
-					$('tbody').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
+					$('tbody#detail-pta').html('tr><td colspan="7" class="text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></td></tr>');
 				},
 				success: function(res) {
 					if (res.success) {
 						var data = res.data;
-
-						var currentDateTime = new Date();
-						var year = currentDateTime.getFullYear();
-						var month = currentDateTime.getMonth() + 1;
-						var day = currentDateTime.getDate();
-						var hours = currentDateTime.getHours();
-						var minutes = currentDateTime.getMinutes();
-						var seconds = currentDateTime.getSeconds();
-						var formattedDateTime = month + '-' + day + '-' + year + ' ' + hours + ':' + minutes + ':' + seconds;
-
-						var table = $('#table-monit-pta').DataTable({
+						var table = $('#table-detail-monit-pta').dataTable({
 							destroy: true,
 							data: data,
 							searching: false,
@@ -539,41 +475,33 @@ $session = \Config\Services::session();
 									}
 								},
 								{
-									data: 'halte_name',
+									data: 'shift',
 									render: function(data, type, row, meta) {
-										if (data == null) {
-											return '<span class="text-secondary">-</span>';
-										} else {
-											return '<span class="text-secondary">' + data + '</span>';
-										}
+										return '<span class="text-secondary">' + data + '</span>';
 									}
 								},
 								{
-									data: 'last_login_tob_at_status',
+									data: 'no_trx',
 									render: function(data, type, row, meta) {
-										// online or offline
-										if (data != '-') {
-											return '<span class="badge badge-success">Online</span>'
-										} else {
-											return '<span class="badge badge-danger">Offline</span>'
-										}
-
+										return '<span class="text-secondary">' + data + '</span>';
 									}
 								},
 								{
-									data: 'last_login_tob_at',
+									data: 'kredit',
 									render: function(data, type, row, meta) {
-										if (row.last_login_tob_at_status != '-') {
-											return '<span class="text-secondary">' + data + '</span>';
-										} else {
-											return '<span class="text-secondary">-</span>';
-										}
+										return '<span class="text-secondary">Rp. ' + numberWithCommas(data) + '</span>';
 									}
 								},
 								{
-									data: 'id',
+									data: 'jenis',
 									render: function(data, type, row, meta) {
-										return '<button class="btn btn-white" data-toggle="modal" data-target="#modal-lg" onclick="detailPTA(' + data + ')"><i class="fa fa-eye"></i></button>';
+										return '<span class="text-secondary">' + data + '</span>';
+									}
+								},
+								{
+									data: 'kode_haltebis',
+									render: function(data, type, row, meta) {
+										return '<span class="text-secondary">' + data + '</span>';
 									}
 								}
 							],
@@ -586,19 +514,24 @@ $session = \Config\Services::session();
 							}]
 						});
 					} else {
-						$('#table-monit-pta').html('<tr><td colspan="6" class="text-center">Data tidak ditemukan</td></tr>');
+						$('tbody#detail-pta').html('<tr><td colspan="7" class="text-center text-muted">Belum ada aktivitas untuk hari ini</td></tr>');
 					}
 				},
 				error: function(err) {
 					console.log(err);
 				}
 			});
+		ajaxPromises.push(detailPTA);
 
 		var getJenisTransaksi =
 			$.ajax({
 				url: url_ajax + '/getJenisTransaksi',
-				type: 'GET',
+				type: 'POST',
 				dataType: 'json',
+				data: {
+					petugas_id: <?= $session->get('id') ?>,
+					<?= csrf_token() ?>: "<?= csrf_hash() ?>"
+				},
 				beforeSend: function() {
 					$('#jenis-transaksi').html('<div class="col-md-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
 				},
@@ -654,7 +587,8 @@ $session = \Config\Services::session();
 							$('#jenis-transaksi').html(html);
 						}
 					} else {
-						$('#jenis-transaksi').html('<div class="col-md-12 text-center">Data tidak ditemukan</div>');
+						marquee = '<marquee class="text-muted" behavior="scroll" direction="left" scrollamount="5"">Belum ada aktivitas untuk hari ini</marquee>';
+						$('#jenis-transaksi').html(marquee);
 					}
 				},
 				error: function(err) {
@@ -666,24 +600,29 @@ $session = \Config\Services::session();
 		var sumTransaksi30 =
 			$.ajax({
 				url: url_ajax + '/sumTransaksi30',
-				type: 'GET',
+				type: 'POST',
 				dataType: 'json',
+				data: {
+					petugas_id: <?= $session->get('id') ?>,
+					<?= csrf_token() ?>: "<?= csrf_hash() ?>"
+				},
 				beforeSend: function() {
 					$('#ttl_trans30day_kredit').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
 				},
 				success: function(res) {
 					var data = res.data;
 					// to array
-					tgl_transaksi = [];
-					sum_value = [];
-					sum_penumpang = [];
-					data.forEach(function(x) {
-						tgl_transaksi.push(x.tgl_transaksi);
-						sum_value.push(x.sum_value);
-						sum_penumpang.push(x.sum_penumpang);
-					});
-
+					
 					if (res.success) {
+						tgl_transaksi = [];
+						sum_value = [];
+						sum_penumpang = [];
+						data.forEach(function(x) {
+							tgl_transaksi.push(x.tgl_transaksi);
+							sum_value.push(x.sum_value);
+							sum_penumpang.push(x.sum_penumpang);
+						});
+
 						$('#ttl_trans30day_kredit').html('');
 						$('#ttl_trans30day_penumpang').html('');
 						var options = {
@@ -691,19 +630,11 @@ $session = \Config\Services::session();
 								type: 'area',
 								height: 130,
 								foreColor: 'currentColor',
-								sparkline: {
-									enabled: true
-								},
-								zoom: {
-									enabled: false
-								}
+								sparkline: {enabled: true},
+								zoom: {enabled: false}
 							},
-							stroke: {
-								curve: 'straight'
-							},
-							fill: {
-								opacity: 0.3
-							},
+							stroke: {curve: 'straight'},
+							fill: {opacity: 0.3},
 							series: [{
 								name: 'Pendapatan',
 								data: sum_value
@@ -714,9 +645,7 @@ $session = \Config\Services::session();
 									opacity: 0.5
 								},
 							},
-							markers: {
-								size: 4
-							},
+							markers: {size: 4},
 							tooltip: {
 								y: {
 									formatter: function(value) {
@@ -724,9 +653,7 @@ $session = \Config\Services::session();
 									}
 								}
 							},
-							dataLabels: {
-								enabled: false
-							},
+							dataLabels: {enabled: false},
 							title: {
 								text: 'Pendapatan 30 Hari Terakhir',
 								offsetX: 0,
@@ -749,13 +676,9 @@ $session = \Config\Services::session();
 										return date.toLocaleDateString('id-ID', options);
 									}
 								},
-								crosshairs: {
-									width: 1
-								},
+								crosshairs: {width: 1},
 							},
-							yaxis: {
-								min: 0
-							},
+							yaxis: {min: 0},
 						}
 
 						var options2 = {
@@ -763,12 +686,8 @@ $session = \Config\Services::session();
 								type: 'bar',
 								height: 130,
 								foreColor: 'currentColor',
-								sparkline: {
-									enabled: true
-								},
-								zoom: {
-									enabled: false
-								}
+								sparkline: {enabled: true},
+								zoom: {enabled: false}
 							},
 							grid: {
 								row: {
@@ -777,17 +696,13 @@ $session = \Config\Services::session();
 								},
 							},
 							plotOptions: {
-								bar: {
-									columnWidth: '50%'
-								}
+								bar: {columnWidth: '50%'}
 							},
 							series: [{
 								name: 'Penumpang',
 								data: sum_penumpang
 							}],
-							dataLabels: {
-								enabled: false
-							},
+							dataLabels: {enabled: false},
 							title: {
 								text: 'Penumpang 30 Hari Terakhir',
 								offsetX: 0,
@@ -811,17 +726,11 @@ $session = \Config\Services::session();
 										return date.toLocaleDateString('id-ID', options);
 									}
 								},
-								crosshairs: {
-									width: 1
-								},
+								crosshairs: {width: 1},
 							},
 							tooltip: {
-								fixed: {
-									enabled: false
-								},
-								x: {
-									show: true
-								},
+								fixed: {enabled: false},
+								x: {show: true},
 								y: {
 									title: {
 										formatter: function(seriesName, opts) {
@@ -829,16 +738,14 @@ $session = \Config\Services::session();
 										}
 									}
 								},
-								marker: {
-									show: false
-								}
+								marker: {show: false}
 							}
 						}
 						new ApexCharts(document.querySelector("#ttl_trans30day_kredit"), options).render();
 						new ApexCharts(document.querySelector("#ttl_trans30day_penumpang"), options2).render();
 					} else {
-						$('#ttl_trans30day_kredit').html('<div class="col-sm-12 text-center">Data tidak ditemukan</div>');
-						$('#ttl_trans30day_penumpang').html('<div class="col-sm-12 text-center">Data tidak ditemukan</div>');
+						$('#ttl_trans30day_kredit').html('<div class="col-sm-12 text-center">Belum ada aktivitas untuk hari ini</div>');
+						$('#ttl_trans30day_penumpang').html('');
 					}
 				},
 				error: function(err) {
@@ -851,56 +758,6 @@ $session = \Config\Services::session();
 			for (var i = 0; i < arguments.length; i++) {
 				// console.log(arguments[i][2].responseJSON);
 			}
-		});
-	}
-
-	function detailPTA(id) {
-		$.ajax({
-			url: url_ajax + '/getDetailPTA',
-			type: 'POST',
-			dataType: 'json',
-			data: {
-				id: id,
-				<?= csrf_token() ?>: "<?= csrf_hash() ?>"
-			},
-			beforeSend: function() {
-				$('#modal-lg .modal-title').html('Detail PTA');
-				$('#detail-pta').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
-			},
-			success: function(res) {
-				if (res.success) {
-					var data = res.data;
-					var html = '';
-					if (data[0].no_trx == '') {
-						$('#detail-pta').html('<tr><td colspan="7" class="text-center">Belum ada data untuk petugas ini</td></tr>');
-					} else {
-						no = 1;
-						for (var i = 0; i < data.length; i++) {
-							html += `
-									<tr>
-										<td>` + no + `</td>
-										<td class="text-uppercase">` + data[i].user_web_name + `</td>
-										<td>Shift ` + data[i].shift + `</td>
-										<td>` + data[i].no_trx + `</td>
-										<td>` + data[i].kredit + `</td>
-										<td>` + data[i].jenis + `</td>
-										<td>` + data[i].kode_haltebis + `</td>
-									</tr>`;
-							no++;
-						}
-						$('#detail-pta').html(html);
-
-						// sum all kredit
-						var sum_kredit = 0;
-						for (var i = 0; i < data.length; i++) {
-							sum_kredit += parseInt(data[i].kredit);
-						}
-						$('#detail-pta-footer').html('<tr class="font-weight-bold text-uppercase"><td colspan="6" class="text-right">Total</td><td colspan="3">Rp. ' + numberWithCommas(sum_kredit) + '</td></tr>');
-					}
-				} else {
-					$('#detail-pta').html('<tr><td colspan="7" class="text-center">Data tidak ditemukan untuk petugas ini</td></tr>');
-				}
-			},
 		});
 	}
 
