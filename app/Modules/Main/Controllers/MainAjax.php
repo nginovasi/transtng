@@ -35,35 +35,47 @@ class MainAjax extends BaseController
 	{
 		$data = $this->request->getPost();
 		if (isset($data['petugas_id'])) {
-			$query = "SELECT
-						CASE
-							WHEN jenis LIKE '%BRIZZI%' THEN SUBSTRING(jenis, 1, 7)
-							WHEN jenis LIKE '%E-Money%' THEN SUBSTRING(jenis, 1, 7)
-							WHEN jenis LIKE '%FLAZZ%' THEN SUBSTRING(jenis, 1, 6)
-							WHEN jenis LIKE '%Tapcash%' THEN SUBSTRING(jenis, 1, 8)
-							ELSE jenis
-						END AS jenis_transaksi,
-						SUM(CASE WHEN DATE(tanggal) = CURDATE() THEN 1 ELSE 0 END) AS total_penumpang,
-						SUM(CASE WHEN DATE(tanggal) = CURDATE() - INTERVAL 1 DAY THEN 1 ELSE 0 END) AS penumpang_kemarin,
-						SUM(CASE WHEN DATE(tanggal) = CURDATE() THEN 1 ELSE 0 END) - SUM(CASE WHEN DATE(tanggal) = CURDATE() - INTERVAL 1 DAY THEN 1 ELSE 0 END) AS selisih_penumpang
-						FROM transaksi_bis
-						WHERE DATE(tanggal) >= CURDATE() - INTERVAL 1 DAY AND petugas_id = '" . $data['petugas_id'] . "'
-						GROUP BY jenis;";
+			$query = "SELECT all_jenis.jenis AS jenis_transaksi,
+							COALESCE(total_penumpang.total_penumpang, 0) AS total_penumpang,
+							COALESCE(penumpang_kemarin.penumpang_kemarin, 0) AS penumpang_kemarin,
+							COALESCE(total_penumpang.total_penumpang, 0) - COALESCE(penumpang_kemarin.penumpang_kemarin, 0) AS selisih_penumpang
+						FROM (
+							SELECT DISTINCT jenis
+							FROM transaksi_bis
+						) all_jenis
+						LEFT JOIN (
+							SELECT jenis, COUNT(*) AS total_penumpang
+							FROM transaksi_bis
+							WHERE DATE(tanggal) = CURDATE() AND petugas_id = '" . $data['petugas_id'] . "'
+							GROUP BY jenis
+						) total_penumpang ON all_jenis.jenis = total_penumpang.jenis
+						LEFT JOIN (
+							SELECT jenis, COUNT(*) AS penumpang_kemarin
+							FROM transaksi_bis
+							WHERE DATE(tanggal) = CURDATE() - INTERVAL 1 DAY AND petugas_id = '" . $data['petugas_id'] . "'
+							GROUP BY jenis
+						) penumpang_kemarin ON all_jenis.jenis = penumpang_kemarin.jenis;";
 		} else {
-			$query = "SELECT
-					CASE
-						WHEN jenis LIKE '%BRIZZI%' THEN SUBSTRING(jenis, 1, 7)
-						WHEN jenis LIKE '%E-Money%' THEN SUBSTRING(jenis, 1, 7)
-						WHEN jenis LIKE '%FLAZZ%' THEN SUBSTRING(jenis, 1, 6)
-						WHEN jenis LIKE '%Tapcash%' THEN SUBSTRING(jenis, 1, 8)
-						ELSE jenis
-					END AS jenis_transaksi,
-					SUM(CASE WHEN DATE(tanggal) = CURDATE() THEN 1 ELSE 0 END) AS total_penumpang,
-					SUM(CASE WHEN DATE(tanggal) = CURDATE() - INTERVAL 1 DAY THEN 1 ELSE 0 END) AS penumpang_kemarin,
-					SUM(CASE WHEN DATE(tanggal) = CURDATE() THEN 1 ELSE 0 END) - SUM(CASE WHEN DATE(tanggal) = CURDATE() - INTERVAL 1 DAY THEN 1 ELSE 0 END) AS selisih_penumpang
-					FROM transaksi_bis
-					WHERE DATE(tanggal) >= CURDATE() - INTERVAL 1 DAY
-					GROUP BY jenis;";
+			$query = "SELECT all_jenis.jenis AS jenis_transaksi,
+							COALESCE(total_penumpang.total_penumpang, 0) AS total_penumpang,
+							COALESCE(penumpang_kemarin.penumpang_kemarin, 0) AS penumpang_kemarin,
+							COALESCE(total_penumpang.total_penumpang, 0) - COALESCE(penumpang_kemarin.penumpang_kemarin, 0) AS selisih_penumpang
+						FROM (
+							SELECT DISTINCT jenis
+							FROM transaksi_bis
+						) all_jenis
+						LEFT JOIN (
+							SELECT jenis, COUNT(*) AS total_penumpang
+							FROM transaksi_bis
+							WHERE DATE(tanggal) = CURDATE()
+							GROUP BY jenis
+						) total_penumpang ON all_jenis.jenis = total_penumpang.jenis
+						LEFT JOIN (
+							SELECT jenis, COUNT(*) AS penumpang_kemarin
+							FROM transaksi_bis
+							WHERE DATE(tanggal) = CURDATE() - INTERVAL 1 DAY
+							GROUP BY jenis
+						) penumpang_kemarin ON all_jenis.jenis = penumpang_kemarin.jenis;";
 		}
 		$rs = $this->db->query($query)->getResult();
 		if ($rs) {
