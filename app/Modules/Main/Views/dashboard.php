@@ -173,10 +173,10 @@ $session = \Config\Services::session();
 
 <!-- .modal -->
 <div id="modal-lg" class="modal fade" data-backdrop="true" style="display: none;" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 		<!-- .modal-content -->
-		<div class="modal-content ">
-			<div class="modal-header ">
+		<div class="modal-content">
+			<div class="modal-header">
 				<div class="modal-title text-md">Modal title</div>
 				<button class="close" data-dismiss="modal">×</button>
 			</div>
@@ -573,7 +573,7 @@ $session = \Config\Services::session();
 								{
 									data: 'id',
 									render: function(data, type, row, meta) {
-										return '<button class="btn btn-white" data-toggle="modal" data-target="#modal-lg" onclick="detailPTA(' + data + ')"><i class="fa fa-eye"></i></button>';
+										return '<button class="btn btn-white" data-toggle="modal" data-target="#modal-lg" onclick="detailPTA(' + data + ', \'' + row.user_web_name + '\')"><i class="fa fa-eye"></i></button>';
 									}
 								}
 							],
@@ -854,7 +854,7 @@ $session = \Config\Services::session();
 		});
 	}
 
-	function detailPTA(id) {
+	function detailPTA(id, name) {
 		$.ajax({
 			url: url_ajax + '/getDetailPTA',
 			type: 'POST',
@@ -864,7 +864,7 @@ $session = \Config\Services::session();
 				<?= csrf_token() ?>: "<?= csrf_hash() ?>"
 			},
 			beforeSend: function() {
-				$('#modal-lg .modal-title').html('Detail PTA');
+				$('#modal-lg .modal-title').html('Detail Monitoring PTA ' + name.toUpperCase());
 				$('#detail-pta').html('<div class="col-sm-12 text-center"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
 			},
 			success: function(res) {
@@ -898,7 +898,7 @@ $session = \Config\Services::session();
 						$('#detail-pta-footer').html('<tr class="font-weight-bold text-uppercase"><td colspan="6" class="text-right">Total</td><td colspan="3">Rp. ' + numberWithCommas(sum_kredit) + '</td></tr>');
 					}
 				} else {
-					$('#detail-pta').html('<tr><td colspan="7" class="text-center">Data tidak ditemukan untuk petugas ini</td></tr>');
+					$('#detail-pta').html('<tr><td colspan="7" class="text-center text-muted">Belum ada data untuk petugas ini</td></tr>');
 				}
 			},
 		});
