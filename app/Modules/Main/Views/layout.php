@@ -8,6 +8,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <!-- style -->
     <link rel="shortcut icon" href="<?= base_url(); ?>/assets/img/TNGLogo-TNGIcon.svg" type="image/png">
+    <link rel="apple-touch-icon" sizes="57x57" href="<?= base_url(); ?>/assets/icon/logo/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="<?= base_url(); ?>/assets/icon/logo/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="<?= base_url(); ?>/assets/icon/logo/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="<?= base_url(); ?>/assets/icon/logo/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="<?= base_url(); ?>/assets/icon/logo/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="<?= base_url(); ?>/assets/icon/logo/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="<?= base_url(); ?>/assets/icon/logo/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="<?= base_url(); ?>/assets/icon/logo/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= base_url(); ?>/assets/icon/logo/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="<?= base_url(); ?>/assets/icon/logo/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url(); ?>/assets/icon/logo/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="<?= base_url(); ?>/assets/icon/logo/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= base_url(); ?>/assets/icon/logo/favicon-16x16.png">
+    <link rel="manifest" href="<?= base_url(); ?>/assets/icon/logo/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="<?= base_url(); ?>/assets/icon/logo/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="<?= base_url() ?>/assets/css/bootstrap.css" type="text/css" />
     <link rel="stylesheet" href="<?= base_url() ?>/assets/css/theme.css" type="text/css" />
 
@@ -20,7 +37,7 @@
     <!-- datepicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css" integrity="sha512-34s5cpvaNG3BknEWSuOncX28vz97bRI59UnVtEEpFX536A7BtZSJHsDyFoCl8S7Dt2TPzcrCEoHBGeM4SUBDBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- not use -->  
+    <!-- not use -->
     <!-- <link rel="stylesheet" href="<?= base_url() ?>/assets/libs/daterangepicker/daterangepicker.css"> -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
@@ -147,6 +164,7 @@
         }
     </style>
 </head>
+
 <body class="layout-row">
     <?php echo view('App\Modules\Main\Views\menu'); ?>
     <div id="main" class="layout-column flex">
@@ -154,13 +172,25 @@
         <!-- ############ Content START-->
         <div id="content" class="flex " style="background:#F9FAFB">
             <!-- ############ Main START-->
-            <?php if (isset($load_view)) {
+            <?php
+            if (isset($load_view)) {
                 echo view($load_view);
             } else {
                 $session = \Config\Services::session();
                 $login_id = $session->get('role');
-                echo view('App\Modules\Main\Views\dashboard');
-            } ?>
+                switch ($login_id) {
+                    case '1':
+                        echo view('App\Modules\Main\Views\dashboard');
+                        break;
+                    case '2':
+                        echo view('App\Modules\Main\Views\dashboard_pegawai');
+                        break;
+                    default:
+                        echo view('App\Modules\Main\Views\dashboard');
+                        break;
+                }
+            }
+            ?>
             <!-- ############ Main END-->
         </div>
         <!-- ############ Content END-->
