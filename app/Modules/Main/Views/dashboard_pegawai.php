@@ -93,8 +93,10 @@ $session = \Config\Services::session();
 					</div>
 				</div>
 				<div class="card-footer">
-					<div class="row" id="jenis-transaksi">
-					</div>
+					<div class="row" id="jenis-transaksi"></div>
+					<!-- <marquee class="row" behavior="scroll" direction="left" scrollamount="5">
+						<div class="row" id="jenis-transaksi"></div>
+					</marquee> -->
 				</div>
 			</div>
 			<div class="row">
@@ -758,6 +760,8 @@ $session = \Config\Services::session();
 			for (var i = 0; i < arguments.length; i++) {
 				// console.log(arguments[i][2].responseJSON);
 			}
+			// setTimeout(loadAllAjax, 5000);
+
 		});
 	}
 
