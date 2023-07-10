@@ -80,7 +80,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Jenis User</label>
-                                    <select class="form-control" id="user_web_role_id" name="user_web_role_id" placeholder="Pilih jenis user" required></select>
+                                    <select class="form-control sel2" id="user_web_role_id" name="user_web_role_id" placeholder="Pilih jenis user" required></select>
                                 </div>
                                 <div class="text-right">
                                     <button type="submit" class="btn btn-primary">Simpan</button>
@@ -126,7 +126,9 @@
 
         coreEvents.insertHandler = {
             placeholder: 'Berhasil menyimpan user',
-            afterAction: function(result) {}
+            afterAction: function(result) {
+                $(".sel2").val(null).trigger('change');
+            }
         }
 
         coreEvents.editHandler = {
