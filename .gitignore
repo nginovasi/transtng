@@ -87,6 +87,12 @@ vendor/
 vendor-xxx/
 composer.lock
 
+
+#-------------------------
+# Directory Settlement
+#-------------------------
+public/settlement
+
 #-------------------------
 # IDE / Development Files
 #-------------------------
