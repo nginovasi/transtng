@@ -17,4 +17,5 @@ $routes->group('api', ['namespace' => 'App\Modules\Api\Controllers'], function($
     // settlement
     $subroutes->add('emoney/(:any)','Settlement\\Emoney::$1');
     $subroutes->add('brizzi/(:any)','Settlement\\Brizzi::$1');
+    $subroutes->add('flazz/(:any)','Settlement\\Flazz::$1');
 });
