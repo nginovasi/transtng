@@ -87,8 +87,11 @@ vendor/
 vendor-xxx/
 composer.lock
 
-# public
+#-------------------------
+# Directory Settlement
+#-------------------------
 public/uploads/
+public/settlement/
 
 #-------------------------
 # IDE / Development Files
@@ -129,6 +132,9 @@ nb-configuration.xml
 /results/
 /phpunit*.xml
 /.phpunit.*.cache
+
+# public
+/public/settlement
 
 ### Composer ###
 composer.phar

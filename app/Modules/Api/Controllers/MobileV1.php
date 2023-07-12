@@ -1,10 +1,10 @@
-<?php namespace App\Modules\Api\Controllers;
+<?php namespace App\Modules\Api\Controllers\Settlement;
 
 use App\Modules\Api\Models\ApiModel;
 use App\Core\BaseController;
 use App\Core\BaseModel;
 
-class MobileV1 extends BaseController
+class Brizzi extends BaseController
 {
     private $apiModel;
     var $secretKey;

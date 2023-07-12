@@ -280,6 +280,7 @@ class TicketingDev extends BaseController
                     $emoney['device_id'] = $device_id;
                     $emoney['mid'] = $mid;
                     $emoney['tid'] = $tid;
+                    $emoney['date_trx'] = $tanggal;
                     $emoney['body'] = $deduct_response;
                     
                     try{
@@ -294,6 +295,7 @@ class TicketingDev extends BaseController
                     $flazz['device_id'] = $device_id;
                     $flazz['mid'] = $mid;
                     $flazz['tid'] = $tid;
+                    $flazz['date_trx'] = $tanggal;
                     $flazz['deductres'] = $deduct_response;
 
                     try{
@@ -308,6 +310,7 @@ class TicketingDev extends BaseController
                     $tapcash['device_id'] = $device_id;
                     $tapcash['mid'] = $mid;
                     $tapcash['tid'] = $tid;
+                    $tapcash['date_trx'] = $tanggal;
                     $tapcash['body'] = $deduct_response;
 
                     try{
@@ -320,8 +323,10 @@ class TicketingDev extends BaseController
                     $brizzi['kode_bis'] = $kode_lambung;
                     $brizzi['body'] = $kode_lambung;
                     $brizzi['device_id'] = $device_id;
+                    $brizzi['petugas_id'] = $petugas_id;
                     $brizzi['mid'] = $mid;
                     $brizzi['tid'] = $tid;
+                    $brizzi['date_trx'] = $tanggal;
                     $brizzi['body'] = $deduct_response;
 
                     try{

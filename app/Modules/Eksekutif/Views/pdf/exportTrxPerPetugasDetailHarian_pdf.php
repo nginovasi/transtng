@@ -51,7 +51,7 @@
 </head>
 <body>
     <div class="header">
-        <img src="<?= base_url() . '/assets/logo_trans_tangerang.png'?>" alt="Logo" class="logo">
+        <img src="<?= base_url() ?>/assets/logo_trans_tangerang.png" alt="Logo" class="logo">
         <h5>BRT (BUS RAPID TRANSIT) <br/>
                     <b>TRANS TANGERANG</b><br/>
                     Jl. Borobudur Raya, RT.002/RW.012,<br/>
