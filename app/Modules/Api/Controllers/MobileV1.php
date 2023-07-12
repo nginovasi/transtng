@@ -476,7 +476,7 @@ class MobileV1 extends BaseController
         $aduan_user_id = addslashes($data['aduan_user_id']);
         $aduan_judul = addslashes($data['aduan_judul']);
         $aduan_detail = addslashes($data['aduan_detail']);
-        $aduan_lampiran = addslashes($data['aduan_lampiran']);
+        $aduan_lampiran =  isset($data['aduan_lampiran']) ? $data['aduan_lampiran'] : null;
         $aduan_ip = $this->request->getIPAddress();
 
         if(!empty($aduan_lampiran) ){
@@ -524,7 +524,7 @@ class MobileV1 extends BaseController
         $data = $queryArray;
         $userId = $data['user_mobile_id'];
 
-        $query = $this->db->query("SELECT id,aduan_judul,aduan_detail,aduan_reply,aduan_email,
+        $query = $this->db->query("SELECT id,aduan_judul,aduan_detail,created_at as aduan_date,aduan_reply,aduan_email,aduan_date_reply,
         CONCAT('".base_url()."/',aduan_lampiran) as aduan_image,CONCAT('".base_url()."/',aduan_reply_lampiran) as aduan_reply_image from t_aduan where aduan_user_id = '".addslashes($userId)."' order by id desc")->getResult();
         
         if(empty($query)){

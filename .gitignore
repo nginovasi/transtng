@@ -87,6 +87,9 @@ vendor/
 vendor-xxx/
 composer.lock
 
+# public
+public/uploads/
+
 #-------------------------
 # IDE / Development Files
 #-------------------------
