@@ -13,11 +13,12 @@
     <!--end::Fonts-->
     <link href="<?= base_url() ?>/assets/css/style.bundle.min.css" rel="stylesheet" type="text/css" />
     <!--end::Layout Themes-->
-    <link rel="shortcut icon" href="<?= base_url() ?>/assets/img/icon.png" />
+    <link rel="shortcut icon" href="<?= base_url() ?>/assets/img/TNGLogo-TNGIcon.svg" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="<?= base_url() ?>/assets/js/plugins.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="<?= base_url() ?>/assets/css/font-awesome.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
 
 </head>
 
@@ -36,24 +37,15 @@
 </style>
 
 <body class="body" style="background-image: url(https://simpelpol.id/assets/img/bg-3.jpg);background-position: center; background-size: 50%;">
-    <style type="text/css">
-        #buttonDiv {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
-            width: 100%;
-        }
-    </style>
     <div class="d-flex flex-column flex-root">
         <!--begin::Login-->
-        <div class="login login-4 login-signin-on d-flex flex-row-fluid" id="kt_login">
+        <div class="d-flex flex-row-fluid">
             <div class="d-flex flex-center flex-row-fluid t">
-                <div class="login-form text-center p-7 position-relative overflow-hidden">
+                <div class="text-center p-7 position-relative overflow-hidden d-flex flex-column justify-content-center align-items-center">
                     <!--begin::Login Header-->
                     <div class="d-flex flex-center mb-3">
-                        <a href="#">
-                            <img src="<?= base_url() ?>/assets/img/icon.png" alt="" style="width: 50%; height: auto" />
+                        <a class="mb-3" href="#">
+                            <img src="<?= base_url() ?>/assets/img/TNGLogo-TNGIcon.svg" alt="" style="width: 20%; height: auto" />
                         </a>
                     </div>
                     <!--end::Login Header-->
@@ -66,18 +58,17 @@
                         <form class="form" id="form1" action="" class="sign-in-form" method="post" enctype="multipart/form-data" autocomplete="off">
                             <?= csrf_field() ?>
                             <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="text" placeholder="Username" name="username" maxlength="30" />
+                                <input class="form-control h-auto  py-4 px-8" type="text" placeholder="Username" name="username" maxlength="30" />
                             </div>
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="password" placeholder="Password" name="password" maxlength="50" />
-                            </div>
-                            <button id="kt_login_signin_submit" class="btn btn-primary font-weight-bold btn-block" style="background-color: #224DDD; border-color: #224DDD; margin-top: 40px; height: 48px;">Masuk</button>
-
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div id="buttonDiv"></div>
+                            <div class="input-group mb-5">
+                                <input class="form-control h-auto  py-4 px-8" type="password" id="password" placeholder="Password" name="password" maxlength="50" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-eye-slash" id="show_password" onclick="showPassword()" style="cursor: pointer; color: #224DDD;"></i>
+                                    </span>
                                 </div>
                             </div>
+                            <button id="kt_login_signin_submit" class="btn btn-primary font-weight-bold btn-block" style="background-color: #224DDD; border-color: #224DDD; margin-top: 40px; height: 48px;">Masuk</button>
                         </form>
                     </div>
                 </div>
@@ -131,76 +122,6 @@
             });
         });
 
-        function handleCredentialResponse(response) {
-            let jwt = parseJwt(response.credential)
-            let email = jwt.email;
-            loginWithGoogle(email);
-        }
-
-        function loginWithGoogle(email) {
-            Swal.fire({
-                title: "",
-                icon: "info",
-                text: "Mohon ditunggu...",
-                onOpen: function() {
-                    Swal.showLoading()
-                }
-            });
-
-            var url = '<?= base_url() ?>/auth/action/loginGoogle';
-
-            $.post(url, {
-                email: email,
-                "<?= csrf_token() ?>": "<?= csrf_hash() ?>"
-            }, function(data) {
-                var ret = $.parseJSON(data);
-                swal.close();
-                if (ret.success) {
-                    window.location = "<?= base_url() ?>/main";
-                } else {
-                    Swal.fire({
-                        title: ret.title,
-                        text: ret.text,
-                        icon: 'error',
-                        showConfirmButton: false,
-                        timer: 2500
-                    });
-                }
-            }).fail(function(data) {
-                swal.close();
-                Swal.fire({
-                    title: 'Error',
-                    text: '404 Halaman Tidak Ditemukan',
-                    icon: 'error',
-                    showConfirmButton: false,
-                    timer: 2500
-                });
-            });
-        }
-
-        function parseJwt(token) {
-            var base64Url = token.split('.')[1];
-            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
-        };
-
-        window.onload = function() {
-            google.accounts.id.initialize({
-                client_id: "952480244845-on52q6pv8f20mnlat55ip23uddpjldsg.apps.googleusercontent.com",
-                callback: handleCredentialResponse
-            });
-            google.accounts.id.renderButton(
-                document.getElementById("buttonDiv"), {
-                    theme: "outline",
-                    size: "large"
-                } // customization attributes
-            );
-            google.accounts.id.prompt(); // also display the One Tap dialog
-        }
-
         $('input[name="username"]').keypress(function(e) {
             var txt = String.fromCharCode(e.which);
             if (txt.match(/[a-z0-9_]/)) {
@@ -217,6 +138,25 @@
             }
         });
     });
+
+    function showPassword() {
+        var x = document.getElementById("password");
+        if (x.type === "password") {
+            x.type = "text";
+            $('#show_password').removeClass('fa-eye-slash');
+            $('#show_password').addClass('fa-eye');
+            $('#show_password').attr('cursor', 'pointer');
+            $('#show_password').attr('color', '#224DDD');
+            $('#show_password').attr('title', 'Sembunyikan Password');
+        } else {
+            x.type = "password";
+            $('#show_password').removeClass('fa-eye');
+            $('#show_password').addClass('fa-eye-slash');
+            $('#show_password').attr('cursor', 'pointer');
+            $('#show_password').attr('color', '#224DDD');
+            $('#show_password').attr('title', 'Tampilkan Password');
+        }
+    }
 </script>
 
 </html>
