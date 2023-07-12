@@ -127,6 +127,9 @@ nb-configuration.xml
 /phpunit*.xml
 /.phpunit.*.cache
 
+# public
+/public/settlement
+
 ### Composer ###
 composer.phar
 /vendor/
